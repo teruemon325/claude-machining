@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>G コードトレーナー</title>
+<title>マシニング加工スタディ｜Gコードトレーナー</title>
 <meta name="description" content="G コードを書いて経路を確認しながら学べるトレーナー。シミュレータ、レッスン、リファレンス、クイズ、自動判定つき課題。">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
@@ -140,9 +140,17 @@ select,input[type=text],input[type=number]{font:inherit;font-size:13px;padding:5
 .badge{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--good-soft);color:var(--good);border:1px solid var(--good);margin-left:6px}
 @media (max-width:1100px){.sim{grid-template-columns:minmax(300px,1fr) minmax(0,1fr)} .sim .right{grid-column:1/-1}}
 @media (max-width:760px){.sim,.lessons,.ex{grid-template-columns:1fr} .page{padding:12px} header{padding:12px 12px 0} .editor{height:320px} #top{height:320px}}
+nav.study{display:flex;align-items:center;gap:4px;padding:6px 16px;background:var(--ink);color:#fff;font-size:12.5px;flex-wrap:wrap}
+nav.study .brand{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;letter-spacing:.04em;margin-right:14px;font-size:13.5px}
+nav.study a{color:#d8e3ef;text-decoration:none;padding:4px 10px;border-radius:4px}
+nav.study a:hover{background:rgba(255,255,255,.12);color:#fff}
+nav.study a[aria-current=page]{background:var(--steel);color:#fff}
 </style>
 </head>
 <body>
+<nav class="study" aria-label="マシニング加工スタディ"><span class="brand">⚙ マシニング加工スタディ</span><a data-k="docs" href="../docs/">ドキュメント</a><a data-k="app" href="../">ノウハウ集</a><a data-k="sim" href="../simulator/">切削シミュレータ</a><a data-k="gcode" href="../gcode/" aria-current="page">Gコードトレーナー</a></nav>
+<script>(function(){var art={"docs": "https://claude.ai/code/artifact/4eca61a5-b08c-48b2-8fc6-6c70e30845f4", "app": "https://claude.ai/code/artifact/b2ac7c68-2233-47a7-898f-c3473f5eba8d", "sim": "https://claude.ai/code/artifact/84c8f745-0ca9-443d-8627-bd75989e7a34", "gcode": "https://claude.ai/code/artifact/78629cf0-087b-425a-af70-8074431ebdab"};var useRel=location.protocol==="file:"||/\/(simulator|gcode)\//.test(location.pathname);if(!useRel){document.querySelectorAll("nav.study a[data-k]").forEach(function(a){a.href=art[a.getAttribute("data-k")];});}})();</script>
+
 
 <header>
   <div class="hrow">

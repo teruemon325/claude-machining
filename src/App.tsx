@@ -24,6 +24,7 @@ import { EntryList } from './components/EntryList';
 import { Header } from './components/Header';
 import { ImageStoreContext } from './components/ImageStoreContext';
 import { Sidebar } from './components/Sidebar';
+import { StudyNav } from './components/StudyNav';
 
 type FormState = { mode: 'new' } | { mode: 'edit'; id: string } | null;
 
@@ -181,6 +182,7 @@ export default function App() {
   return (
     <ImageStoreContext.Provider value={imageStore}>
       <div className="app" aria-busy={busy}>
+        <StudyNav />
         <Header
           query={filter.query}
           onQueryChange={(query) => setFilter((prev) => ({ ...prev, query }))}

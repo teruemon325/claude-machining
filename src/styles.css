@@ -117,6 +117,13 @@ input, select, textarea { font: inherit; color: inherit; }
 .menu-list a + a { border-top: none; }
 .menu-list button.danger { color: var(--danger); }
 
+/* ---------- study nav (共通ナビ) ---------- */
+nav.study { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; padding: 6px 16px; background: #1b232c; color: #fff; font-size: 12.5px; }
+nav.study .study-brand { font-weight: 800; letter-spacing: .04em; margin-right: 14px; font-size: 13.5px; }
+nav.study a { color: #d8e3ef; text-decoration: none; padding: 4px 10px; border-radius: 4px; }
+nav.study a:hover { background: rgba(255,255,255,.12); color: #fff; }
+nav.study a[aria-current="page"] { background: var(--primary); color: #fff; }
+
 /* ---------- layout ---------- */
 .layout { display: flex; flex: 1; align-items: flex-start; }
 

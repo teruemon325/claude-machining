@@ -17,7 +17,7 @@ export function Header({ query, onQueryChange, onNew, onExport, onImport, onRese
         </button>
         <h1 className="app-title">
           <span className="app-title-icon" aria-hidden="true">⚙</span>
-          <span className="app-title-text">マシニング加工ノウハウ集</span>
+          <span className="app-title-text">ノウハウ集</span>
         </h1>
       </div>
       <div className="header-search">
@@ -39,9 +39,7 @@ export function Header({ query, onQueryChange, onNew, onExport, onImport, onRese
             <button type="button" onClick={onExport}>JSON エクスポート</button>
             <button type="button" onClick={onImport}>JSON インポート</button>
             <button type="button" className="danger" onClick={onReset}>初期データに戻す</button>
-            <a href="docs/" target="_blank" rel="noopener">解説ドキュメント（全 14 章）</a>
-            <a href="simulator/" target="_blank" rel="noopener">切削シミュレータ</a>
-            <a href="gcode/" target="_blank" rel="noopener">G コードトレーナー</a>
+
           </div>
         </details>
       </div>
