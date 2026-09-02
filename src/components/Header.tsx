@@ -17,7 +17,7 @@ export function Header({ query, onQueryChange, onNew, onExport, onImport, onRese
         </button>
         <h1 className="app-title">
           <span className="app-title-icon" aria-hidden="true">⚙</span>
-          <span className="app-title-text">マシニングセンタ加工ノウハウ集</span>
+          <span className="app-title-text">マシニング加工ノウハウ集</span>
         </h1>
       </div>
       <div className="header-search">
