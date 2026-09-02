@@ -7,8 +7,9 @@
 | **ノウハウ集アプリ** | `/`（`src/`） | カード形式で検索・絞り込み・追加・編集・削除・画像添付ができる Web アプリ。初期データ 42 件を収録 |
 | **解説ドキュメント** | `/docs/` | 全 14 章＋付録 4 本の Markdown。図版 27 点（SVG）付き。MkDocs でサイト化 |
 | **切削シミュレータ** | `/simulator/`（`docs/app/`） | 切削条件を入力すると計算結果・判定と加工アニメーション（2D／3D）を表示 |
+| **G コードトレーナー** | `/gcode/`（`docs/app/`） | G コードを書いて経路を確認しながら学べる。シミュレータ・レッスン 9 本・リファレンス・クイズ・自動判定つき課題 5 問 |
 
-GitHub Pages に配信すると、`/` にアプリ、`/docs/` にドキュメント、`/simulator/` にシミュレータが並びます（アプリの「…」メニューからも開けます）。
+GitHub Pages に配信すると、`/` にアプリ、`/docs/` にドキュメント、`/simulator/` にシミュレータ、`/gcode/` に G コードトレーナーが並びます（アプリの「…」メニューからも開けます）。
 
 ## ノウハウ集アプリの機能
 
@@ -56,7 +57,7 @@ mkdocs serve       # http://127.0.0.1:8000
 
 - React 19 + TypeScript + Vite、テスト: Vitest
 - ドキュメント: Markdown + MkDocs（Material テーマ）
-- シミュレータ: 依存ライブラリなしの単体 HTML（Canvas 描画）
+- シミュレータ・G コードトレーナー: 依存ライブラリなしの単体 HTML（Canvas 描画）
 
 ## ディレクトリ構成
 
@@ -76,6 +77,7 @@ docs/
   index.md, 00〜13 章, appendix/   解説ドキュメント
   images/                図版（SVG 27 点）
   app/cutting-simulator.html       切削シミュレータ
+  app/gcode-trainer.html           G コードトレーナー
 scripts/copy-extras.mjs  ビルド後にシミュレータ・図版を dist/ へ同梱
 mkdocs.yml               ドキュメントサイトの設定
 .github/workflows/       CI と GitHub Pages デプロイ

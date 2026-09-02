@@ -1,0 +1,1017 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G コードトレーナー</title>
+<meta name="description" content="G コードを書いて経路を確認しながら学べるトレーナー。シミュレータ、レッスン、リファレンス、クイズ、自動判定つき課題。">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#f2f4f7; --surface:#ffffff; --ink:#1b232c; --muted:#5c6874; --rule:#d2d9e1;
+  --steel:#2e5b88; --steel-soft:#e4edf6; --chip:#cf6d2a; --chip-soft:#fbeadb;
+  --good:#2f8a5b; --good-soft:#e2f2e9; --warn:#b8791a; --warn-soft:#fbf0d9; --crit:#c8433a; --crit-soft:#fbe3e1;
+  --stage:#eef1f5; --work:#dfe6ee; --work-edge:#1f3a5f; --rapid:#9aa6b2; --feed:#2e5b88; --feedz:#cf6d2a; --hole:#4a5a7a;
+  --code-bg:#f7f9fb; --hl:#fff1dc; --input-bg:#ffffff; --kw:#1d4ed8; --num:#0f766e; --cm:#8a94a0;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#12181f; --surface:#1a2129; --ink:#e1e7ed; --muted:#98a5b2; --rule:#2c3640;
+  --steel:#7fb0e2; --steel-soft:#1f3042; --chip:#e8904e; --chip-soft:#3a2a1c;
+  --good:#5cc08a; --good-soft:#193225; --warn:#e2a744; --warn-soft:#3a2d13; --crit:#ef6b60; --crit-soft:#3d1c1a;
+  --stage:#0f1419; --work:#2a3542; --work-edge:#9db4cc; --rapid:#5b6875; --feed:#7fb0e2; --feedz:#e8904e; --hole:#aab8cc;
+  --code-bg:#10161c; --hl:#3a2d13; --input-bg:#12181f; --kw:#93b4ff; --num:#5fd3c3; --cm:#6b7683;
+}}
+:root[data-theme="dark"]{
+  --paper:#12181f; --surface:#1a2129; --ink:#e1e7ed; --muted:#98a5b2; --rule:#2c3640;
+  --steel:#7fb0e2; --steel-soft:#1f3042; --chip:#e8904e; --chip-soft:#3a2a1c;
+  --good:#5cc08a; --good-soft:#193225; --warn:#e2a744; --warn-soft:#3a2d13; --crit:#ef6b60; --crit-soft:#3d1c1a;
+  --stage:#0f1419; --work:#2a3542; --work-edge:#9db4cc; --rapid:#5b6875; --feed:#7fb0e2; --feedz:#e8904e; --hole:#aab8cc;
+  --code-bg:#10161c; --hl:#3a2d13; --input-bg:#12181f; --kw:#93b4ff; --num:#5fd3c3; --cm:#6b7683;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;font-size:14px;line-height:1.6;font-feature-settings:"palt"}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+header{padding:14px 24px 0;border-bottom:1px solid var(--rule);background:var(--surface)}
+.hrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px}
+header h1{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;font-size:22px;margin:0}
+header .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;color:var(--chip)}
+header .sub{color:var(--muted);font-size:13px;margin:0}
+.tabs{display:flex;gap:2px;margin-top:10px;overflow-x:auto}
+.tabs button{font:inherit;font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:14px;padding:9px 16px;border:0;background:none;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs button[aria-selected=true]{color:var(--steel);border-bottom-color:var(--steel)}
+.tabs button:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--chip);outline-offset:1px}
+.page{padding:16px 24px 40px}
+.page[hidden]{display:none}
+/* simulator */
+.sim{display:grid;grid-template-columns:minmax(320px,440px) minmax(0,1fr) 280px;gap:14px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px}
+.panel h2{font-family:"Zen Kaku Gothic New",sans-serif;font-size:13px;letter-spacing:.06em;color:var(--muted);margin:0;padding:10px 12px 8px;border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.panel h2 .sp{flex:1}
+.toolbar{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px;border-bottom:1px solid var(--rule);align-items:center}
+.btn{font:inherit;font-size:13px;padding:6px 12px;border:1px solid var(--steel);background:var(--surface);color:var(--steel);border-radius:4px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn.primary{background:var(--steel);color:#fff}
+.btn.ghost{border-color:var(--rule);color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.small{padding:4px 9px;font-size:12px}
+select,input[type=text],input[type=number]{font:inherit;font-size:13px;padding:5px 8px;border:1px solid var(--rule);border-radius:4px;background:var(--input-bg);color:var(--ink)}
+.editor{position:relative;height:460px;border-bottom:1px solid var(--rule)}
+.editor pre,.editor textarea{position:absolute;inset:0;margin:0;padding:10px 12px 10px 52px;font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.55;white-space:pre;overflow:auto;tab-size:4}
+.editor pre{color:transparent;background:var(--code-bg);pointer-events:none;counter-reset:ln}
+.editor pre .ln{display:block;position:relative;min-height:1.55em}
+.editor pre .ln::before{counter-increment:ln;content:counter(ln);position:absolute;left:-40px;width:30px;text-align:right;color:var(--muted);font-size:11px}
+.editor pre .ln.cur{background:var(--hl)}
+.editor pre .ln.err{box-shadow:inset 3px 0 0 var(--crit)}
+.editor pre .ln.warnl{box-shadow:inset 3px 0 0 var(--warn)}
+.editor textarea{border:0;background:transparent;color:var(--ink);resize:none;outline:none;caret-color:var(--chip)}
+.editor textarea::selection{background:rgba(46,91,136,.25)}
+.canvas-wrap{background:var(--stage);border:1px solid var(--rule);border-radius:6px;position:relative;overflow:hidden}
+.canvas-wrap canvas{display:block;width:100%}
+.canvas-wrap .tag{position:absolute;top:8px;left:10px;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;color:var(--muted);pointer-events:none}
+.legend{position:absolute;right:10px;top:8px;display:flex;gap:10px;font-size:11px;color:var(--muted);pointer-events:none}
+.legend i{display:inline-block;width:18px;height:0;border-top:2px solid var(--feed);vertical-align:middle;margin-right:4px}
+.legend i.r{border-top:2px dashed var(--rapid)} .legend i.z{border-top-color:var(--feedz)} .legend i.h{width:8px;height:8px;border:2px solid var(--hole);border-radius:50%}
+.stagecol{display:flex;flex-direction:column;gap:10px;min-width:0}
+.transport{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.transport .lbl{font-size:12px;color:var(--muted)}
+.status{font-size:12.5px;padding:2px 10px;border-radius:999px;background:var(--steel-soft)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;padding:8px 12px;font-size:12.5px}
+.kv dt{color:var(--muted);margin:0}
+.kv dd{margin:0;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.pos{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 12px}
+.pos div{background:var(--stage);border-radius:4px;padding:6px 8px}
+.pos .ax{font-size:11px;color:var(--muted)} .pos .v{font-family:"IBM Plex Mono",monospace;font-size:17px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:4px;padding:8px 12px}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:11.5px;padding:2px 7px;border-radius:999px;background:var(--stage);border:1px solid var(--rule)}
+.chip.on{background:var(--steel-soft);border-color:var(--steel);color:var(--steel)}
+.chip.hot{background:var(--chip-soft);border-color:var(--chip)}
+.diag{list-style:none;margin:0;padding:6px 12px 10px;display:flex;flex-direction:column;gap:5px;max-height:260px;overflow:auto}
+.diag li{font-size:12.5px;padding:6px 9px;border-radius:4px;border-left:3px solid var(--muted);background:var(--stage);cursor:pointer}
+.diag li.error{border-color:var(--crit);background:var(--crit-soft)} .diag li.warn{border-color:var(--warn);background:var(--warn-soft)} .diag li.info{border-color:var(--steel)}
+.diag li b{font-family:"IBM Plex Mono",monospace;margin-right:6px}
+.explain{padding:8px 12px 10px;font-size:13px;min-height:60px}
+.explain b{color:var(--steel)}
+/* lessons */
+.lessons{display:grid;grid-template-columns:260px minmax(0,1fr);gap:14px;align-items:start}
+.lesson-list{display:flex;flex-direction:column}
+.lesson-list button{font:inherit;text-align:left;padding:9px 12px;border:0;border-bottom:1px solid var(--rule);background:none;color:var(--ink);cursor:pointer;display:flex;gap:8px;align-items:baseline}
+.lesson-list button[aria-current=true]{background:var(--steel-soft);color:var(--steel)}
+.lesson-list .n{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);min-width:22px}
+.lesson-body{padding:16px 20px 20px;max-width:80ch}
+.lesson-body h3{font-family:"Zen Kaku Gothic New",sans-serif;font-size:20px;margin:0 0 10px}
+.lesson-body h4{font-family:"Zen Kaku Gothic New",sans-serif;font-size:14.5px;margin:18px 0 6px;color:var(--steel)}
+.lesson-body p{margin:0 0 10px} .lesson-body ul{margin:0 0 10px;padding-left:1.4em} .lesson-body li{margin:3px 0}
+.lesson-body pre{background:var(--code-bg);border:1px solid var(--rule);border-radius:4px;padding:10px 12px;font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.55;overflow-x:auto;margin:0 0 10px}
+.lesson-body code{font-family:"IBM Plex Mono",monospace;font-size:.92em;background:var(--code-bg);padding:1px 4px;border-radius:3px}
+.lesson-body table{border-collapse:collapse;width:100%;font-size:13px;margin:0 0 10px}
+.lesson-body th,.lesson-body td{border-bottom:1px solid var(--rule);padding:5px 8px;text-align:left;vertical-align:top}
+.lesson-body th{background:var(--steel-soft)}
+.note{padding:10px 14px;background:var(--chip-soft);border-left:3px solid var(--chip);border-radius:0 4px 4px 0;margin:0 0 12px}
+.lesson-nav{display:flex;gap:8px;margin-top:16px}
+/* reference */
+.ref-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.ref-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.ref-table th,.ref-table td{padding:7px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+.ref-table th{background:var(--steel-soft);font-family:"Zen Kaku Gothic New",sans-serif;white-space:nowrap}
+.ref-table td.code{font-family:"IBM Plex Mono",monospace;font-weight:600;white-space:nowrap}
+.ref-table td.ex{font-family:"IBM Plex Mono",monospace;font-size:12px;white-space:nowrap}
+.ref-table .grp{font-size:11px;color:var(--muted)}
+.tw{overflow-x:auto}
+/* quiz */
+.quiz{max-width:80ch}
+.qcard{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px 20px;margin-bottom:12px}
+.qcard .qn{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted)}
+.qcard .q{font-size:15px;font-weight:700;margin:4px 0 10px}
+.qcard pre{background:var(--code-bg);border:1px solid var(--rule);border-radius:4px;padding:8px 12px;font-family:"IBM Plex Mono",monospace;font-size:13px;margin:0 0 10px}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts button{font:inherit;text-align:left;padding:8px 12px;border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink);cursor:pointer}
+.opts button:hover:not(:disabled){border-color:var(--steel)}
+.opts button.correct{background:var(--good-soft);border-color:var(--good)} .opts button.wrong{background:var(--crit-soft);border-color:var(--crit)}
+.fb{margin-top:10px;padding:8px 12px;border-radius:4px;font-size:13px}
+.fb.ok{background:var(--good-soft)} .fb.ng{background:var(--crit-soft)}
+.score{font-family:"IBM Plex Mono",monospace;font-size:15px}
+/* exercises */
+.ex{display:grid;grid-template-columns:260px minmax(0,1fr);gap:14px;align-items:start}
+.ex-body{padding:16px 20px}
+.ex-body h3{font-family:"Zen Kaku Gothic New",sans-serif;font-size:19px;margin:0 0 8px}
+.checks{list-style:none;padding:0;margin:10px 0}
+.checks li{padding:6px 10px;border-radius:4px;margin:4px 0;background:var(--stage);font-size:13px}
+.checks li.ok{background:var(--good-soft)} .checks li.ng{background:var(--crit-soft)}
+.badge{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--good-soft);color:var(--good);border:1px solid var(--good);margin-left:6px}
+@media (max-width:1100px){.sim{grid-template-columns:minmax(300px,1fr) minmax(0,1fr)} .sim .right{grid-column:1/-1}}
+@media (max-width:760px){.sim,.lessons,.ex{grid-template-columns:1fr} .page{padding:12px} header{padding:12px 12px 0} .editor{height:320px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hrow">
+    <div><div class="eyebrow">G-CODE TRAINER</div><h1>G コードトレーナー</h1></div>
+    <p class="sub">書いて、動かして、確かめる。Fanuc 系 G コードの基本から固定サイクル・サブプログラムまで。</p>
+  </div>
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-page="sim">シミュレータ</button>
+    <button type="button" role="tab" aria-selected="false" data-page="lesson">レッスン</button>
+    <button type="button" role="tab" aria-selected="false" data-page="ref">リファレンス</button>
+    <button type="button" role="tab" aria-selected="false" data-page="quiz">クイズ</button>
+    <button type="button" role="tab" aria-selected="false" data-page="ex">課題</button>
+  </div>
+</header>
+
+<!-- ===== simulator ===== -->
+<section class="page" id="page-sim">
+  <div class="sim">
+    <div class="panel">
+      <h2>プログラム <span class="sp"></span><select id="sample" aria-label="サンプルを読み込む"></select><button type="button" class="btn small ghost" id="loadSample">読み込む</button></h2>
+      <div class="toolbar">
+        <button type="button" class="btn primary" id="run">▶ 実行</button>
+        <button type="button" class="btn" id="stepBtn">⏭ 1 ブロック</button>
+        <button type="button" class="btn" id="pause">❚❚ 一時停止</button>
+        <button type="button" class="btn ghost" id="stop">■ 停止</button>
+        <span class="lbl" style="font-size:12px;color:var(--muted)">速度</span>
+        <select id="speed" aria-label="再生速度"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="4">4×</option><option value="16">16×</option><option value="0">瞬時</option></select>
+      </div>
+      <div class="editor"><pre id="hl" aria-hidden="true"></pre><textarea id="code" spellcheck="false" aria-label="G コード"></textarea></div>
+      <div class="toolbar" style="border-bottom:0;font-size:12px;color:var(--muted)">
+        素材 X<input type="number" id="stockX" value="100" min="1" max="1000" style="width:64px"> × Y<input type="number" id="stockY" value="60" min="1" max="1000" style="width:64px"> mm（原点＝左下・上面 Z0）
+        <span class="sp" style="flex:1"></span><button type="button" class="btn small ghost" id="clear">クリア</button>
+      </div>
+    </div>
+    <div class="stagecol">
+      <div class="canvas-wrap"><canvas id="top" height="430" aria-label="工具経路（上面図）"></canvas><div class="tag">上面図 XY</div><div class="legend"><span><i class="r"></i>早送り G00</span><span><i></i>切削 Z≥0</span><span><i class="z"></i>切削 Z&lt;0</span><span><i class="h"></i>穴</span></div></div>
+      <div class="transport"><span class="status" id="status">停止</span><span class="lbl mono" id="tline">—</span><span class="lbl mono" id="ttime">推定時間 —</span><span class="lbl mono" id="tlen">切削距離 —</span></div>
+      <div class="canvas-wrap"><canvas id="side" height="150" aria-label="工具経路（側面図）"></canvas><div class="tag">側面図 XZ</div></div>
+      <div class="panel"><h2>いま実行しているブロックの説明</h2><div class="explain" id="explain">「▶ 実行」または「⏭ 1 ブロック」で始めると、各ブロックが何をしているかをここに表示します。</div></div>
+    </div>
+    <div class="panel right">
+      <h2>現在位置（ワーク座標）</h2>
+      <div class="pos"><div><div class="ax">X</div><div class="v" id="pX">0.000</div></div><div><div class="ax">Y</div><div class="v" id="pY">0.000</div></div><div><div class="ax">Z</div><div class="v" id="pZ">50.000</div></div></div>
+      <h2>モーダル状態</h2>
+      <div class="chips" id="modal"></div>
+      <dl class="kv"><dt>送り F</dt><dd id="sF">—</dd><dt>主軸 S</dt><dd id="sS">—</dd><dt>工具 T / H / D</dt><dd id="sT">—</dd><dt>主軸・クーラント</dt><dd id="sM">停止・OFF</dd></dl>
+      <h2>診断 <span class="sp"></span><span class="mono" id="diagCount" style="font-size:12px;color:var(--muted)"></span></h2>
+      <ul class="diag" id="diag"></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== lessons ===== -->
+<section class="page" id="page-lesson" hidden>
+  <div class="lessons">
+    <div class="panel lesson-list" id="lessonList"></div>
+    <div class="panel lesson-body" id="lessonBody"></div>
+  </div>
+</section>
+
+<!-- ===== reference ===== -->
+<section class="page" id="page-ref" hidden>
+  <div class="ref-tools"><input type="text" id="refSearch" placeholder="コードや機能で検索（例：G43 補正 円弧）" style="min-width:280px" aria-label="リファレンス検索"><span style="font-size:12px;color:var(--muted)">Fanuc 系（0i／30i 相当）の一般的な仕様。機種・パラメータで異なる場合があります。</span></div>
+  <div class="tw"><table class="ref-table" id="refTable"><thead><tr><th>コード</th><th>グループ</th><th>機能</th><th>使い方・注意</th><th>例</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<!-- ===== quiz ===== -->
+<section class="page" id="page-quiz" hidden>
+  <div class="quiz">
+    <div class="qcard" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span>10 問をランダムに出題します。</span><span class="score" id="qscore"></span><span class="sp" style="flex:1"></span><button type="button" class="btn primary" id="qstart">出題する</button></div>
+    <div id="qlist"></div>
+  </div>
+</section>
+
+<!-- ===== exercises ===== -->
+<section class="page" id="page-ex" hidden>
+  <div class="ex">
+    <div class="panel lesson-list" id="exList"></div>
+    <div class="panel ex-body" id="exBody"></div>
+  </div>
+</section>
+
+<script>
+(function(){
+'use strict';
+const $ = id => document.getElementById(id);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmt = (v,d=3) => (Math.abs(v)<1e-9?0:v).toFixed(d);
+
+// ================= parser / simulator =================
+const HOME_Z = 50;
+function parseProgram(text){
+  const lines = text.replace(/\r/g,'').split('\n');
+  const blocks = [];
+  const programs = {}; // O number -> start block index
+  lines.forEach((raw, i) => {
+    let s = raw;
+    const comments = [];
+    s = s.replace(/\(([^)]*)\)/g, (m,c)=>{ comments.push(c.trim()); return ' '; });
+    const semi = s.indexOf(';'); if(semi>=0){ comments.push(s.slice(semi+1).trim()); s = s.slice(0,semi); }
+    s = s.replace(/^\s*\/\d?/,'').trim();
+    const words = []; let bad = null;
+    const re = /([A-Za-z])\s*([-+]?(?:\d+\.?\d*|\.\d+))/g; let m; let consumed = '';
+    while((m = re.exec(s))){ words.push({l:m[1].toUpperCase(), v:parseFloat(m[2]), raw:m[0]}); consumed += m[0].replace(/\s/g,''); }
+    const rest = s.replace(/\s/g,'').replace(/%/g,'');
+    if(rest.length !== consumed.length && rest.length>0) bad = rest;
+    const blk = {line:i, raw, words, comments, bad};
+    const o = words.find(w=>w.l==='O'); if(o && words.length===1) programs[o.v] = blocks.length;
+    blocks.push(blk);
+  });
+  return {blocks, programs};
+}
+
+function simulate(text, opts={}){
+  const {blocks, programs} = parseProgram(text);
+  const segs = [], holes = [], diags = [], steps = [];
+  const st = { x:0, y:0, z:HOME_Z, motion:0, plane:17, abs:true, units:21, feedmode:94, wcs:54, comp:40, lcomp:49, ret:98, cycle:null,
+    f:null, s:null, t:null, h:null, d:null, spindle:'stop', coolant:false, ended:false, time:0, cutLen:0 };
+  const usedFeedWithoutF = new Set();
+  let g43SinceTool = true;
+  const diag = (level, line, msg) => diags.push({level, line, msg});
+  const callStack = [];
+  let idx = 0, guard = 0;
+  let mainEnd = false;
+  const rapidRate = 10000;
+  const posAfter = (b, key) => {};
+
+  function move(to, kind, extra, blk){
+    const from = {x:st.x,y:st.y,z:st.z};
+    const seg = Object.assign({kind, from, to:{...to}, line:blk.line, f:st.f}, extra||{});
+    let len = 0;
+    if(kind==='arc'){ len = seg.arcLen; } else { len = Math.hypot(to.x-from.x, to.y-from.y, to.z-from.z); }
+    seg.len = len;
+    if(kind==='rapid') st.time += len/rapidRate*60; else { const f = st.feedmode===95 && st.s ? (st.f||0)*st.s : (st.f||0); st.time += f>0 ? len/f*60 : 0; st.cutLen += len; }
+    segs.push(seg); st.x=to.x; st.y=to.y; st.z=to.z;
+    return seg;
+  }
+  function target(words){
+    const t = {x:st.x,y:st.y,z:st.z}; let any=false;
+    for(const w of words){ if('XYZ'.includes(w.l)){ any=true; const k=w.l.toLowerCase(); t[k] = st.abs ? w.v : st[k]+w.v; } }
+    return {t, any};
+  }
+  function doCycle(blk, words){
+    const {t, any} = target(words); if(!any) return;
+    const c = st.cycle;
+    const w = l => words.find(x=>x.l===l);
+    if(w('R')) c.r = st.abs ? w('R').v : st.z + w('R').v;
+    if(w('Z')) c.z = st.abs ? w('Z').v : (c.r!==undefined? c.r : st.z) + w('Z').v;
+    if(w('Q')) c.q = Math.abs(w('Q').v); if(w('P')) c.p = w('P').v; if(w('F')) st.f = w('F').v;
+    if(c.z===undefined || c.r===undefined){ diag('error', blk.line, '固定サイクルに Z（穴底）と R（R 点）が必要です。'); return; }
+    if(c.z >= c.r) diag('warn', blk.line, '穴底 Z が R 点以上です。穴が空きません。');
+    const init = Math.max(st.z, c.r);
+    const initialZ = c.initZ !== undefined ? c.initZ : st.z; if(c.initZ===undefined) c.initZ = st.z;
+    move({x:t.x, y:t.y, z:st.z}, 'rapid', null, blk);
+    move({x:t.x, y:t.y, z:c.r}, 'rapid', null, blk);
+    if(!st.f && c.code!==84) usedFeedWithoutF.add(blk.line);
+    if(c.code===83 || c.code===73){
+      const q = c.q || Math.abs(c.z-c.r); let cur = c.r; let n=0;
+      while(cur > c.z + 1e-9 && n<200){ const next = Math.max(c.z, cur - q); move({x:t.x,y:t.y,z:next},'feed',{cycle:c.code},blk); if(next>c.z+1e-9){ if(c.code===83){ move({x:t.x,y:t.y,z:c.r},'rapid',null,blk); move({x:t.x,y:t.y,z:next+Math.min(1,q*0.3)},'rapid',null,blk); } else { move({x:t.x,y:t.y,z:next+Math.min(1,q*0.3)},'rapid',null,blk); } } cur = next; n++; }
+    } else {
+      move({x:t.x,y:t.y,z:c.z},'feed',{cycle:c.code},blk);
+    }
+    if(c.code===82 || c.code===89) st.time += (c.p||0)/1000;
+    if(c.code===84){ st.time += Math.abs(c.z-c.r)/((st.f||1))*60; }
+    const retZ = st.ret===99 ? c.r : Math.max(initialZ, c.r);
+    if(c.code===85 || c.code===89 || c.code===84) move({x:t.x,y:t.y,z:retZ},'feed',{cycle:c.code, retract:true},blk); else move({x:t.x,y:t.y,z:retZ},'rapid',null,blk);
+    holes.push({x:t.x,y:t.y,z:c.z,r:c.r,code:c.code,line:blk.line});
+  }
+
+  while(idx < blocks.length && guard++ < 20000){
+    const blk = blocks[idx]; idx++;
+    const words = blk.words;
+    if(blk.bad) diag('error', blk.line, `解釈できない文字があります: "${blk.bad}"`);
+    if(!words.length){ continue; }
+    const step = {line:blk.line, note:[]};
+    const gs = words.filter(w=>w.l==='G').map(w=>w.v);
+    const ms = words.filter(w=>w.l==='M').map(w=>w.v);
+    const w = l => words.find(x=>x.l===l);
+    // O number: program header, skip
+    if(w('O') && words.length===1){ if(callStack.length===0 && idx>1 && !mainEnd){ /* another program after main without M30 */ } step.note.push(`プログラム番号 O${w('O').v}`); steps.push(step); if(callStack.length===0 && mainEnd) break; continue; }
+    if(callStack.length===0 && mainEnd) break;
+    // modal G codes
+    for(const g of gs){
+      if(g===0||g===1||g===2||g===3){ st.motion=g; st.cycle=null; }
+      else if(g===17||g===18||g===19){ st.plane=g; if(g!==17) step.note.push('平面が XY 以外です（円弧は G17 前提で描画）'); }
+      else if(g===20){ st.units=20; diag('warn', blk.line, 'G20（インチ）です。mm 指定なら G21 にしてください。'); }
+      else if(g===21) st.units=21;
+      else if(g===90) st.abs=true; else if(g===91) st.abs=false;
+      else if(g===94) st.feedmode=94; else if(g===95) st.feedmode=95;
+      else if(g>=54&&g<=59) st.wcs=g;
+      else if(g===40||g===41||g===42){ if((g===41||g===42) && (st.motion===2||st.motion===3)) diag('error', blk.line, '円弧ブロックで径補正を立ち上げるとアラームになります。直線ブロックで立ち上げてください。'); if((g===41||g===42) && !w('D')) diag('warn', blk.line, 'G41/G42 に D 番号がありません（前の D が使われます）。'); st.comp=g; if(w('D')) st.d=w('D').v; step.note.push(g===40?'工具径補正キャンセル':g===41?'工具径補正 左（進行方向左に工具）':'工具径補正 右'); }
+      else if(g===43||g===44){ st.lcomp=g; g43SinceTool=true; if(w('H')) st.h=w('H').v; else diag('warn', blk.line, 'G43 に H 番号がありません。'); if(st.h===0) diag('warn', blk.line, 'H0 は補正量ゼロです。'); }
+      else if(g===49){ st.lcomp=49; }
+      else if(g===98) st.ret=98; else if(g===99) st.ret=99;
+      else if(g===80){ st.cycle=null; st.motion=0; step.note.push('固定サイクル解除'); }
+      else if([81,82,83,73,84,85,86,89,76].includes(g)){ st.cycle={code:g}; st.motion=g; if(g===84 && st.spindle==='stop') diag('warn', blk.line, 'タップ（G84）の前に主軸を回してください（M03、リジッドなら M29 S）。'); }
+      else if(g===4){ const p = w('P')? w('P').v/1000 : (w('X')? w('X').v : 0); st.time += p; step.note.push(`ドウェル ${p} 秒`); }
+      else if(g===28){ const {t} = target(words); if(st.abs && (w('X')||w('Y')||w('Z'))) diag('warn', blk.line, 'G90 のまま G28 を使うと指定座標（例 Z0）を経由してから原点へ動きます。G91 G28 Z0 が安全です。'); const inter = st.abs ? t : {x:st.x+(w('X')?w('X').v:0), y:st.y+(w('Y')?w('Y').v:0), z:st.z+(w('Z')?w('Z').v:0)}; move(inter,'rapid',null,blk); const home={x:st.x,y:st.y,z:st.z}; if(w('Z')) home.z=HOME_Z; if(w('X')) home.x=0; if(w('Y')) home.y=0; move(home,'rapid',{home:true},blk); step.note.push('原点復帰（中間点経由）'); steps.push(step); continue; }
+      else if(g===92){ if(w('X')) st.x=w('X').v; if(w('Y')) st.y=w('Y').v; if(w('Z')) st.z=w('Z').v; diag('warn', blk.line, 'G92 は現在位置に座標を設定します。状態依存で事故の元なので G54 系を推奨します。'); steps.push(step); continue; }
+      else if(g===52||g===53||g===10||g===65||g===68||g===69||g===5||g===8||g===61||g===64){ step.note.push(`G${g} はこのトレーナーでは無視します`); }
+      else if(g===29||g===30){ diag('info', blk.line, `G${g} は無視します。`); }
+      else diag('warn', blk.line, `G${g} は未対応です（無視）。`);
+    }
+    if(w('F')) st.f = w('F').v; if(w('S')) st.s = w('S').v; if(w('T')) st.t = w('T').v; if(w('H') && !gs.includes(43)) st.h = w('H').v; if(w('D') && !gs.includes(41) && !gs.includes(42)) st.d = w('D').v;
+    // M codes
+    for(const m of ms){
+      if(m===3) st.spindle='cw'; else if(m===4) st.spindle='ccw'; else if(m===5) st.spindle='stop';
+      else if(m===8||m===7) st.coolant=true; else if(m===9) st.coolant=false;
+      else if(m===6){ step.note.push(`工具交換 T${st.t??'?'}`); g43SinceTool=false; st.lcomp=49; if(st.z < HOME_Z-1e-6) diag('warn', blk.line, '工具交換前に Z を原点復帰（G91 G28 Z0）していません。'); if(st.spindle!=='stop') step.note.push('（主軸回転中の工具交換：多くの機械は自動停止しますが M05 を入れるのが作法）'); }
+      else if(m===0||m===1){ step.pause = m===0?'M00 プログラム停止':'M01 オプショナルストップ'; }
+      else if(m===30||m===2){ if(callStack.length){ diag('warn', blk.line, 'サブプログラム内の M30/M02 でプログラムが終了します（M99 で戻るべき）。'); } st.ended=true; mainEnd=true; step.note.push(m===30?'プログラム終了（先頭に戻る）':'プログラム終了'); steps.push(step); break; }
+      else if(m===98){ const p = w('P'); const L = w('L'); if(!p){ diag('error', blk.line, 'M98 に P（呼び出し先）がありません。'); continue; } let pv = Math.round(p.v), count = L? Math.round(L.v) : 1, prog = pv; if(!L && pv>9999){ count = Math.floor(pv/10000); prog = pv%10000; } const start = programs[prog]; if(start===undefined){ diag('error', blk.line, `サブプログラム O${prog} が見つかりません（同じテキスト内に O${prog} 〜 M99 を書いてください）。`); continue; } if(callStack.length>8){ diag('error', blk.line, 'ネストが深すぎます。'); continue; } callStack.push({ret:idx, count:count-1, prog}); idx = start+1; step.note.push(`サブプログラム O${prog} を呼び出し（${count} 回）`); }
+      else if(m===99){ const c = callStack.pop(); if(!c){ diag('warn', blk.line, 'メインプログラムの M99 は先頭に戻ります（無限ループ）。ここで終了します。'); mainEnd=true; steps.push(step); break; } if(c.count>0){ c.count--; callStack.push(c); idx = programs[c.prog]+1; } else idx = c.ret; step.note.push('サブプログラムから戻る'); }
+      else if(m===19||m===29||m===48||m===49||m===50||m===51) step.note.push(`M${m}（補助機能・無視）`);
+      else diag('info', blk.line, `M${m} は機種依存の補助機能です（無視）。`);
+    }
+    if(mainEnd) break;
+    // motion
+    const hasAxis = words.some(x=>'XYZ'.includes(x.l));
+    if(st.cycle){ if(hasAxis) doCycle(blk, words); steps.push(step); continue; }
+    if(hasAxis || (st.motion>=2 && st.motion<=3 && (w('I')||w('J')||w('R')))){
+      const {t} = target(words);
+      if(st.motion===0){ move(t,'rapid',null,blk); if(t.z < 0 && (st.z!==t.z)) {} }
+      else if(st.motion===1){ if(!st.f){ usedFeedWithoutF.add(blk.line); } if(st.spindle==='stop' && t.z<0) diag('warn', blk.line, '主軸が停止したまま切削しています（M03 が必要）。'); move(t,'feed',null,blk); }
+      else {
+        if(!st.f) usedFeedWithoutF.add(blk.line);
+        const cw = st.motion===2; const from={x:st.x,y:st.y,z:st.z};
+        let cx, cy, r;
+        if(w('R')){ r=Math.abs(w('R').v); const dx=t.x-from.x, dy=t.y-from.y, d=Math.hypot(dx,dy); if(d<1e-9){ diag('error', blk.line, 'R 指定の円弧は始点と終点が同じでは描けません（全円は I/J で）。'); steps.push(step); continue; } if(d/2 > r+1e-6){ diag('error', blk.line, `R${r} は始点〜終点の距離 ${fmt(d,2)} の半分より小さく、円弧が作れません。`); steps.push(step); continue; } const h=Math.sqrt(Math.max(0,r*r-(d/2)*(d/2))); const mx=(from.x+t.x)/2, my=(from.y+t.y)/2; const s = (cw ? 1 : -1) * (w('R').v<0 ? -1 : 1); cx = mx + s*h*(dy/d) ; cy = my - s*h*(dx/d); }
+        else if(w('I')||w('J')){ cx = from.x + (w('I')?w('I').v:0); cy = from.y + (w('J')?w('J').v:0); r = Math.hypot(from.x-cx, from.y-cy); const r2 = Math.hypot(t.x-cx, t.y-cy); if(Math.abs(r-r2) > 0.01) diag('warn', blk.line, `円弧の始点半径 ${fmt(r,3)} と終点半径 ${fmt(r2,3)} が一致しません（I/J か終点を確認）。`); }
+        else { diag('error', blk.line, '円弧補間には I/J（中心の相対位置）または R が必要です。'); steps.push(step); continue; }
+        let a0 = Math.atan2(from.y-cy, from.x-cx), a1 = Math.atan2(t.y-cy, t.x-cx);
+        let sweep = cw ? (a0 - a1) : (a1 - a0); sweep = ((sweep % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
+        if(sweep < 1e-9 && Math.hypot(t.x-from.x,t.y-from.y) < 1e-9) sweep = 2*Math.PI;
+        const arcLen = Math.hypot(r*sweep, t.z-from.z);
+        move(t,'arc',{cx,cy,r,a0,a1,cw,sweep,arcLen},blk);
+        if(Math.abs(t.z-from.z)>1e-9) step.note.push('ヘリカル補間（円弧＋Z）');
+      }
+      if(t.z < 0 && st.lcomp===49 && !g43SinceTool) diag('warn', blk.line, '工具長補正（G43 H）なしで Z を下げています。実機では衝突の恐れがあります。');
+      if(st.motion===0 && t.z < st.z - 1e-9 && (t.x!==segs[segs.length-1].from.x || t.y!==segs[segs.length-1].from.y) && t.z<5) diag('info', blk.line, '早送りで Z と XY を同時に動かしています。実機は軸ごとに動くため斜めに進み、干渉に注意。');
+    }
+    steps.push(step);
+  }
+  if(guard>=20000) diag('error', blocks.length-1, '実行ブロック数が上限を超えました（無限ループ？）。');
+  if(!st.ended) diag('warn', blocks.length?blocks.length-1:0, 'M30（プログラム終了）がありません。');
+  for(const l of usedFeedWithoutF) diag('error', l, '切削送り（G01/G02/G03/固定サイクル）なのに F が指定されていません。');
+  const opened = segs.filter(s=>s.kind!=='rapid').length===0 && holes.length===0;
+  if(opened && blocks.some(b=>b.words.length)) diag('info', 0, '切削移動がありません（早送りのみ）。');
+  return {segs, holes, diags, steps, blocks, total:{time:st.time, cutLen:st.cutLen}};
+}
+
+// ================= explanations =================
+const G_DESC = {0:'位置決め（早送り）',1:'直線補間（切削送り）',2:'円弧補間 時計回り',3:'円弧補間 反時計回り',4:'ドウェル',17:'XY 平面',18:'ZX 平面',19:'YZ 平面',20:'インチ入力',21:'mm 入力',28:'原点復帰',40:'径補正キャンセル',41:'径補正 左',42:'径補正 右',43:'工具長補正 +',44:'工具長補正 −',49:'工具長補正キャンセル',52:'ローカル座標系',53:'機械座標系',54:'ワーク座標系 1',55:'ワーク座標系 2',56:'ワーク座標系 3',57:'ワーク座標系 4',58:'ワーク座標系 5',59:'ワーク座標系 6',73:'高速ペックドリル',76:'ファインボーリング',80:'固定サイクルキャンセル',81:'ドリルサイクル',82:'座ぐりサイクル（ドウェル付）',83:'ペックドリルサイクル',84:'タップサイクル',85:'ボーリングサイクル（送り戻り）',86:'ボーリングサイクル',89:'ボーリングサイクル（ドウェル・送り戻り）',90:'アブソリュート指令',91:'インクリメンタル指令',92:'座標系設定',94:'毎分送り',95:'毎回転送り',98:'イニシャル点復帰',99:'R 点復帰'};
+const M_DESC = {0:'プログラム停止',1:'オプショナルストップ',2:'プログラム終了',3:'主軸正転',4:'主軸逆転',5:'主軸停止',6:'工具交換',7:'ミストクーラント ON',8:'クーラント ON',9:'クーラント OFF',19:'主軸オリエンテーション',29:'リジッドタップモード',30:'プログラム終了・先頭復帰',98:'サブプログラム呼び出し',99:'サブプログラム終了（戻り）'};
+function explainBlock(blk, step, stBefore){
+  const parts = [];
+  const gs = blk.words.filter(w=>w.l==='G'); const ms = blk.words.filter(w=>w.l==='M');
+  for(const g of gs) parts.push(`<b>G${g.v}</b> ${G_DESC[g.v]||'（未対応）'}`);
+  for(const m of ms) parts.push(`<b>M${m.v}</b> ${M_DESC[m.v]||'補助機能'}`);
+  const ax = blk.words.filter(w=>'XYZ'.includes(w.l)).map(w=>`${w.l}${w.v}`).join(' ');
+  if(ax) parts.push(`目標 <b>${ax}</b>（${stBefore.abs?'絶対座標':'現在位置からの増分'}）`);
+  const ij = blk.words.filter(w=>'IJKR'.includes(w.l)).map(w=>`${w.l}${w.v}`).join(' '); if(ij) parts.push(`円弧 <b>${ij}</b>（I/J は始点から中心までの距離）`);
+  for(const w of blk.words){ if(w.l==='F') parts.push(`送り <b>F${w.v}</b> ${stBefore.feedmode===95?'mm/rev':'mm/min'}`); if(w.l==='S') parts.push(`主軸 <b>S${w.v}</b> min⁻¹`); if(w.l==='T') parts.push(`工具 <b>T${w.v}</b> を次の M06 で交換`); if(w.l==='H') parts.push(`工具長補正番号 <b>H${w.v}</b>`); if(w.l==='D') parts.push(`工具径補正番号 <b>D${w.v}</b>`); if(w.l==='P') parts.push(`P${w.v}`); if(w.l==='Q') parts.push(`1 回の切込み <b>Q${w.v}</b>`); if(w.l==='N') parts.unshift(`シーケンス番号 N${w.v}`); }
+  if(blk.comments.length) parts.push(`コメント: ${blk.comments.join(' / ')}`);
+  if(step && step.note.length) parts.push(...step.note.map(n=>`<span style="color:var(--chip)">${n}</span>`));
+  if(step && step.pause) parts.push(`<span style="color:var(--crit)">${step.pause} — ここで機械が止まります（M01 はオプショナルストップ ON のとき）</span>`);
+  if(!gs.length && !ms.length && ax) parts.unshift(`（G コード省略：直前のモーダル <b>G${stBefore.motion}</b> が続く）`);
+  return parts.length ? parts.join('　') : '（空行またはコメントのみ）';
+}
+
+// ================= samples =================
+const SAMPLES = [
+ {name:'01 基本形（外形を四角く削る）', code:`O0001 (SAMPLE PLATE 100x60)
+G17 G21 G40 G49 G54 G80 G90 (安全ライン)
+G91 G28 Z0
+T01 M06 (D10 ENDMILL)
+S4800 M03
+G90 G00 X-15. Y-15.
+G43 Z50. H01 M08
+Z2.
+G01 Z-5. F300
+G41 D01 X0. F960
+Y60.
+X100.
+Y0.
+X-5.
+G40 G00 Z50. M09
+M05
+G91 G28 Z0
+M30`},
+ {name:'02 直線と円弧（G01/G02/G03）', code:`O0002 (LINE AND ARC)
+G17 G21 G40 G49 G54 G80 G90
+T01 M06
+S4000 M03
+G00 X0 Y0
+G43 Z5. H01 M08
+G01 Z-3. F200
+X60. F600
+G02 X80. Y20. R20. (R指定の円弧)
+G01 Y40.
+G03 X60. Y60. I-20. J0 (I/J指定の円弧)
+G01 X0
+Y0
+G00 Z50. M09
+M05
+G91 G28 Z0
+M30`},
+ {name:'03 固定サイクル（G81/G83）で穴あけ', code:`O0003 (DRILL PATTERN)
+G17 G21 G40 G49 G54 G80 G90
+T02 M06 (D8.5 DRILL)
+S2500 M03
+G00 X20. Y20.
+G43 Z30. H02 M08
+G99 G81 Z-15. R3. F250
+X80.
+Y40.
+X20.
+G98 G83 X50. Y30. Z-30. R3. Q4. F200 (深穴はペック)
+G80
+G00 Z50. M09
+M05
+G91 G28 Z0
+M30`},
+ {name:'04 インクリメンタル（G91）で階段', code:`O0004 (STAIRS G91)
+G17 G21 G40 G49 G54 G80 G90
+T01 M06
+S5000 M03
+G00 X0 Y10.
+G43 Z5. H01 M08
+G01 Z0 F300
+G91 (ここから増分)
+G01 X20. Z-2. F400
+X20. Z-2.
+X20. Z-2.
+X20. Z-2.
+G90 (絶対に戻す)
+G00 Z50. M09
+M05
+G91 G28 Z0
+M30`},
+ {name:'05 サブプログラム（M98/M99）で穴パターン', code:`O0005 (MAIN)
+G17 G21 G40 G49 G54 G80 G90
+T02 M06
+S3000 M03
+G00 X0 Y0
+G43 Z30. H02 M08
+G99 G81 Z-10. R3. F300
+G91 (増分でパターン)
+M98 P0100 L4
+G90 G80
+G00 Z50. M09
+M05
+G91 G28 Z0
+M30
+
+O0100 (SUB: 20MM PITCH)
+X20.
+M99`},
+ {name:'06 ヘリカル補間で穴を掘る', code:`O0006 (HELICAL)
+G17 G21 G40 G49 G54 G80 G90
+T01 M06 (D10 ENDMILL)
+S5000 M03
+G00 X50. Y30.
+G43 Z5. H01 M08
+G01 X58. F600 (半径8で回る=穴径26)
+G01 Z0 F300
+G03 X58. Y30. I-8. J0 Z-2. F400
+G03 X58. Y30. I-8. J0 Z-4.
+G03 X58. Y30. I-8. J0 Z-6.
+G03 X58. Y30. I-8. J0 Z-6. (底をさらう)
+G01 X50.
+G00 Z50. M09
+M05
+G91 G28 Z0
+M30`},
+ {name:'07 わざと間違えたプログラム（診断を見る）', code:`O0007 (BUGGY)
+G17 G21 G40 G54 G80 G90
+T01 M06
+S4000 M03
+G00 X0 Y0
+Z2. (G43が無い!)
+G01 Z-5. (Fが無い!)
+G02 X40. Y0 (I/JもRも無い!)
+G41 D01 G02 X60. Y20. R20. (円弧で径補正立ち上げ)
+G90 G28 Z0 (G90のままG28)
+M05`},
+];
+
+// ================= renderer =================
+let SIM = null, cursor = 0, playing = false, timer = null, partial = null;
+function fit(c){ const dpr=window.devicePixelRatio||1; const w=c.clientWidth||600, h=+c.getAttribute('height'); if(c.width!==Math.round(w*dpr)||c.height!==Math.round(h*dpr)){ c.width=Math.round(w*dpr); c.height=Math.round(h*dpr);} const g=c.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0); return {g,w,h}; }
+function bounds(){
+  const sx=+$('stockX').value||100, sy=+$('stockY').value||60;
+  let minX=0,maxX=sx,minY=0,maxY=sy,minZ=-5,maxZ=HOME_Z;
+  if(SIM){ for(const s of SIM.segs){ for(const p of [s.from,s.to]){ minX=Math.min(minX,p.x);maxX=Math.max(maxX,p.x);minY=Math.min(minY,p.y);maxY=Math.max(maxY,p.y);minZ=Math.min(minZ,p.z);maxZ=Math.max(maxZ,p.z);} if(s.kind==='arc'){ minX=Math.min(minX,s.cx-s.r);maxX=Math.max(maxX,s.cx+s.r);minY=Math.min(minY,s.cy-s.r);maxY=Math.max(maxY,s.cy+s.r);} } }
+  return {minX,maxX,minY,maxY,minZ,maxZ,sx,sy};
+}
+function drawTop(){
+  const c=$('top'); const {g,w,h}=fit(c); g.clearRect(0,0,w,h);
+  const b=bounds(); const pad=36; const sc=Math.min((w-2*pad)/Math.max(1,b.maxX-b.minX), (h-2*pad)/Math.max(1,b.maxY-b.minY));
+  const ox = pad + ((w-2*pad) - (b.maxX-b.minX)*sc)/2 - b.minX*sc, oy = h - pad - ((h-2*pad) - (b.maxY-b.minY)*sc)/2 + b.minY*sc;
+  const P=(x,y)=>[ox+x*sc, oy-y*sc];
+  // grid
+  g.strokeStyle=css('--rule'); g.lineWidth=1; const step = sc>6?10:sc>2.5?20:50;
+  for(let x=Math.floor(b.minX/step)*step; x<=b.maxX; x+=step){ const [px]=P(x,0); g.beginPath(); g.moveTo(px,0); g.lineTo(px,h); g.globalAlpha=0.5; g.stroke(); g.globalAlpha=1; }
+  for(let y=Math.floor(b.minY/step)*step; y<=b.maxY; y+=step){ const [,py]=P(0,y); g.beginPath(); g.moveTo(0,py); g.lineTo(w,py); g.globalAlpha=0.5; g.stroke(); g.globalAlpha=1; }
+  // stock
+  const [sx0,sy0]=P(0,b.sy); g.fillStyle=css('--work'); g.strokeStyle=css('--work-edge'); g.lineWidth=1.5; g.fillRect(sx0,sy0,b.sx*sc,b.sy*sc); g.strokeRect(sx0,sy0,b.sx*sc,b.sy*sc);
+  // axes
+  const [ax,ay]=P(0,0); g.strokeStyle=css('--good'); g.lineWidth=2; g.beginPath(); g.moveTo(ax,ay); g.lineTo(ax+30,ay); g.stroke(); g.beginPath(); g.moveTo(ax,ay); g.lineTo(ax,ay-30); g.stroke();
+  g.fillStyle=css('--good'); g.font='11px "IBM Plex Mono",monospace'; g.fillText('X',ax+33,ay+4); g.fillText('Y',ax-4,ay-34); g.fillStyle=css('--muted'); g.fillText('G54 原点',ax+4,ay+14);
+  if(!SIM) return;
+  const n = playing||partial ? cursor : SIM.segs.length;
+  const feed=css('--feed'), feedz=css('--feedz'), rapid=css('--rapid');
+  for(let i=0;i<SIM.segs.length;i++){
+    const s=SIM.segs[i]; if(i>=n && !(partial && i===n)) break;
+    let frac = (partial && i===n) ? partial.frac : 1;
+    g.lineWidth = s.kind==='rapid'?1:2; g.setLineDash(s.kind==='rapid'?[4,4]:[]);
+    g.strokeStyle = s.kind==='rapid'? rapid : (Math.min(s.from.z,s.to.z)<0 ? feedz : feed);
+    g.beginPath();
+    if(s.kind==='arc'){ const a1 = s.a0 + (s.cw?-1:1)*s.sweep*frac; const [cx,cy]=P(s.cx,s.cy); g.arc(cx,cy,s.r*sc, -s.a0, -a1, !s.cw); }
+    else { const [x0,y0]=P(s.from.x,s.from.y); const [x1,y1]=P(s.from.x+(s.to.x-s.from.x)*frac, s.from.y+(s.to.y-s.from.y)*frac); g.moveTo(x0,y0); g.lineTo(x1,y1); }
+    g.stroke();
+  }
+  g.setLineDash([]);
+  // holes
+  const holeC=css('--hole'); const done = new Set();
+  for(const hl of SIM.holes){ const segIdx = SIM.segs.findIndex(s=>s.line===hl.line && s.cycle && Math.abs(s.to.x-hl.x)<1e-6 && Math.abs(s.to.y-hl.y)<1e-6 && Math.abs(s.to.z-hl.z)<1e-6); if(segIdx>=0 && segIdx>=n) continue; const [hx,hy]=P(hl.x,hl.y); g.strokeStyle=holeC; g.lineWidth=2; g.beginPath(); g.arc(hx,hy,Math.max(4,2.5*sc),0,6.29); g.stroke(); g.fillStyle=css('--muted'); g.font='10px "IBM Plex Mono",monospace'; g.fillText(`Z${hl.z}`,hx+Math.max(5,2.5*sc)+2,hy+3); }
+  // tool
+  const pos = currentPos(); const [tx,ty]=P(pos.x,pos.y); g.fillStyle=pos.z<0?feedz:css('--steel'); g.beginPath(); g.arc(tx,ty,6,0,6.29); g.fill(); g.strokeStyle='#fff'; g.lineWidth=1.5; g.stroke();
+  g.fillStyle=css('--muted'); g.font='11px "IBM Plex Mono",monospace'; g.fillText(`Z${fmt(pos.z,1)}`,tx+9,ty-8);
+}
+function drawSide(){
+  const c=$('side'); const {g,w,h}=fit(c); g.clearRect(0,0,w,h);
+  const b=bounds(); const pad=30; const scx=(w-2*pad)/Math.max(1,b.maxX-b.minX); const scz=(h-2*pad)/Math.max(1,b.maxZ-b.minZ); const sc=Math.min(scx,scz*3);
+  const ox=pad-b.minX*scx; const zTop = pad + (b.maxZ)*scz; const Z=z=>zTop - z*scz + 0; const X=x=>ox+x*scx;
+  // stock
+  g.fillStyle=css('--work'); g.strokeStyle=css('--work-edge'); g.lineWidth=1.5; g.fillRect(X(0), Z(0), b.sx*scx, Math.min(h-Z(0)-4, 25*scz+10)); g.strokeRect(X(0), Z(0), b.sx*scx, Math.min(h-Z(0)-4, 25*scz+10));
+  g.strokeStyle=css('--rule'); g.beginPath(); g.moveTo(0,Z(0)); g.lineTo(w,Z(0)); g.stroke(); g.fillStyle=css('--muted'); g.font='10px "IBM Plex Mono",monospace'; g.fillText('Z0',4,Z(0)-3); g.fillText(`Z${HOME_Z}`,4,Z(HOME_Z)+10);
+  if(!SIM) return;
+  const n = playing||partial ? cursor : SIM.segs.length;
+  for(let i=0;i<SIM.segs.length;i++){ const s=SIM.segs[i]; if(i>=n && !(partial && i===n)) break; const frac=(partial&&i===n)?partial.frac:1;
+    g.lineWidth=s.kind==='rapid'?1:2; g.setLineDash(s.kind==='rapid'?[4,4]:[]); g.strokeStyle=s.kind==='rapid'?css('--rapid'):(Math.min(s.from.z,s.to.z)<0?css('--feedz'):css('--feed'));
+    g.beginPath(); if(s.kind==='arc'){ const N=16; for(let k=0;k<=N;k++){ const t=k/N*frac; const a=s.a0+(s.cw?-1:1)*s.sweep*t; const x=s.cx+s.r*Math.cos(a), z=s.from.z+(s.to.z-s.from.z)*t; k?g.lineTo(X(x),Z(z)):g.moveTo(X(x),Z(z)); } } else { g.moveTo(X(s.from.x),Z(s.from.z)); g.lineTo(X(s.from.x+(s.to.x-s.from.x)*frac),Z(s.from.z+(s.to.z-s.from.z)*frac)); } g.stroke(); }
+  g.setLineDash([]);
+  const pos=currentPos(); g.fillStyle=pos.z<0?css('--feedz'):css('--steel'); g.beginPath(); g.arc(X(pos.x),Z(pos.z),5,0,6.29); g.fill();
+}
+function currentPos(){
+  if(!SIM || !SIM.segs.length) return {x:0,y:0,z:HOME_Z};
+  const n = playing||partial ? cursor : SIM.segs.length;
+  if(partial){ const s=SIM.segs[n]; if(s){ const f=partial.frac; if(s.kind==='arc'){ const a=s.a0+(s.cw?-1:1)*s.sweep*f; return {x:s.cx+s.r*Math.cos(a), y:s.cy+s.r*Math.sin(a), z:s.from.z+(s.to.z-s.from.z)*f}; } return {x:s.from.x+(s.to.x-s.from.x)*f, y:s.from.y+(s.to.y-s.from.y)*f, z:s.from.z+(s.to.z-s.from.z)*f}; } }
+  const idx=Math.min(n, SIM.segs.length)-1; if(idx<0) return {x:0,y:0,z:HOME_Z}; const s=SIM.segs[idx]; return {...s.to};
+}
+
+// ================= state replay for panel (replay modal state up to a line) =================
+function stateAtSeg(n){
+  // re-run lightweight modal tracking up to seg index n by scanning executed lines in order
+  const lines = []; for(let i=0;i<Math.min(n, SIM.segs.length);i++) lines.push(SIM.segs[i].line);
+  const last = lines.length ? lines[lines.length-1] : -1;
+  const st={motion:0,plane:17,abs:true,units:21,feedmode:94,wcs:54,comp:40,lcomp:49,ret:98,cycle:null,f:null,s:null,t:null,h:null,d:null,spindle:'stop',coolant:false};
+  const order = []; const seen=new Set();
+  for(const s of SIM.steps){ order.push(s.line); }
+  for(const ln of order){ if(last>=0 && ln>last && !lines.includes(ln)) { if(ln>last) break; } const blk=SIM.blocks[ln]; if(!blk) continue; for(const w of blk.words){ if(w.l==='G'){ const g=w.v; if([0,1,2,3].includes(g)){st.motion=g;st.cycle=null;} else if([17,18,19].includes(g)) st.plane=g; else if(g===20||g===21) st.units=g; else if(g===90) st.abs=true; else if(g===91) st.abs=false; else if(g===94||g===95) st.feedmode=g; else if(g>=54&&g<=59) st.wcs=g; else if([40,41,42].includes(g)) st.comp=g; else if(g===43||g===44) st.lcomp=g; else if(g===49) st.lcomp=49; else if(g===98||g===99) st.ret=g; else if(g===80){st.cycle=null;st.motion=0;} else if([81,82,83,73,84,85,86,89,76].includes(g)){st.cycle=g;st.motion=g;} }
+    else if(w.l==='M'){ const m=w.v; if(m===3)st.spindle='cw'; else if(m===4)st.spindle='ccw'; else if(m===5)st.spindle='stop'; else if(m===8||m===7)st.coolant=true; else if(m===9)st.coolant=false; else if(m===6){st.lcomp=49;} }
+    else if(w.l==='F')st.f=w.v; else if(w.l==='S')st.s=w.v; else if(w.l==='T')st.t=w.v; else if(w.l==='H')st.h=w.v; else if(w.l==='D')st.d=w.v; }
+    if(ln===last) break; }
+  return st;
+}
+function renderPanel(){
+  const pos=currentPos(); $('pX').textContent=fmt(pos.x); $('pY').textContent=fmt(pos.y); $('pZ').textContent=fmt(pos.z);
+  if(!SIM){ $('modal').innerHTML=''; return; }
+  const n = playing||partial ? cursor+(partial?1:0) : SIM.segs.length;
+  const st = stateAtSeg(n);
+  const chips = [[`G${st.motion<10?'0':''}${st.motion}`, true, G_DESC[st.motion]],[`G${st.plane}`,st.plane!==17],[`G${st.units}`,st.units!==21],[st.abs?'G90':'G91',!st.abs],[`G${st.wcs}`,false],[`G${st.comp}`,st.comp!==40],[`G${st.lcomp}`,st.lcomp!==49],[`G${st.feedmode}`,st.feedmode!==94],[`G${st.ret}`,st.ret!==98]];
+  $('modal').innerHTML = chips.map(([c,hot,t])=>`<span class="chip ${hot?'hot':'on'}" title="${t||G_DESC[+c.slice(1)]||''}">${c}</span>`).join('');
+  $('sF').textContent = st.f!=null? `${st.f} ${st.feedmode===95?'mm/rev':'mm/min'}` : '—'; $('sS').textContent = st.s!=null? `${st.s} min⁻¹`:'—'; $('sT').textContent = `T${st.t??'-'} / H${st.h??'-'} / D${st.d??'-'}`;
+  $('sM').textContent = `${st.spindle==='cw'?'正転':st.spindle==='ccw'?'逆転':'停止'}・クーラント ${st.coolant?'ON':'OFF'}`;
+}
+function renderDiag(){
+  const ul=$('diag'); ul.innerHTML='';
+  if(!SIM) return;
+  const order={error:0,warn:1,info:2}; const list=[...SIM.diags].sort((a,b)=>order[a.level]-order[b.level]||a.line-b.line);
+  $('diagCount').textContent = list.length? `エラー ${list.filter(d=>d.level==='error').length}・注意 ${list.filter(d=>d.level==='warn').length}` : '問題なし ✓';
+  for(const d of list){ const li=document.createElement('li'); li.className=d.level; li.innerHTML=`<b>L${d.line+1}</b>${d.msg}`; li.addEventListener('click',()=>{ gotoLine(d.line); }); ul.appendChild(li); }
+}
+function renderHighlight(curLine){
+  const text=$('code').value; const lines=text.split('\n'); const errs=new Map(); if(SIM) for(const d of SIM.diags){ if(d.level==='info') continue; const cur=errs.get(d.line); if(!cur||d.level==='error') errs.set(d.line,d.level); }
+  $('hl').innerHTML = lines.map((l,i)=>`<span class="ln${i===curLine?' cur':''}${errs.get(i)==='error'?' err':errs.get(i)==='warn'?' warnl':''}">${escapeHtml(l)||' '}</span>`).join('') + '<span class="ln"> </span>';
+  $('hl').scrollTop=$('code').scrollTop; $('hl').scrollLeft=$('code').scrollLeft;
+}
+function escapeHtml(s){ return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]); }
+function gotoLine(line){ const ta=$('code'); const lines=ta.value.split('\n'); let pos=0; for(let i=0;i<line;i++) pos+=lines[i].length+1; ta.focus(); ta.setSelectionRange(pos,pos+(lines[line]||'').length); const lh=parseFloat(getComputedStyle(ta).lineHeight)||20; ta.scrollTop=Math.max(0,line*lh-ta.clientHeight/2); renderHighlight(line); }
+
+// ================= playback =================
+function compile(){ SIM = simulate($('code').value); cursor=0; partial=null; renderDiag(); renderHighlight(-1); $('ttime').textContent=`推定時間 ${fmtTime(SIM.total.time)}`; $('tlen').textContent=`切削距離 ${fmt(SIM.total.cutLen,0)} mm`; save(); }
+function fmtTime(s){ if(!isFinite(s)) return '—'; const m=Math.floor(s/60); return m? `${m} 分 ${Math.round(s%60)} 秒` : `${s.toFixed(1)} 秒`; }
+function setStatus(t){ $('status').textContent=t; }
+function showStep(segIdx){
+  if(!SIM) return; const s=SIM.segs[Math.min(segIdx,SIM.segs.length-1)]; if(!s){ $('tline').textContent='—'; return; }
+  const blk=SIM.blocks[s.line]; const step=SIM.steps.find(x=>x.line===s.line); const stB=stateAtSeg(segIdx);
+  $('tline').textContent=`L${s.line+1}: ${blk.raw.trim()}`; $('explain').innerHTML=explainBlock(blk, step, stB); renderHighlight(s.line);
+}
+function stepOnce(){
+  if(!SIM) compile();
+  if(!SIM.segs.length){ setStatus('切削移動なし'); return; }
+  if(cursor>=SIM.segs.length){ cursor=0; }
+  // advance to the next block boundary
+  const line=SIM.segs[cursor].line; let n=cursor; while(n<SIM.segs.length && SIM.segs[n].line===line) n++;
+  showStep(cursor); cursor=n; partial=null; playing=false; setStatus(cursor>=SIM.segs.length?'終了（1 ブロックで先頭へ）':'ステップ中');
+  drawAll();
+}
+function play(){
+  if(!SIM) compile(); if(!SIM.segs.length){ setStatus('切削移動なし'); drawAll(); return; }
+  const sp=+$('speed').value; if(sp===0){ cursor=SIM.segs.length; partial=null; playing=false; showStep(SIM.segs.length-1); setStatus('完了'); drawAll(); return; }
+  if(cursor>=SIM.segs.length){ cursor=0; }
+  playing=true; setStatus('実行中'); $('pause').disabled=false; let last=performance.now();
+  const seg=SIM.segs[cursor]; partial={frac:0}; showStep(cursor);
+  cancelAnimationFrame(timer);
+  const frame=(now)=>{ if(!playing) return; const dt=(now-last)/1000; last=now; const s=SIM.segs[cursor]; if(!s){ playing=false; partial=null; setStatus('完了'); drawAll(); return; }
+    const rate = s.kind==='rapid'? 200 : Math.max(20, (s.f||300)/60*2.5); // mm/s visual
+    const dur = Math.max(0.12, s.len/(rate*sp)); partial.frac += dt/dur;
+    if(partial.frac>=1){ cursor++; partial={frac:0}; if(cursor<SIM.segs.length){ if(SIM.segs[cursor].line!==s.line) showStep(cursor); const st=SIM.steps.find(x=>x.line===SIM.segs[cursor].line); } else { partial=null; playing=false; setStatus('完了'); showStep(SIM.segs.length-1); drawAll(); return; } }
+    drawAll(); timer=requestAnimationFrame(frame); };
+  timer=requestAnimationFrame(frame);
+}
+function pause(){ if(playing){ playing=false; setStatus('一時停止'); } }
+function stop(){ playing=false; cancelAnimationFrame(timer); cursor=0; partial=null; setStatus('停止'); renderHighlight(-1); $('tline').textContent='—'; $('explain').textContent='停止しました。「▶ 実行」で最初から、「⏭ 1 ブロック」でブロックごとに進めます。'; drawAll(); }
+function drawAll(){ drawTop(); drawSide(); renderPanel(); }
+
+// ================= lessons =================
+const LESSONS = [
+ {t:'G コードとは：プログラムの骨組み', body:`
+<p>G コードは NC 工作機械に「どこへ・どう動くか」を伝える言語です。1 行を <b>ブロック</b>、<code>G01</code> や <code>X100.</code> のような単位を <b>ワード</b>と呼びます。ワードは「アドレス（英字）＋数値」です。</p>
+<h4>ブロックの読み方</h4>
+<pre>N10 G01 X100. Y50. F800 ;  ← 直線で X100 Y50 へ、送り 800 mm/min</pre>
+<table><tr><th>アドレス</th><th>意味</th></tr><tr><td>O</td><td>プログラム番号</td></tr><tr><td>N</td><td>シーケンス番号（省略可。検索・ジャンプ用）</td></tr><tr><td>G</td><td>準備機能（動き方・座標系・補正など）</td></tr><tr><td>M</td><td>補助機能（主軸・クーラント・工具交換・停止）</td></tr><tr><td>X Y Z</td><td>座標。<b>小数点に注意</b>：多くの機械で <code>X100</code> は 0.1 mm、<code>X100.</code> が 100 mm（電卓型入力）</td></tr><tr><td>I J K / R</td><td>円弧の中心（始点からの相対距離）／半径</td></tr><tr><td>F / S / T</td><td>送り速度／主軸回転数／工具番号</td></tr><tr><td>H / D</td><td>工具長補正番号／工具径補正番号</td></tr><tr><td>P Q L</td><td>ドウェル時間・サブプログラム番号／ペック量／繰り返し回数</td></tr></table>
+<h4>モーダルという考え方</h4>
+<p>G01 や F800 は一度指定すると<b>次に変更するまで有効</b>です（モーダル）。だから 2 行目以降は <code>X50.</code> だけで直線切削が続きます。逆に言うと「前のプログラムの状態を引きずる」ので、冒頭に<b>セーフティライン</b>を書いて状態をリセットします。</p>
+<pre>G17 G21 G40 G49 G54 G80 G90
+(XY平面 mm 径補正OFF 長補正OFF ワーク座標1 サイクルOFF 絶対座標)</pre>
+<div class="note">シミュレータのサンプル「01 基本形」を読み込んで「⏭ 1 ブロック」で進めると、右の「モーダル状態」がどう変わるか見えます。</div>`, sample:0},
+ {t:'座標系：機械原点・ワーク原点・G54', body:`
+<p>機械には電源投入時に決まる<b>機械原点</b>があり、そこからの座標が<b>機械座標系</b>（G53）です。しかしプログラムはワークの角や穴中心を原点にした<b>ワーク座標系</b>（G54〜G59）で書きます。段取りのたびに「機械原点からワーク原点までの距離」を G54 に登録するのが<b>原点出し</b>です。</p>
+<h4>アブソリュート G90 とインクリメンタル G91</h4>
+<table><tr><th></th><th>G90（絶対）</th><th>G91（増分）</th></tr><tr><td>X50. の意味</td><td>ワーク原点から X=50 の位置へ</td><td>今の位置から X 方向に +50 動く</td></tr><tr><td>向いている用途</td><td>ほとんどの加工。図面の寸法をそのまま書ける</td><td>同じ形の繰り返し（サブプログラム）、原点復帰 G28</td></tr><tr><td>事故例</td><td>—</td><td>G91 のまま次のプログラムに入り、意図しない位置へ突っ込む</td></tr></table>
+<h4>原点復帰 G28</h4>
+<p><code>G28</code> は「指定した中間点を経由して機械原点へ」。<code>G90 G28 Z0</code> だと <b>ワーク Z0（ワーク上面）を経由してから</b>上に戻るので危険です。必ず <code>G91 G28 Z0</code>（今の位置を中間点＝そのまま真上へ）にします。</p>
+<div class="note">サンプル「04 インクリメンタルで階段」で G91 の動きを、「07 わざと間違えた」で G90 G28 の警告を確認してみましょう。</div>`, sample:3},
+ {t:'位置決め G00 と直線補間 G01', body:`
+<p><b>G00</b> は早送りの位置決め。速度は機械の最高速で、<b>直線を描かず軸ごとに動く</b>ため、Z と XY を同時に指令すると斜めに進んで治具に当たることがあります。安全な手順は「XY を先に位置決め → Z を下げる」「退避は Z を先に上げる」です。</p>
+<p><b>G01</b> は指定した送り速度 F で直線に動く切削送り。F は「mm/min」（G94、マシニングの標準）か「mm/rev」（G95、旋盤や毎回転送りで使う）。</p>
+<pre>G00 X-15. Y-15.      (ワークの外で XY 位置決め)
+G43 Z50. H01         (工具長補正をかけて安全高さへ)
+Z2.                  (アプローチ高さ)
+G01 Z-5. F300        (切込み：Z 方向はゆっくり)
+X100. F960           (切削送り)</pre>
+<h4>送り速度の決め方</h4>
+<p>Vf = fz × z × n。φ10・4 枚刃・4,800 min⁻¹・fz 0.05 なら 960 mm/min。Z 切込みは XY の 1/3〜1/2 程度に落とすのが一般的です。</p>
+<div class="note">G00 を切削に使ってはいけません。工具も機械も壊れます。</div>`, sample:0},
+ {t:'円弧補間 G02／G03（I J と R）', body:`
+<p><b>G02</b> は時計回り、<b>G03</b> は反時計回り（Z 軸のプラス側＝上から見て）。終点に加えて円弧の中心を <b>I, J</b>（始点から中心までの X, Y 距離）か <b>半径 R</b> で指定します。</p>
+<pre>G01 X60. Y0
+G02 X80. Y20. R20.        (R 指定：90° の円弧)
+G03 X60. Y60. I-20. J0    (I/J 指定：中心は始点から X-20)</pre>
+<h4>I J と R の使い分け</h4>
+<table><tr><th></th><th>I J</th><th>R</th></tr><tr><td>全円（始点＝終点）</td><td>○ 描ける</td><td>× 描けない（アラーム）</td></tr><tr><td>180° を超える円弧</td><td>○</td><td>R をマイナスにする</td></tr><tr><td>間違いの検出</td><td>始点半径と終点半径が合わないとアラーム</td><td>R が弦の半分より小さいとアラーム</td></tr><tr><td>CAM 出力</td><td>一般的（I J が多い）</td><td>手打ちで楽</td></tr></table>
+<h4>ヘリカル補間</h4>
+<p>円弧に Z を加えると<b>らせん</b>になり、下穴なしで穴を掘る「ヘリカル進入」ができます。ヘリカル径は工具径の 1.2 倍以上にして、中心に削り残しが立たないようにします。</p>
+<div class="note">サンプル「02 直線と円弧」と「06 ヘリカル補間」を読み込んで、側面図（XZ）で Z の動きを見てください。</div>`, sample:1},
+ {t:'工具長補正 G43 H と工具交換', body:`
+<p>工具ごとに長さが違うので、プログラムは「ワーク上面 Z0」で書き、機械側の <b>H 番号</b>に工具長を登録して <code>G43 Z__ H__</code> で呼び出します。これで工具を替えてもプログラムは同じです。</p>
+<pre>T01 M06           (工具交換：T で選んで M06 で交換)
+S4800 M03         (主軸回転)
+G00 X-15. Y-15.   (XY 位置決め)
+G43 Z50. H01 M08  (Z の一発目は必ず G43 付き)</pre>
+<h4>衝突の定番</h4>
+<ul><li>G43 なしで Z を下げる → 工具長分だけ深く突っ込む</li><li>H 番号違い（前の工具の H が残る）→ 工具番号＝H 番号＝D 番号で統一</li><li>別の機械で測った H 値の流用</li><li>工具交換の前に Z を原点復帰していない</li></ul>
+<p>キャンセルは <code>G49</code>。工具交換（M06）で自動的にキャンセルされる機械が多いですが、明示的に書くのが安全です。</p>
+<div class="note">サンプル「07 わざと間違えた」で「G43 が無いまま Z を下げた」警告を出しています。</div>`, sample:6},
+ {t:'工具径補正 G41／G42 D', body:`
+<p>輪郭をそのままプログラムし、工具半径分のオフセットを機械に計算させるのが<b>工具径補正</b>です。<b>G41</b> は進行方向に向かって工具がワークの<b>左</b>、<b>G42</b> は右。外形を時計回りに回すと G41 でダウンカットになります。</p>
+<pre>G01 Z-5. F300
+G41 D01 X0. F960   (ワークから離れた場所で、直線ブロックで立ち上げ)
+Y60.
+X100.
+Y0.
+X-5.
+G40 G00 Z50.        (解除)</pre>
+<h4>ルール</h4>
+<ul><li>立ち上げ・解除は<b>直線ブロック</b>で、ワークから離れた位置で行う（円弧ブロックはアラーム）</li><li>補正量より小さい円弧・段差があると「補正干渉」アラーム</li><li>仕上げ寸法の追い込みは D 値を変えるだけ（0.02 大きい → D を +0.01）</li><li>CAM は工具中心経路を出すのが普通（補正なし）。追い込みたい場合は「摩耗補正」出力</li></ul>
+<div class="note">このトレーナーは径補正のオフセット経路までは描きません（入力した輪郭をそのまま表示）。立ち上げ位置・ブロック種別のチェックだけ行います。</div>`, sample:0},
+ {t:'固定サイクル G81〜G89（穴あけ）', body:`
+<p>穴あけは「位置決め → R 点まで早送り → 穴底まで切削 → 戻り」の繰り返し。これを 1 ブロックで書けるのが<b>固定サイクル</b>です。一度指令すると、次の XY だけのブロックでも同じ穴があきます（モーダル）。<code>G80</code> で解除。</p>
+<pre>G99 G81 Z-15. R3. F250   (R点3 から Z-15 まで、R点に戻る)
+X80.                     (同じ穴を X80 に)
+Y40.
+G98 G83 X50. Y30. Z-30. R3. Q4. F200  (ペック 4mm ずつ、イニシャル点に戻る)
+G80</pre>
+<table><tr><th>コード</th><th>用途</th><th>動き</th></tr><tr><td>G81</td><td>浅穴ドリル</td><td>切削 → 早送り戻り</td></tr><tr><td>G82</td><td>座ぐり</td><td>底で P ドウェル</td></tr><tr><td>G83</td><td>深穴（3D 超）</td><td>Q ずつ切込み、R 点まで戻って切りくず排出</td></tr><tr><td>G73</td><td>高速ペック</td><td>Q ずつ切込み、少しだけ戻る</td></tr><tr><td>G84</td><td>タップ</td><td>正転で切込み、逆転で戻る。F＝ピッチ×S</td></tr><tr><td>G85</td><td>リーマ・ボーリング</td><td>切削送りで戻る</td></tr></table>
+<h4>G98 と G99</h4>
+<p><b>G99</b> は R 点戻り（穴の間が平らなら速い）、<b>G98</b> はイニシャル点（サイクル開始時の Z）戻り。クランプや段差をまたぐときは G98 にしないと当たります。R 点はワーク面から 2〜5 mm 上。</p>
+<div class="note">サンプル「03 固定サイクル」を「⏭ 1 ブロック」で進めて、側面図で R 点・穴底・戻り点の動きを見てください。</div>`, sample:2},
+ {t:'サブプログラム M98／M99 と繰り返し', body:`
+<p>同じ穴パターン・同じ輪郭を何度も使うときは<b>サブプログラム</b>にします。<code>M98 P0100 L4</code> で O0100 を 4 回呼び出し、サブ側は <code>M99</code> で戻ります。</p>
+<pre>O0005 (MAIN)
+...
+G99 G81 Z-10. R3. F300
+G91                (増分にしてから)
+M98 P0100 L4       (20mm ピッチで 4 穴)
+G90 G80
+...
+M30
+
+O0100 (SUB)
+X20.
+M99</pre>
+<h4>ポイント</h4>
+<ul><li>増分（G91）と組み合わせると「ずらしながら繰り返す」が書ける。戻したら必ず G90</li><li>P の書式は機種で違う：<code>P0100 L4</code>（Fanuc 一般）、<code>P40100</code>（回数 4＋番号 0100）</li><li>サブの中で M30 を書くとそこで全部終わる。戻りは M99</li><li>多数個取りは G54〜G59 や G52 で座標をずらして同じサブを呼ぶ</li></ul>
+<div class="note">サンプル「05 サブプログラム」を読み込むと、同じテキスト内の O0100 が呼ばれる様子が見えます。</div>`, sample:4},
+ {t:'安全なプログラムの型と初品の手順', body:`
+<h4>工具ごとの決まった型</h4>
+<pre>T01 M06 (D10 ENDMILL)     ← 工具交換（コメントで工具名）
+S4800 M03                 ← 主軸
+G90 G00 X-15. Y-15.       ← XY 位置決め（ワークの外）
+G43 Z50. H01 M08          ← G43 付きで安全高さ、クーラント
+Z2.                       ← アプローチ
+G01 Z-5. F300             ← 切込み
+...                       ← 切削
+G00 Z50. M09              ← Z を先に退避
+M05
+G91 G28 Z0                ← Z を原点復帰（XY と同時にしない）
+M01                       ← 工具ごとに止められる</pre>
+<h4>初品の手順</h4>
+<ol><li>プログラムチェック（グラフィック）で経路を目視。頭のセーフティライン、工具交換、G43 付きアプローチを確認</li><li>Z を +50 mm 上げてドライラン、または送り 25%＋シングルブロック</li><li>工具交換位置・アプローチ・退避高さ・クランプ干渉・R 点を確認</li><li>Z を戻して初品。工具ごとに M01 で止めて切りくず・音・負荷を確認</li><li>仕上げ前に中間測定して D／H／G54 を補正</li></ol>
+<h4>衝突の定番リスト</h4>
+<ul><li>G43 なしの Z 移動、H 番号違い</li><li>G90/G91 の混在、G90 のまま G28</li><li>G54 と G55 の取り違え、原点の符号ミス</li><li>早送りで Z と XY を同時（斜めに突っ込む）</li><li>固定サイクルの R 点がクランプより低い（G99）</li><li>オーバーライドの戻し忘れ、一部だけ編集して先頭から再チェックしていない</li></ul>
+<div class="note">「診断」パネルは、これらの定番ミスを書いた時点で指摘します。サンプル「07」で確かめてください。</div>`, sample:6},
+];
+
+// ================= reference =================
+const REF = [
+ ['G00','01 動作','位置決め（早送り）','切削には使わない。軸ごとに動くので Z と XY の同時指令は斜めに進む','G00 X-15. Y-15.'],
+ ['G01','01 動作','直線補間','F（送り）が必要。Z 切込みは XY の 1/3〜1/2 の送り','G01 Z-5. F300'],
+ ['G02','01 動作','円弧補間 時計回り','I J（中心の相対位置）か R。全円は I J のみ','G02 X80. Y20. R20.'],
+ ['G03','01 動作','円弧補間 反時計回り','同上。Z を加えるとヘリカル','G03 X60. Y60. I-20. J0'],
+ ['G04','非モーダル','ドウェル（一時停止）','P はミリ秒、X は秒（機種依存）','G04 P500'],
+ ['G17','02 平面','XY 平面選択','円弧・径補正・サイクルの平面。冒頭で G17','G17'],
+ ['G18','02 平面','ZX 平面選択','旋盤や側面の円弧','G18'],
+ ['G19','02 平面','YZ 平面選択','','G19'],
+ ['G20','06 単位','インチ入力','mm なら G21。取り違えると 25.4 倍','G20'],
+ ['G21','06 単位','mm 入力','冒頭で G21','G21'],
+ ['G28','非モーダル','原点復帰（中間点経由）','G91 G28 Z0 で真上に戻る。G90 のままは指定座標を経由して危険','G91 G28 Z0'],
+ ['G40','07 径補正','工具径補正キャンセル','直線ブロックで解除','G40 G00 Z50.'],
+ ['G41','07 径補正','工具径補正 左','進行方向左に工具。外形を時計回り＝ダウンカット。D 番号','G41 D01 X0.'],
+ ['G42','07 径補正','工具径補正 右','進行方向右に工具','G42 D01 X0.'],
+ ['G43','08 長補正','工具長補正 +','H 番号。工具ごとに Z の最初の移動で必ず','G43 Z50. H01'],
+ ['G44','08 長補正','工具長補正 −','ほぼ使わない','G44 Z50. H01'],
+ ['G49','08 長補正','工具長補正キャンセル','工具交換前に','G49'],
+ ['G52','非モーダル','ローカル座標系','一時的なシフト。使ったら G52 X0 Y0 で戻す','G52 X100. Y0'],
+ ['G53','非モーダル','機械座標系での移動','1 ブロック限り。工具交換位置などに','G53 G00 Z0'],
+ ['G54〜G59','14 座標系','ワーク座標系 1〜6','原点出しで登録。多数個取りに使い分け','G54'],
+ ['G54.1 P_','14 座標系','拡張ワーク座標系','P1〜P48（オプション）','G54.1 P1'],
+ ['G65','非モーダル','マクロ呼び出し','引数付きで O 番号を呼ぶ','G65 P9010 A10.'],
+ ['G68 / G69','16 回転','座標回転／キャンセル','傾いた段取り、多数個取り','G68 X0 Y0 R30.'],
+ ['G73','09 サイクル','高速ペックドリル','Q ずつ切込み少し戻る。切りくずが短い材料','G73 Z-30. R3. Q3. F250'],
+ ['G76','09 サイクル','ファインボーリング','穴底で主軸定位置停止・シフトして戻る','G76 Z-20. R2. Q0.5 F80'],
+ ['G80','09 サイクル','固定サイクルキャンセル','サイクルの最後に必ず','G80'],
+ ['G81','09 サイクル','ドリルサイクル','浅穴。R 点はワーク面 +2〜5','G81 Z-15. R3. F250'],
+ ['G82','09 サイクル','座ぐりサイクル','底で P ドウェル。座面をきれいに','G82 Z-5. R2. P500 F150'],
+ ['G83','09 サイクル','ペックドリルサイクル','深穴。Q ずつ切込み R 点まで戻る','G83 Z-40. R3. Q4. F200'],
+ ['G84','09 サイクル','タップサイクル','F＝ピッチ×S。リジッドは M29 S_ の後','M29 S500 / G84 Z-15. R5. F750'],
+ ['G85','09 サイクル','ボーリング（送り戻り）','リーマ・ボーリング','G85 Z-20. R2. F100'],
+ ['G86','09 サイクル','ボーリング（主軸停止・早送り戻り）','','G86 Z-20. R2. F100'],
+ ['G90','03 距離','アブソリュート指令','ワーク原点からの座標','G90'],
+ ['G91','03 距離','インクリメンタル指令','現在位置からの増分。G28・サブプログラムで','G91'],
+ ['G92','非モーダル','座標系設定','現在位置に座標を設定。状態依存で危険。G54 系を使う','G92 X0 Y0 Z50.'],
+ ['G94','05 送り','毎分送り','mm/min。マシニングの標準','G94 F800'],
+ ['G95','05 送り','毎回転送り','mm/rev','G95 F0.2'],
+ ['G98','10 戻り','イニシャル点復帰','クランプ・段差をまたぐとき','G98 G81 ...'],
+ ['G99','10 戻り','R 点復帰','平らな面の連続穴で速い','G99 G81 ...'],
+ ['M00','M','プログラム停止','再開はサイクルスタート。切りくず除去・測定に','M00'],
+ ['M01','M','オプショナルストップ','操作盤の OSP が ON のときだけ停止。工具ごとに入れる','M01'],
+ ['M02','M','プログラム終了','先頭に戻らない','M02'],
+ ['M03','M','主軸正転','S と一緒に','S4800 M03'],
+ ['M04','M','主軸逆転','左ねじ・逆タップ','M04'],
+ ['M05','M','主軸停止','退避後・工具交換前','M05'],
+ ['M06','M','工具交換','T で選択、M06 で交換。前に Z 原点復帰','T01 M06'],
+ ['M07','M','ミストクーラント ON','機種依存','M07'],
+ ['M08','M','クーラント ON','G43 のブロックに一緒に','M08'],
+ ['M09','M','クーラント OFF','退避のブロックに','M09'],
+ ['M19','M','主軸オリエンテーション','定位置停止。ボーリングのシフト','M19'],
+ ['M29','M','リジッドタップモード','S と一緒に。次の G84 が同期タップ','M29 S500'],
+ ['M30','M','プログラム終了・先頭復帰','標準の終わり方','M30'],
+ ['M98','M','サブプログラム呼び出し','P 番号、L 回数（P40100 形式の機種も）','M98 P0100 L4'],
+ ['M99','M','サブプログラム終了','メインで使うと先頭に戻る（無限ループ）','M99'],
+ ['O','—','プログラム番号','先頭に O0001 など','O0001'],
+ ['N','—','シーケンス番号','省略可。検索・再開に','N10'],
+ ['F','—','送り速度','G94 mm/min ／ G95 mm/rev。モーダル','F960'],
+ ['S','—','主軸回転数','min⁻¹。M03 で回る','S4800'],
+ ['T','—','工具番号','M06 で交換。T＝H＝D で統一','T01'],
+ ['H','—','工具長補正番号','G43 と一緒','H01'],
+ ['D','—','工具径補正番号','G41/G42 と一緒','D01'],
+ ['I J K','—','円弧中心（始点からの相対）','I=X, J=Y, K=Z 方向','I-20. J0'],
+ ['R','—','円弧半径／サイクルの R 点','用途で意味が変わる','R20.'],
+ ['P','—','ドウェル時間／サブ番号／座標系番号','コードで意味が変わる','P500'],
+ ['Q','—','ペック量／ボーリングのシフト量','','Q4.'],
+ ['L','—','繰り返し回数','M98 と','L4'],
+ ['小数点','—','X100 と X100. の違い','多くの機械で X100 は最小設定単位（0.1 mm や 0.001 mm）。必ず小数点を付ける','X100.'],
+ ['( )  ;','—','コメント／ブロック終端','( ) の中はコメント。; は EOB。/ は先頭でブロックスキップ','(D10 ENDMILL)'],
+];
+
+// ================= quiz =================
+const QUIZ = [
+ {q:'次のブロックで工具はどこへ動く？（G90 のとき）', code:'G01 X50. Y20. F600', o:['ワーク原点から X50 Y20 の位置へ直線で','現在位置から X+50 Y+20 動く','早送りで X50 Y20 へ','Z が 50 下がる'], a:0, e:'G90（アブソリュート）では座標はワーク原点からの位置。G01 は切削送りの直線補間。'},
+ {q:'G91 のとき「X20.」を 3 回実行すると？', o:['X=20 の位置に留まる','X 方向に合計 60 動く','X=60 の位置へ早送り','エラーになる'], a:1, e:'G91（インクリメンタル）は現在位置からの増分。20 ずつ 3 回で 60 動く。'},
+ {q:'G02 と G03 の違いは？', o:['G02 が反時計回り、G03 が時計回り','G02 が時計回り、G03 が反時計回り','G02 が R 指定、G03 が I J 指定','G02 が XY 平面、G03 が ZX 平面'], a:1, e:'上（+Z 側）から見て G02 は時計回り（CW）、G03 は反時計回り（CCW）。'},
+ {q:'「G90 G28 Z0」が危険な理由は？', o:['Z0 が機械原点だから','G28 は G91 でしか使えないから','ワーク座標 Z0（ワーク上面）を経由してから原点へ動くから','主軸が回っていないから'], a:2, e:'G28 は中間点を経由して原点復帰する。G90 だと Z0＝ワーク上面が中間点になり、工具がワークまで下がる。G91 G28 Z0 なら現在位置が中間点。'},
+ {q:'G43 の役割は？', o:['工具径補正','工具長補正','座標回転','固定サイクルのキャンセル'], a:1, e:'G43 は H 番号に登録した工具長で Z を補正する。工具ごとに Z の最初の移動で必ず使う。'},
+ {q:'G41 で工具はワークのどちら側を通る？', o:['進行方向に向かって左','進行方向に向かって右','ワークの内側','ワークの上'], a:0, e:'G41＝左側補正。外形を時計回りに回るとダウンカットになる。G42 は右。'},
+ {q:'工具径補正（G41/G42）の立ち上げでアラームになるのは？', o:['直線ブロックで立ち上げた','ワークから離れた位置で立ち上げた','円弧ブロック（G02/G03）で立ち上げた','D 番号を一緒に書いた'], a:2, e:'補正の立ち上げ・解除は直線ブロック（G00/G01）で行う。円弧ブロックはアラーム。'},
+ {q:'「X100」（小数点なし）を多くの機械で実行すると？', o:['100 mm','10 mm','最小設定単位×100（0.1 mm や 0.001 mm×100）','エラー'], a:2, e:'小数点なしは最小設定単位で解釈される機械が多い（電卓型入力が有効なら 100 mm）。必ず「X100.」と小数点を付ける。'},
+ {q:'G81 と G83 の違いは？', o:['G81 はタップ、G83 はリーマ','G81 は一気に穴底まで、G83 は Q ずつ切込んで戻る（ペック）','G81 は R 点戻り、G83 はイニシャル点戻り','G81 は mm、G83 はインチ'], a:1, e:'G83 は深穴用のペックドリルサイクル。Q ごとに R 点まで戻って切りくずを排出する。'},
+ {q:'固定サイクルで G98 と G99 の違いは？', o:['G98 が R 点戻り、G99 がイニシャル点戻り','G98 がイニシャル点戻り、G99 が R 点戻り','G98 が正転、G99 が逆転','G98 が絶対、G99 が増分'], a:1, e:'G98＝イニシャル点（サイクル開始時の Z）に戻る。G99＝R 点に戻る。クランプや段差をまたぐときは G98。'},
+ {q:'固定サイクルの解除は？', o:['G40','G49','G80','M99'], a:2, e:'G80 で固定サイクルをキャンセル。G40 は径補正、G49 は長補正のキャンセル。'},
+ {q:'M30 と M02 の違いは？', o:['M30 は先頭に戻る、M02 は戻らない','M30 は主軸停止を含まない','M02 はサブプログラム用','違いはない'], a:0, e:'M30 はプログラム終了＋先頭復帰（リワインド）。M02 は終了のみ。標準は M30。'},
+ {q:'サブプログラムから戻るコードは？', o:['M30','M02','M98','M99'], a:3, e:'M98 で呼び出し、サブの最後は M99 で戻る。サブの中に M30 を書くと全部終わる。'},
+ {q:'M01 はどんなときに止まる？', o:['常に止まる','操作盤のオプショナルストップが ON のとき','工具交換のとき','主軸が停止しているとき'], a:1, e:'M01 はオプショナルストップ。OSP スイッチ ON のときだけ止まるので、初品では工具ごとに入れておくと便利。'},
+ {q:'冒頭に「G17 G21 G40 G49 G54 G80 G90」を書く目的は？', o:['機械を暖機するため','前のプログラムの状態（モーダル）を引きずらないため','工具長を測るため','原点復帰のため'], a:1, e:'G コードはモーダル。前の状態（G91 や径補正）が残っていると事故になるので、冒頭でリセットする。'},
+ {q:'G00 で「Z-10. X100.」と同時に指令すると実機では？', o:['直線で斜めに動く','必ず Z が先に動く','軸ごとに独立して動くため経路が読めず、干渉の恐れ','エラー'], a:2, e:'G00 は非直線（軸ごとに最高速で動く）。退避は Z を先に、アプローチは XY → Z の順に分ける。'},
+ {q:'タップサイクル G84 で F はどう決める？', o:['F＝ピッチ × 主軸回転数','F＝工具径 × 0.01','F は不要','F＝1 刃送り × 刃数'], a:0, e:'1 回転で 1 ピッチ進むので F [mm/min]＝ピッチ×S。M29 S_ でリジッドタップにすると同期する。'},
+ {q:'R 指定の円弧で描けないのは？', o:['90° の円弧','180° の円弧','全円（始点＝終点）','R をマイナスにした 270° の円弧'], a:2, e:'R 指定は始点と終点が同じだと中心が定まらない。全円は I J で指定する。'},
+ {q:'G92 を推奨しない理由は？', o:['インチ専用だから','現在位置に座標を設定するため、位置が違うと原点がずれる（状態依存）','固定サイクルと併用できないから','古い機械でしか使えないから'], a:1, e:'G92 は「今いる位置を X_ Y_ Z_ とする」。段取りや前の状態で結果が変わるので、G54 系のワーク座標系を使う。'},
+ {q:'「G91 G28 Z0」の後に「G28 X0 Y0」と分けて書く理由は？', o:['XY と Z を同時に原点復帰すると斜めに動いて干渉する恐れがあるから','G28 は 1 軸ずつしか指令できないから','X と Y は G90 で復帰するから','特に理由はない'], a:0, e:'Z を先に上げてから XY を動かすのが安全。同時指令は工具がワーク上を斜めに横切る。'},
+ {q:'工具交換の前に行うべきことは？', o:['クーラントを ON にする','Z を原点復帰し主軸を止める','G41 を立ち上げる','送りを上げる'], a:1, e:'M06 の前に G91 G28 Z0 と M05。Z が下がったまま工具交換すると ATC アームがワーク・治具に当たる。'},
+ {q:'ダウンカット（順削り）になる外形加工の組み合わせは？', o:['G41 で時計回り','G41 で反時計回り','G42 で時計回り','G40 で時計回り'], a:0, e:'主軸正転（時計回り）で外形を時計回りに回り、工具をワークの左（G41）に置くとダウンカット。'},
+];
+
+// ================= exercises =================
+const EXERCISES = [
+ {t:'課題 1：4 つの穴を G81 であける', desc:'素材 100×60。(20,20) (80,20) (80,60→80,40) … ではなく次の 4 点にφ8.5 の穴（深さ Z-12、R 点 3）をあけてください：<b>(20,20) (80,20) (80,40) (20,40)</b>。固定サイクル G81 と G99 を使い、最後に G80 で解除、M30 で終わること。', start:`O0101 (EX1 DRILL 4 HOLES)
+G17 G21 G40 G49 G54 G80 G90
+T02 M06 (D8.5 DRILL)
+S2500 M03
+G00 X20. Y20.
+G43 Z30. H02 M08
+(ここに固定サイクルを書く)
+
+G80
+G00 Z50. M09
+M05
+G91 G28 Z0
+M30`, check(r){ const want=[[20,20],[80,20],[80,40],[20,40]]; const c=[]; for(const [x,y] of want){ const h=r.holes.find(h=>Math.abs(h.x-x)<0.05&&Math.abs(h.y-y)<0.05); c.push({ok:!!h && Math.abs(h.z-(-12))<0.05, t:`穴 (${x},${y}) を Z-12 まで`+(h&&Math.abs(h.z+12)>=0.05?`（深さ Z${h.z} になっています）`:'')}); } c.push({ok:r.holes.every(h=>h.code===81), t:'G81 を使っている'}); c.push({ok:r.holes.length===4, t:`穴の数が 4 つ（今 ${r.holes.length}）`}); c.push({ok:!r.diags.some(d=>d.level==='error'), t:'診断エラーなし'}); c.push({ok:!r.diags.some(d=>d.msg.includes('M30')), t:'M30 で終了'}); return c; }, hint:'G99 G81 Z-12. R3. F250 の後、X80. → Y40. → X20. と座標だけ書けば同じ穴があきます。'},
+ {t:'課題 2：100×60 の外形を Z-5 で一周する', desc:'工具中心が素材の外形線 <b>(0,0)→(0,60)→(100,60)→(100,0)→(0,0)</b> を通るように、Z-5 で一周してください（径補正は使わなくて構いません。使う場合は G41 の立ち上げは直線ブロックで）。ワークの外（例 X-15 Y-15）から入り、Z を先に退避して終わること。', start:`O0102 (EX2 CONTOUR)
+G17 G21 G40 G49 G54 G80 G90
+T01 M06 (D10 ENDMILL)
+S4800 M03
+G00 X-15. Y-15.
+G43 Z50. H01 M08
+Z2.
+(ここに切削を書く)
+
+G00 Z50. M09
+M05
+G91 G28 Z0
+M30`, check(r){ const corners=[[0,0],[0,60],[100,60],[100,0]]; const c=[]; const feed=r.segs.filter(s=>s.kind!=='rapid' && s.to.z<=-4.99 && s.from.z<=-4.99); for(const [x,y] of corners){ const hit=feed.some(s=>(Math.abs(s.to.x-x)<0.05&&Math.abs(s.to.y-y)<0.05)||(Math.abs(s.from.x-x)<0.05&&Math.abs(s.from.y-y)<0.05)); c.push({ok:hit, t:`角 (${x},${y}) を Z-5 で切削しながら通過`}); } c.push({ok:r.segs.some(s=>s.kind==='feed' && Math.abs(s.to.z+5)<0.05 && s.from.z>s.to.z), t:'G01 で Z-5 まで切込んでいる（早送りで突っ込まない）'}); const lastFeed=[...r.segs].reverse().find(s=>s.kind!=='rapid'); const after=lastFeed? r.segs.slice(r.segs.indexOf(lastFeed)+1) : []; c.push({ok:after.length>0 && after[0].to.z>after[0].from.z && Math.abs(after[0].to.x-after[0].from.x)<1e-6 && Math.abs(after[0].to.y-after[0].from.y)<1e-6, t:'切削後、Z を先に単独で退避している'}); c.push({ok:!r.diags.some(d=>d.level==='error'), t:'診断エラーなし'}); return c; }, hint:'G01 Z-5. F300 → X0. Y0.（または G41 D01 X0.）→ Y60. → X100. → Y0. → X0.（角を確実に通る）→ G00 Z50.'},
+ {t:'課題 3：R20 の半円を G03 で描く', desc:'(20,20) から (60,20) まで、<b>上側に膨らむ半径 20 の半円</b>を反時計回り（G03）で Z-3 で切削してください。I J 指定で書くこと（R でも可ですが I J を練習）。', start:`O0103 (EX3 ARC)
+G17 G21 G40 G49 G54 G80 G90
+T01 M06
+S4000 M03
+G00 X20. Y20.
+G43 Z5. H01 M08
+G01 Z-3. F200
+(ここに円弧を書く)
+
+G00 Z50. M09
+M05
+G91 G28 Z0
+M30`, check(r){ const c=[]; const arc=r.segs.find(s=>s.kind==='arc'); c.push({ok:!!arc, t:'円弧補間（G02/G03）がある'}); if(arc){ c.push({ok:!arc.cw, t:'反時計回り（G03）'}); c.push({ok:Math.abs(arc.r-20)<0.05, t:`半径 20（今 ${fmt(arc.r,2)}）`}); c.push({ok:Math.abs(arc.cx-40)<0.05&&Math.abs(arc.cy-20)<0.05, t:`中心が (40,20)（今 (${fmt(arc.cx,1)},${fmt(arc.cy,1)})）`}); c.push({ok:Math.abs(arc.sweep-Math.PI)<0.02, t:'半円（180°）になっている'}); c.push({ok:Math.abs(arc.to.x-60)<0.05&&Math.abs(arc.to.y-20)<0.05, t:'終点が (60,20)'}); c.push({ok:arc.to.z<=-2.99, t:'Z-3 で切削'}); } c.push({ok:!r.diags.some(d=>d.level==='error'), t:'診断エラーなし'}); return c; }, hint:'始点 (20,20) から中心 (40,20) までは X+20、Y0。→ G03 X60. Y20. I20. J0 F400。上側に膨らむ半円は反時計回りで始点→上→終点。'},
+ {t:'課題 4：G91 で 3 段の階段を削る', desc:'(0,10) Z0 から始めて、<b>X+25 進むごとに Z を 2 mm ずつ下げる</b>階段を 3 段（合計 X75、Z-6）を G91 で書いてください。最後は G90 に戻すこと。', start:`O0104 (EX4 STAIRS)
+G17 G21 G40 G49 G54 G80 G90
+T01 M06
+S5000 M03
+G00 X0 Y10.
+G43 Z5. H01 M08
+G01 Z0 F300
+(ここから G91 で階段)
+
+G90
+G00 Z50. M09
+M05
+G91 G28 Z0
+M30`, check(r){ const c=[]; const pts=[[25,-2],[50,-4],[75,-6]]; for(const [x,z] of pts){ c.push({ok:r.segs.some(s=>s.kind==='feed'&&Math.abs(s.to.x-x)<0.05&&Math.abs(s.to.z-z)<0.05&&Math.abs(s.to.y-10)<0.05), t:`X${x} Z${z} を切削で通過`}); } const txt=$('code').value; c.push({ok:/G91/i.test(txt), t:'G91 を使っている'}); const g90after = txt.toUpperCase().lastIndexOf('G90') > txt.toUpperCase().indexOf('G91'); c.push({ok:g90after, t:'G91 の後で G90 に戻している'}); c.push({ok:!r.diags.some(d=>d.level==='error'), t:'診断エラーなし'}); return c; }, hint:'G91 → G01 X25. Z-2. を 3 回（同じ行を繰り返すか、サブプログラムでもよい）→ G90。'},
+ {t:'課題 5：サブプログラムで 2 列 × 4 穴', desc:'Y=15 と Y=45 の 2 列に、X=20 から 20 mm ピッチで 4 穴ずつ（合計 8 穴、Z-10、R3）を <b>M98 で同じサブプログラムを 2 回使って</b>あけてください。サブプログラム O0200 は同じテキストの末尾に書きます。', start:`O0105 (EX5 SUB)
+G17 G21 G40 G49 G54 G80 G90
+T02 M06
+S3000 M03
+G00 X20. Y15.
+G43 Z30. H02 M08
+G99 G81 Z-10. R3. F300 (1 穴目)
+(ここで G91 にして M98 で残り 3 穴 → G90 で Y45 の列へ → もう一度)
+
+G90 G80
+G00 Z50. M09
+M05
+G91 G28 Z0
+M30
+
+O0200 (SUB)
+(ここに増分 20mm の穴)
+M99`, check(r){ const c=[]; let ok=0; for(const y of [15,45]) for(const x of [20,40,60,80]){ if(r.holes.some(h=>Math.abs(h.x-x)<0.05&&Math.abs(h.y-y)<0.05&&Math.abs(h.z+10)<0.05)) ok++; } c.push({ok:ok===8, t:`8 穴すべて正しい位置と深さ（今 ${ok}/8）`}); c.push({ok:r.holes.length===8, t:`穴の数が 8（今 ${r.holes.length}）`}); const txt=$('code').value.toUpperCase(); c.push({ok:(txt.match(/M98/g)||[]).length>=2 || /M98\s*P\d+\s*L\s*[2-9]/.test(txt) || /M98\s*P[2-9]\d{4}/.test(txt), t:'M98 でサブプログラムを 2 回以上使っている'}); c.push({ok:!r.diags.some(d=>d.level==='error'), t:'診断エラーなし'}); return c; }, hint:'サブ O0200 に「X20.」と M99。メインで G91 → M98 P0200 L3 → G90 → X20. Y45.（絶対で列の 1 穴目）→ G91 → M98 P0200 L3 → G90 G80。'},
+];
+
+// ================= UI wiring =================
+function save(){ try{ localStorage.setItem('gct:code', $('code').value); }catch(e){} }
+function loadSaved(){ try{ return localStorage.getItem('gct:code'); }catch(e){ return null; } }
+function setCode(t){ $('code').value=t; stop(); compile(); drawAll(); }
+
+// tabs
+document.querySelectorAll('.tabs [role=tab]').forEach(b=>b.addEventListener('click',()=>{ document.querySelectorAll('.tabs [role=tab]').forEach(x=>{ const on=x===b; x.setAttribute('aria-selected',on); $('page-'+x.dataset.page).hidden=!on; }); if(b.dataset.page==='sim'){ drawAll(); renderHighlight(-1); } }));
+
+// samples
+SAMPLES.forEach((s,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=s.name; $('sample').appendChild(o); });
+$('loadSample').addEventListener('click',()=>setCode(SAMPLES[+$('sample').value].code));
+$('clear').addEventListener('click',()=>{ if(confirm('エディタを空にしますか？')) setCode('O0001\nG17 G21 G40 G49 G54 G80 G90\n\nM30'); });
+$('code').addEventListener('input',()=>{ playing=false; compile(); drawAll(); });
+$('code').addEventListener('scroll',()=>{ $('hl').scrollTop=$('code').scrollTop; $('hl').scrollLeft=$('code').scrollLeft; });
+$('code').addEventListener('keydown',e=>{ if(e.key==='Tab'){ e.preventDefault(); const ta=e.target; const s=ta.selectionStart; ta.value=ta.value.slice(0,s)+'  '+ta.value.slice(ta.selectionEnd); ta.selectionStart=ta.selectionEnd=s+2; compile(); } });
+['stockX','stockY'].forEach(id=>$(id).addEventListener('input',drawAll));
+$('run').addEventListener('click',play); $('stepBtn').addEventListener('click',stepOnce); $('pause').addEventListener('click',pause); $('stop').addEventListener('click',stop);
+window.addEventListener('resize',()=>{ drawAll(); renderHighlight(-1); });
+
+// lessons
+let lessonIdx=0;
+function renderLessons(){ const ul=$('lessonList'); ul.innerHTML=''; LESSONS.forEach((l,i)=>{ const b=document.createElement('button'); b.type='button'; b.innerHTML=`<span class="n">${String(i+1).padStart(2,'0')}</span><span>${l.t}</span>`; b.setAttribute('aria-current', i===lessonIdx); b.addEventListener('click',()=>{ lessonIdx=i; renderLessons(); }); ul.appendChild(b); });
+  const l=LESSONS[lessonIdx]; $('lessonBody').innerHTML=`<h3>${lessonIdx+1}. ${l.t}</h3>${l.body}<div class="lesson-nav">${l.sample!==undefined?`<button type="button" class="btn primary" id="lsLoad">このレッスンのサンプルをシミュレータで開く</button>`:''}${lessonIdx>0?'<button type="button" class="btn ghost" id="lsPrev">← 前へ</button>':''}${lessonIdx<LESSONS.length-1?'<button type="button" class="btn ghost" id="lsNext">次へ →</button>':''}</div>`;
+  const ld=$('lsLoad'); if(ld) ld.addEventListener('click',()=>{ setCode(SAMPLES[l.sample].code); document.querySelector('.tabs [data-page=sim]').click(); });
+  const pv=$('lsPrev'); if(pv) pv.addEventListener('click',()=>{ lessonIdx--; renderLessons(); window.scrollTo(0,0); });
+  const nx=$('lsNext'); if(nx) nx.addEventListener('click',()=>{ lessonIdx++; renderLessons(); window.scrollTo(0,0); });
+}
+renderLessons();
+
+// reference
+function renderRef(){ const q=$('refSearch').value.normalize('NFKC').toLowerCase().split(/\s+/).filter(Boolean); const tb=$('refTable').querySelector('tbody'); tb.innerHTML=''; for(const r of REF){ const text=r.join(' ').normalize('NFKC').toLowerCase(); if(q.length && !q.every(t=>text.includes(t))) continue; const tr=document.createElement('tr'); tr.innerHTML=`<td class="code">${r[0]}</td><td class="grp">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td class="ex">${escapeHtml(r[4])}</td>`; tb.appendChild(tr); } }
+$('refSearch').addEventListener('input',renderRef); renderRef();
+
+// quiz
+function loadBest(){ try{ return +localStorage.getItem('gct:best')||0; }catch(e){ return 0; } }
+function renderScore(cur,total){ const best=loadBest(); $('qscore').textContent = (total? `今回 ${cur} / ${total}　` : '') + (best? `最高 ${best} / 10` : ''); }
+$('qstart').addEventListener('click',()=>{
+  const pick=[...QUIZ].sort(()=>Math.random()-0.5).slice(0,10); let answered=0, correct=0; const list=$('qlist'); list.innerHTML=''; renderScore(0,0);
+  pick.forEach((q,i)=>{ const card=document.createElement('div'); card.className='qcard'; card.innerHTML=`<div class="qn">Q${i+1}</div><div class="q">${q.q}</div>${q.code?`<pre>${escapeHtml(q.code)}</pre>`:''}<div class="opts">${q.o.map((o,k)=>`<button type="button" data-k="${k}">${escapeHtml(o)}</button>`).join('')}</div><div class="fb" hidden></div>`;
+    card.querySelectorAll('.opts button').forEach(b=>b.addEventListener('click',()=>{ const k=+b.dataset.k; card.querySelectorAll('.opts button').forEach(x=>{ x.disabled=true; if(+x.dataset.k===q.a) x.classList.add('correct'); }); if(k!==q.a) b.classList.add('wrong'); else correct++; answered++; const fb=card.querySelector('.fb'); fb.hidden=false; fb.className='fb '+(k===q.a?'ok':'ng'); fb.innerHTML=(k===q.a?'✓ 正解。':'✕ 不正解。')+q.e; renderScore(correct,answered); if(answered===pick.length){ try{ if(correct>loadBest()) localStorage.setItem('gct:best',correct); }catch(e){} renderScore(correct,answered); const done=document.createElement('div'); done.className='qcard'; done.innerHTML=`<b>結果：${correct} / ${pick.length}</b>　${correct>=9?'すばらしい。実機のプログラムを読む準備ができています。':correct>=6?'基本は OK。間違えた項目をレッスンで復習しましょう。':'レッスン 1〜5 をもう一度読んでから再挑戦してみてください。'}`; list.appendChild(done); window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); } }));
+    list.appendChild(card); });
+});
+renderScore(0,0);
+
+// exercises
+let exIdx=0; const exDone = (()=>{ try{ return JSON.parse(localStorage.getItem('gct:ex')||'{}'); }catch(e){ return {}; } })();
+function renderEx(){ const ul=$('exList'); ul.innerHTML=''; EXERCISES.forEach((x,i)=>{ const b=document.createElement('button'); b.type='button'; b.innerHTML=`<span class="n">${i+1}</span><span>${x.t}${exDone[i]?'<span class="badge">クリア</span>':''}</span>`; b.setAttribute('aria-current',i===exIdx); b.addEventListener('click',()=>{ exIdx=i; renderEx(); }); ul.appendChild(b); });
+  const x=EXERCISES[exIdx]; $('exBody').innerHTML=`<h3>${x.t}</h3><p>${x.desc}</p><div class="lesson-nav"><button type="button" class="btn primary" id="exOpen">シミュレータにひな形を読み込む</button><button type="button" class="btn" id="exCheck">今のエディタ内容を判定する</button><button type="button" class="btn ghost" id="exHint">ヒント</button></div><ul class="checks" id="exChecks"></ul><p id="exHintBody" hidden class="note"></p>`;
+  $('exOpen').addEventListener('click',()=>{ setCode(x.start); document.querySelector('.tabs [data-page=sim]').click(); });
+  $('exHint').addEventListener('click',()=>{ const h=$('exHintBody'); h.hidden=false; h.textContent=x.hint; });
+  $('exCheck').addEventListener('click',()=>{ const r=simulate($('code').value); const checks=x.check(r); const ul=$('exChecks'); ul.innerHTML=checks.map(c=>`<li class="${c.ok?'ok':'ng'}">${c.ok?'✓':'✕'} ${c.t}</li>`).join(''); if(checks.every(c=>c.ok)){ exDone[exIdx]=true; try{ localStorage.setItem('gct:ex',JSON.stringify(exDone)); }catch(e){} const li=document.createElement('li'); li.className='ok'; li.innerHTML='<b>クリア！</b> 次の課題へ進みましょう。'; ul.appendChild(li); renderEx(); } });
+}
+renderEx();
+
+// init
+const saved=loadSaved(); $('code').value = saved || SAMPLES[0].code; compile(); drawAll();
+})();
+</script>
+
+</body>
+</html>

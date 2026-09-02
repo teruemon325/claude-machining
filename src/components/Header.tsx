@@ -41,6 +41,7 @@ export function Header({ query, onQueryChange, onNew, onExport, onImport, onRese
             <button type="button" className="danger" onClick={onReset}>初期データに戻す</button>
             <a href="docs/" target="_blank" rel="noopener">解説ドキュメント（全 14 章）</a>
             <a href="simulator/" target="_blank" rel="noopener">切削シミュレータ</a>
+            <a href="gcode/" target="_blank" rel="noopener">G コードトレーナー</a>
           </div>
         </details>
       </div>
