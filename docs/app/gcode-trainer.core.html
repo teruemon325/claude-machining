@@ -534,7 +534,18 @@ M05`},
 
 // ================= renderer =================
 let SIM = null, cursor = 0, playing = false, timer = null, partial = null;
-function fit(c){ const dpr=window.devicePixelRatio||1; const w=c.clientWidth||600, h=+c.getAttribute('height'); if(c.width!==Math.round(w*dpr)||c.height!==Math.round(h*dpr)){ c.width=Math.round(w*dpr); c.height=Math.round(h*dpr);} const g=c.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0); return {g,w,h}; }
+function fit(c){
+  // ブラウザの拡大表示（高い devicePixelRatio）× 広い画面で内部ビットマップが巨大になると
+  // 描画に失敗して「壊れた画像」になるため、内部解像度に上限を設ける
+  const MAX_DIM=4096, MAX_AREA=6e6;
+  const w=c.clientWidth||600, h=c.clientHeight||+c.getAttribute('height')||300;
+  let s=Math.min(window.devicePixelRatio||1, 2);
+  if(w*s>MAX_DIM) s=MAX_DIM/w; if(h*s>MAX_DIM) s=Math.min(s,MAX_DIM/h); if(w*h*s*s>MAX_AREA) s=Math.min(s,Math.sqrt(MAX_AREA/(w*h)));
+  s=Math.max(0.5,s);
+  const bw=Math.round(w*s), bh=Math.round(h*s);
+  if(c.width!==bw||c.height!==bh){ c.width=bw; c.height=bh; }
+  const g=c.getContext('2d'); g.setTransform(s,0,0,s,0,0); return {g,w,h};
+}
 function bounds(){
   const sx=+$('stockX').value||100, sy=+$('stockY').value||60;
   let minX=0,maxX=sx,minY=0,maxY=sy,minZ=-5,maxZ=HOME_Z;
@@ -974,6 +985,8 @@ $('code').addEventListener('keydown',e=>{ if(e.key==='Tab'){ e.preventDefault();
 ['stockX','stockY'].forEach(id=>$(id).addEventListener('input',drawAll));
 $('run').addEventListener('click',play); $('stepBtn').addEventListener('click',stepOnce); $('pause').addEventListener('click',pause); $('stop').addEventListener('click',stop);
 window.addEventListener('resize',()=>{ drawAll(); renderHighlight(-1); });
+if(window.visualViewport) window.visualViewport.addEventListener('resize',()=>drawAll());
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) drawAll(); });
 
 // lessons
 let lessonIdx=0;

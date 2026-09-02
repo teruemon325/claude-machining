@@ -186,7 +186,7 @@ nav.study a[aria-current=page]{background:var(--steel);color:#fff}
       <canvas id="top" height="480" aria-label="加工アニメーション"></canvas>
       <div class="tag" id="viewTag">上面図 ／ ワーク 120 × 70 mm</div>
       <div class="hud"><span class="badge" id="bChatter"><i></i>安定</span><span class="badge" id="bChip"><i></i>切りくず</span></div>
-      <div class="hint" id="hint3d" hidden>ドラッグで回転・ホイールで拡大縮小</div>
+      <div class="hint" id="hint3d" hidden>ドラッグで回転・ホイールで拡大縮小・ダブルクリックで視点リセット</div>
     </div>
     <div class="transport">
       <div class="tbtns" role="group" aria-label="再生操作">
@@ -451,7 +451,18 @@ function applyPreset(p){ el.material.value=p.material; el.toolMat.value=p.toolMa
 function setClimb(c){ state.climb=c; $('climb').setAttribute('aria-pressed',c); $('conv').setAttribute('aria-pressed',!c); }
 
 // ---------- canvases ----------
-function fitCanvas(c){ const dpr=window.devicePixelRatio||1; const w=c.clientWidth||600; const h=+c.getAttribute('height'); if(c.width!==Math.round(w*dpr)||c.height!==Math.round(h*dpr)){ c.width=Math.round(w*dpr); c.height=Math.round(h*dpr); } const g=c.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0); return {g,w,h}; }
+function fitCanvas(c){
+  // ブラウザの拡大表示（高い devicePixelRatio）× 広い画面で内部ビットマップが巨大になると
+  // 描画に失敗して「壊れた画像」になるため、内部解像度に上限を設ける
+  const MAX_DIM=4096, MAX_AREA=6e6;
+  const w=c.clientWidth||600, h=c.clientHeight||+c.getAttribute('height')||300;
+  let s=Math.min(window.devicePixelRatio||1, 2);
+  if(w*s>MAX_DIM) s=MAX_DIM/w; if(h*s>MAX_DIM) s=Math.min(s,MAX_DIM/h); if(w*h*s*s>MAX_AREA) s=Math.min(s,Math.sqrt(MAX_AREA/(w*h)));
+  s=Math.max(0.5,s);
+  const bw=Math.round(w*s), bh=Math.round(h*s);
+  if(c.width!==bw||c.height!==bh){ c.width=bw; c.height=bh; }
+  const g=c.getContext('2d'); g.setTransform(s,0,0,s,0,0); return {g,w,h};
+}
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 function hexToRgb(h){ h=h.replace('#',''); if(h.length===3) h=h.split('').map(c=>c+c).join(''); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
 function shade(hex, k){ const [r,g,b]=hexToRgb(hex); return 'rgb('+Math.round(r*k)+','+Math.round(g*k)+','+Math.round(b*k)+')'; }
@@ -679,9 +690,10 @@ const sim = (function(){
   (function(){
     const c=$('top'); let drag=null;
     c.addEventListener('pointerdown', e=>{ if(state.view!=='3d') return; drag={x:e.clientX,y:e.clientY,th:cam.theta,ph:cam.phi}; c.setPointerCapture(e.pointerId); });
-    c.addEventListener('pointermove', e=>{ if(!drag) return; cam.theta=drag.th-(e.clientX-drag.x)*0.008; cam.phi=Math.max(0.08,Math.min(1.45, drag.ph+(e.clientY-drag.y)*0.008)); });
+    c.addEventListener('pointermove', e=>{ if(!drag) return; cam.theta=drag.th-(e.clientX-drag.x)*0.005; cam.phi=Math.max(0.25,Math.min(1.35, drag.ph+(e.clientY-drag.y)*0.005)); });
+    c.addEventListener('dblclick', ()=>{ if(state.view==='3d') resetCam(); });
     const end=()=>{ drag=null; }; c.addEventListener('pointerup', end); c.addEventListener('pointercancel', end);
-    c.addEventListener('wheel', e=>{ if(state.view!=='3d') return; e.preventDefault(); cam.dist=Math.max(90, Math.min(600, cam.dist*(1+Math.sign(e.deltaY)*0.1))); }, {passive:false});
+    c.addEventListener('wheel', e=>{ if(state.view!=='3d') return; e.preventDefault(); cam.dist=Math.max(140, Math.min(450, cam.dist*(1+Math.sign(e.deltaY)*0.1))); }, {passive:false});
   })();
   return {reset, resetCam, start(){ reset(); requestAnimationFrame(frame); }};
 })();
@@ -709,6 +721,7 @@ $('conv').addEventListener('click', ()=>{ setClimb(false); refresh(); sim.reset(
 document.querySelectorAll('[data-speed]').forEach(b=>b.addEventListener('click', ()=>{ state.speed=+b.dataset.speed; document.querySelectorAll('[data-speed]').forEach(x=>x.setAttribute('aria-pressed', x===b)); }));
 document.querySelectorAll('.presets button').forEach(b=>b.addEventListener('click', ()=>applyPreset(PRESETS[b.dataset.preset])));
 window.addEventListener('resize', ()=>{ drawChipGraph(); });
+if(window.visualViewport) window.visualViewport.addEventListener('resize', ()=>drawChipGraph());
 if(!load()) applyPreset(PRESETS.s45c); else refresh();
 if(new URLSearchParams(location.search).get('view')==='3d') state.view='3d';
 setView(state.view); setPlay('playing');
