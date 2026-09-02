@@ -123,6 +123,9 @@ nav.study .study-brand { font-weight: 800; letter-spacing: .04em; margin-right: 
 nav.study a { color: #d8e3ef; text-decoration: none; padding: 4px 10px; border-radius: 4px; }
 nav.study a:hover { background: rgba(255,255,255,.12); color: #fff; }
 nav.study a[aria-current="page"] { background: var(--primary); color: #fff; }
+nav.study { position: sticky; top: 0; z-index: 30; }
+.header { top: 36px; }
+.sidebar { top: calc(var(--header-h) + 36px); max-height: calc(100vh - var(--header-h) - 36px); }
 
 /* ---------- layout ---------- */
 .layout { display: flex; flex: 1; align-items: flex-start; }
