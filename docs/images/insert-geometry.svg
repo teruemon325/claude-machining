@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="440" viewBox="0 0 900 440" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="440" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">刃先の形状要素：すくい角・逃げ角・ホーニング・ノーズ R</text>
+  <g transform="translate(60,70)">
+    <!-- workpiece -->
+    <rect x="0" y="180" width="360" height="80" fill="#eef3f8" stroke="#1f3a5f" stroke-width="2"/>
+    <rect x="0" y="150" width="200" height="30" fill="#f7d9c4" stroke="#1f3a5f"/>
+    <!-- tool wedge -->
+    <polygon points="200,180 200,40 290,60 300,120 236,190" fill="#8fa8c4" stroke="#1f3a5f" stroke-width="2"/>
+    <!-- chip -->
+    <path d="M198 150 q 5 -70 -50 -95" fill="none" stroke="#7a3d10" stroke-width="10" opacity="0.6"/>
+    <!-- rake angle -->
+    <line x1="200" y1="180" x2="200" y2="20" stroke="#333" stroke-dasharray="3 3"/>
+    <line x1="200" y1="180" x2="180" y2="40" stroke="#d64545" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <path d="M200 90 a 90 90 0 0 0 -8 -42" fill="none" stroke="#d64545" stroke-width="1.5"/>
+    <text x="100" y="60" fill="#d64545" font-weight="bold" font-size="12">すくい角 γ</text>
+    <text x="30" y="76" fill="#d64545" font-size="11">（＋で切れ味↑、−で強度↑）</text>
+    <!-- clearance angle -->
+    <line x1="200" y1="180" x2="330" y2="180" stroke="#333" stroke-dasharray="3 3"/>
+    <path d="M250 180 a 50 50 0 0 1 -6 22" fill="none" stroke="#3a9a5b" stroke-width="1.5"/>
+    <text x="255" y="210" fill="#3a9a5b" font-weight="bold" font-size="12">逃げ角 α（6〜12°）</text>
+    <text x="255" y="226" fill="#3a9a5b" font-size="11">小→擦れて摩耗、大→欠ける</text>
+    <!-- honing -->
+    <circle cx="200" cy="180" r="14" fill="none" stroke="#e8833a" stroke-width="2"/>
+    <text x="30" y="215" fill="#e8833a" font-weight="bold" font-size="12">刃先ホーニング</text>
+    <text x="30" y="231" fill="#e8833a" font-size="11">（微小 R／面取りで欠け防止）</text>
+    <text x="0" y="300" fill="#333" font-size="12">切りくずの流れ ↑　すくい面を滑って排出される</text>
+  </g>
+  <g transform="translate(480,60)">
+    <rect x="0" y="0" width="390" height="330" rx="6" fill="#f7f9fc" stroke="#4a7ab8"/>
+    <text x="12" y="24" fill="#1f3a5f" font-weight="bold">形状の選び方（チップ・エンドミル共通）</text>
+    <text x="12" y="52" fill="#1f3a5f" font-weight="bold" font-size="12">■ すくい角</text>
+    <text x="12" y="70" fill="#333" font-size="12">ポジ（＋）：アルミ・SUS・薄物・低剛性。切削抵抗小、びびりにくい</text>
+    <text x="12" y="88" fill="#333" font-size="12">ネガ（−）：鋳鉄・高硬度鋼・断続切削。刃先強度が高い</text>
+    <text x="12" y="116" fill="#1f3a5f" font-weight="bold" font-size="12">■ ノーズ R（コーナ R）</text>
+    <text x="12" y="134" fill="#333" font-size="12">大：面粗さ良・刃先強度高・切削抵抗大（びびりやすい）</text>
+    <text x="12" y="152" fill="#333" font-size="12">小：細部加工可・抵抗小・欠けやすい。仕上げ R0.4〜0.8 が標準</text>
+    <text x="12" y="180" fill="#1f3a5f" font-weight="bold" font-size="12">■ 刃先処理</text>
+    <text x="12" y="198" fill="#333" font-size="12">シャープ：アルミ・樹脂・仕上げ／　ホーニング：鋼の荒・断続</text>
+    <text x="12" y="216" fill="#333" font-size="12">ランド（ネガランド）：高硬度鋼・鋳鉄の重切削</text>
+    <text x="12" y="244" fill="#1f3a5f" font-weight="bold" font-size="12">■ カッタの切込み角（正面フライス）</text>
+    <text x="12" y="262" fill="#333" font-size="12">90°：肩削り・壁面の直角出し。薄物にも良い（軸方向力小）</text>
+    <text x="12" y="280" fill="#333" font-size="12">45°：平面荒〜中仕上げ。切りくず薄化で高送り、刃が長持ち</text>
+    <text x="12" y="298" fill="#333" font-size="12">高送り（10〜17°）：ap 小・fz 大。荒加工の除去量最大</text>
+    <text x="12" y="316" fill="#333" font-size="12">丸駒：最強の刃先。鋳物・耐熱合金の荒。壁は残る</text>
+  </g>
+  <text x="450" y="420" text-anchor="middle" fill="#555" font-size="12">迷ったら：鋼＝ネガ寄り＋ホーニング、アルミ＝ポジ＋シャープ＋ノンコート／DLC、SUS＝ポジ＋靭性材種＋低速。</text>
+</svg>

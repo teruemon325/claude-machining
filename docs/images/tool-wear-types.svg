@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="480" viewBox="0 0 900 480" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="480" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">工具損傷の種類・原因・対策</text>
+  <g font-size="12">
+    <!-- flank wear -->
+    <g transform="translate(30,60)">
+      <rect x="0" y="0" width="270" height="190" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="135" y="22" text-anchor="middle" font-weight="bold" fill="#1f3a5f">逃げ面摩耗（フランク摩耗 VB）</text>
+      <polygon points="40,110 120,50 130,60 60,120" fill="#8fa8c4" stroke="#1f3a5f"/>
+      <polygon points="40,110 60,120 55,135 30,125" fill="#d64545" opacity="0.8"/>
+      <text x="70" y="150" fill="#d64545" font-size="11">逃げ面が擦れて平らに</text>
+      <text x="10" y="172" fill="#333">正常な摩耗。VB=0.2〜0.3mm で交換目安</text>
+      <text x="10" y="186" fill="#3a9a5b">対策：Vc↓、耐摩耗コーティング</text>
+    </g>
+    <!-- crater -->
+    <g transform="translate(315,60)">
+      <rect x="0" y="0" width="270" height="190" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="135" y="22" text-anchor="middle" font-weight="bold" fill="#1f3a5f">すくい面摩耗（クレータ摩耗）</text>
+      <polygon points="40,110 120,50 130,60 60,120" fill="#8fa8c4" stroke="#1f3a5f"/>
+      <ellipse cx="95" cy="80" rx="18" ry="8" fill="#d64545" opacity="0.8" transform="rotate(-37 95 80)"/>
+      <text x="70" y="150" fill="#d64545" font-size="11">すくい面がえぐれる</text>
+      <text x="10" y="172" fill="#333">高温・高速で切りくずが擦る（拡散摩耗）</text>
+      <text x="10" y="186" fill="#3a9a5b">対策：Vc↓、fz↓、Al₂O₃ 系コート</text>
+    </g>
+    <!-- chipping -->
+    <g transform="translate(600,60)">
+      <rect x="0" y="0" width="270" height="190" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="135" y="22" text-anchor="middle" font-weight="bold" fill="#1f3a5f">チッピング・欠損</text>
+      <polygon points="40,110 120,50 130,60 60,120" fill="#8fa8c4" stroke="#1f3a5f"/>
+      <polygon points="40,110 52,101 58,112 48,116" fill="#fff" stroke="#d64545"/>
+      <text x="70" y="150" fill="#d64545" font-size="11">刃先が小さく欠ける</text>
+      <text x="10" y="172" fill="#333">断続切削の衝撃・びびり・fz 過大・硬い介在物</text>
+      <text x="10" y="186" fill="#3a9a5b">対策：靭性の高い材種、ホーニング刃、fz↓</text>
+    </g>
+    <!-- BUE -->
+    <g transform="translate(30,265)">
+      <rect x="0" y="0" width="270" height="190" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="135" y="22" text-anchor="middle" font-weight="bold" fill="#1f3a5f">構成刃先（BUE）</text>
+      <polygon points="40,110 120,50 130,60 60,120" fill="#8fa8c4" stroke="#1f3a5f"/>
+      <path d="M40 110 q -10 -18 10 -25 q 15 -2 20 15 z" fill="#bbb" stroke="#555"/>
+      <text x="70" y="150" fill="#d64545" font-size="11">被削材が刃先に溶着</text>
+      <text x="10" y="172" fill="#333">低速・延性材（Al、SUS、低炭素鋼）で発生</text>
+      <text x="10" y="186" fill="#3a9a5b">対策：Vc↑、鋭い刃、油性／高圧クーラント</text>
+    </g>
+    <!-- thermal crack -->
+    <g transform="translate(315,265)">
+      <rect x="0" y="0" width="270" height="190" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="135" y="22" text-anchor="middle" font-weight="bold" fill="#1f3a5f">熱亀裂（サーマルクラック）</text>
+      <polygon points="40,110 120,50 130,60 60,120" fill="#8fa8c4" stroke="#1f3a5f"/>
+      <g stroke="#d64545" stroke-width="1.5"><line x1="70" y1="88" x2="78" y2="100"/><line x1="85" y1="76" x2="93" y2="88"/><line x1="100" y1="65" x2="108" y2="77"/></g>
+      <text x="70" y="150" fill="#d64545" font-size="11">刃に直角な細かいひび</text>
+      <text x="10" y="172" fill="#333">断続切削での急熱・急冷（間欠クーラント）</text>
+      <text x="10" y="186" fill="#3a9a5b">対策：ドライ or 十分な量で常時給油</text>
+    </g>
+    <!-- plastic deformation / notch -->
+    <g transform="translate(600,265)">
+      <rect x="0" y="0" width="270" height="190" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="135" y="22" text-anchor="middle" font-weight="bold" fill="#1f3a5f">境界摩耗（ノッチ）・塑性変形</text>
+      <polygon points="40,110 120,50 130,60 60,120" fill="#8fa8c4" stroke="#1f3a5f"/>
+      <polygon points="112,56 122,50 126,58 116,63" fill="#d64545" opacity="0.8"/>
+      <text x="70" y="150" fill="#d64545" font-size="11">切込み境界部が V 字に削れる</text>
+      <text x="10" y="172" fill="#333">加工硬化層（SUS・耐熱合金）、黒皮</text>
+      <text x="10" y="186" fill="#3a9a5b">対策：ap を毎回変える、リード角、Vc↓</text>
+    </g>
+  </g>
+  <text x="450" y="472" text-anchor="middle" fill="#555" font-size="12">損傷の「種類」を見れば原因が絞れる。ルーペ（10 倍）で刃先を観察する習慣をつける。</text>
+</svg>

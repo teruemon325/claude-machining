@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="420" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">工具摩耗の進行と寿命管理</text>
+  <g transform="translate(70,60)">
+    <line x1="0" y1="280" x2="400" y2="280" stroke="#333" stroke-width="2"/>
+    <line x1="0" y1="280" x2="0" y2="20" stroke="#333" stroke-width="2"/>
+    <text x="200" y="312" text-anchor="middle" fill="#333">切削時間 / 加工数</text>
+    <text x="-8" y="30" text-anchor="end" fill="#333" font-size="12">VB</text>
+    <path d="M0 280 Q 30 200 70 190 L 280 150 Q 330 140 360 40" fill="none" stroke="#4a7ab8" stroke-width="3"/>
+    <rect x="0" y="20" width="70" height="260" fill="#e6ecf5" opacity="0.5"/>
+    <rect x="280" y="20" width="120" height="260" fill="#fbe3e3" opacity="0.6"/>
+    <text x="35" y="60" text-anchor="middle" fill="#1f3a5f" font-size="12">初期摩耗</text>
+    <text x="175" y="60" text-anchor="middle" fill="#1d5a33" font-size="12">定常摩耗（安定して使える期間）</text>
+    <text x="340" y="60" text-anchor="middle" fill="#8a1f1f" font-size="12">急激摩耗</text>
+    <line x1="0" y1="150" x2="400" y2="150" stroke="#d64545" stroke-dasharray="6 3"/>
+    <text x="8" y="145" fill="#d64545" font-size="12">交換基準（例 VB=0.2〜0.3mm）</text>
+    <circle cx="280" cy="150" r="6" fill="#d64545"/>
+    <text x="280" y="175" text-anchor="middle" fill="#8a1f1f" font-size="12">ここで交換</text>
+    <text x="0" y="345" fill="#555" font-size="12">急激摩耗域に入ると寸法・面粗さが急変し、欠損→ワーク不良の危険。</text>
+  </g>
+  <g transform="translate(520,60)">
+    <rect x="0" y="0" width="350" height="300" rx="6" fill="#f7f9fc" stroke="#4a7ab8"/>
+    <text x="12" y="24" fill="#1f3a5f" font-weight="bold">テイラーの寿命方程式</text>
+    <text x="12" y="50" fill="#222" font-size="15">Vc × Tⁿ = C</text>
+    <text x="12" y="72" fill="#333" font-size="12">n：超硬 0.2〜0.3、ハイス 0.1〜0.15、セラミック 0.5</text>
+    <text x="12" y="96" fill="#333" font-size="12">→ 超硬で Vc を 20% 上げると寿命は約 1/2〜1/2.5</text>
+    <text x="12" y="112" fill="#333" font-size="12">→ 送り fz の影響は Vc より小さい</text>
+    <text x="12" y="128" fill="#333" font-size="12">→ 切込み ap の影響はさらに小さい</text>
+    <text x="12" y="158" fill="#1f3a5f" font-weight="bold">寿命管理の実務</text>
+    <text x="12" y="182" fill="#333" font-size="12">・NC の工具寿命管理機能（使用回数／時間）を使う</text>
+    <text x="12" y="200" fill="#333" font-size="12">・交換基準を「個数」で決め、安全率 0.7〜0.8 を掛ける</text>
+    <text x="12" y="218" fill="#333" font-size="12">・寸法トレンド（工具の径減り）で摩耗を推定</text>
+    <text x="12" y="236" fill="#333" font-size="12">・主軸負荷モニタ／音の変化を交換サインに</text>
+    <text x="12" y="254" fill="#333" font-size="12">・仕上げ工具は荒工具より早めに交換</text>
+    <text x="12" y="272" fill="#333" font-size="12">・寿命を伸ばすなら送りより Vc を先に下げる</text>
+    <text x="12" y="290" fill="#333" font-size="12">・コスト最小は「寿命最長」ではない（時間も含めて判断）</text>
+  </g>
+</svg>

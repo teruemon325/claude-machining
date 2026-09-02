@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="470" viewBox="0 0 900 470" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="470" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">穴加工の工程設計（精度に応じた工程の組み立て）</text>
+  <g font-size="12">
+    <g transform="translate(30,60)">
+      <rect x="0" y="0" width="150" height="200" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="75" y="24" text-anchor="middle" font-weight="bold" fill="#1f3a5f">① センタ／スポット</text>
+      <rect x="45" y="100" width="60" height="80" fill="#f7d9c4" stroke="#1f3a5f"/>
+      <polygon points="70,100 80,100 75,110" fill="#fff" stroke="#1f3a5f"/>
+      <polygon points="66,60 84,60 75,100" fill="#8fa8c4" stroke="#1f3a5f"/>
+      <text x="75" y="200" text-anchor="middle" fill="#333">位置決め・食い付き</text>
+      <text x="75" y="216" text-anchor="middle" fill="#333">角度 90°/120°</text>
+      <text x="75" y="232" text-anchor="middle" fill="#3a9a5b">超硬ドリルは省略可</text>
+    </g>
+    <text x="195" y="160" fill="#888" font-size="20">▶</text>
+    <g transform="translate(215,60)">
+      <rect x="0" y="0" width="150" height="200" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="75" y="24" text-anchor="middle" font-weight="bold" fill="#1f3a5f">② ドリル</text>
+      <rect x="45" y="100" width="60" height="80" fill="#f7d9c4" stroke="#1f3a5f"/>
+      <rect x="67" y="100" width="16" height="80" fill="#fff" stroke="#1f3a5f"/>
+      <rect x="67" y="50" width="16" height="60" fill="#8fa8c4" stroke="#1f3a5f"/>
+      <polygon points="67,110 83,110 75,120" fill="#8fa8c4" stroke="#1f3a5f"/>
+      <text x="75" y="200" text-anchor="middle" fill="#333">下穴：H12〜H11</text>
+      <text x="75" y="216" text-anchor="middle" fill="#333">深穴は G83 ペック</text>
+      <text x="75" y="232" text-anchor="middle" fill="#3a9a5b">仕上げ代 0.2〜0.5</text>
+    </g>
+    <text x="380" y="160" fill="#888" font-size="20">▶</text>
+    <g transform="translate(400,60)">
+      <rect x="0" y="0" width="150" height="200" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="75" y="24" text-anchor="middle" font-weight="bold" fill="#1f3a5f">③ 面取り・座ぐり</text>
+      <rect x="45" y="100" width="60" height="80" fill="#f7d9c4" stroke="#1f3a5f"/>
+      <polygon points="62,100 88,100 83,106 67,106" fill="#fff" stroke="#1f3a5f"/>
+      <rect x="67" y="106" width="16" height="74" fill="#fff" stroke="#1f3a5f"/>
+      <text x="75" y="200" text-anchor="middle" fill="#333">C0.3〜0.5 面取り</text>
+      <text x="75" y="216" text-anchor="middle" fill="#333">バリ・入口欠け防止</text>
+      <text x="75" y="232" text-anchor="middle" fill="#3a9a5b">タップ前に必須</text>
+    </g>
+    <text x="565" y="160" fill="#888" font-size="20">▶</text>
+    <g transform="translate(585,60)">
+      <rect x="0" y="0" width="290" height="200" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="145" y="24" text-anchor="middle" font-weight="bold" fill="#1f3a5f">④ 仕上げ（精度・用途で選ぶ）</text>
+      <text x="12" y="52" fill="#333">リーマ：H7、面粗さ良、φ20 以下が得意</text>
+      <text x="12" y="72" fill="#333">ボーリング：H7〜H6、位置精度◎、大径</text>
+      <text x="12" y="92" fill="#333">エンドミル円弧補間：H8〜H9、工具流用</text>
+      <text x="12" y="112" fill="#333">ヘリカル：下穴なしで大径・ねじ加工</text>
+      <text x="12" y="132" fill="#333">タップ：G84 リジッド、下穴径は必ず表で確認</text>
+      <text x="12" y="160" fill="#7a5010">リーマ：下穴の位置精度がそのまま残る</text>
+      <text x="12" y="178" fill="#7a5010">ボーリング：位置も修正できる</text>
+    </g>
+  </g>
+  <g transform="translate(30,280)" font-size="12">
+    <rect x="0" y="0" width="845" height="180" rx="6" fill="#e6ecf5" stroke="#4a7ab8"/>
+    <text x="12" y="22" fill="#1f3a5f" font-weight="bold">穴加工のポイント</text>
+    <text x="12" y="46" fill="#333">・ドリルの送り fr は径の約 1〜2%（φ10 → 0.1〜0.2 mm/rev）、超硬は 0.15〜0.3。ハイスは Vc 20〜30、超硬 60〜120 m/min（鋼）。</text>
+    <text x="12" y="66" fill="#333">・深さ 3D を超えたらペック（G83）、5D 超は油穴付き超硬ドリル＋内部給油。切りくず排出が寿命と精度を決める。</text>
+    <text x="12" y="86" fill="#333">・貫通穴は抜け際に送りを 50% に落とすとバリと欠けが減る。裏面バリは裏面取りカッタ or 手作業。</text>
+    <text x="12" y="106" fill="#333">・タップ下穴径：M6×1.0 → φ5.0（60%山なら φ5.2）。SUS・アルミの通り穴は少し大きめでも可。止まり穴の切りくず逃げを確保。</text>
+    <text x="12" y="126" fill="#333">・タップの折損は「切りくず詰まり」「下穴小さい」「同期ずれ」が三大要因。リジッドタップ＋タップ用オイルで大半は解決。</text>
+    <text x="12" y="146" fill="#333">・リーマは取り代 0.1〜0.3mm（径）、Vc 5〜15 m/min、送り大きめ（0.2〜0.5 mm/rev）で低速高送りが基本。逆転で抜かない。</text>
+    <text x="12" y="166" fill="#333">・ボーリングは主軸の振れ・ヘッドの剛性が出来を決める。試し削りで径を追い込み、熱で穴が小さく仕上がる方向を頭に入れる。</text>
+  </g>
+</svg>

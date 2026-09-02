@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="490" viewBox="0 0 900 490" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="460" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">加工精度に影響する要因と寸法ばらつきの源</text>
+  <!-- center -->
+  <ellipse cx="450" cy="230" rx="110" ry="50" fill="#1f3a5f"/>
+  <text x="450" y="226" text-anchor="middle" fill="#fff" font-weight="bold" font-size="15">加工誤差</text>
+  <text x="450" y="246" text-anchor="middle" fill="#cfe0f3" font-size="12">寸法・形状・位置・面粗さ</text>
+  <!-- nodes -->
+  <g font-size="12">
+    <g transform="translate(60,70)">
+      <rect x="0" y="0" width="200" height="70" rx="8" fill="#fde8d8" stroke="#e8833a" stroke-width="1.5"/>
+      <text x="100" y="22" text-anchor="middle" font-weight="bold" fill="#7a3d10">熱変位（最大要因）</text>
+      <text x="100" y="42" text-anchor="middle" fill="#333">主軸・ボールねじの発熱</text>
+      <text x="100" y="58" text-anchor="middle" fill="#333">室温変化・ワークの温度</text>
+    </g>
+    <g transform="translate(640,70)">
+      <rect x="0" y="0" width="200" height="70" rx="8" fill="#e3f0e7" stroke="#3a9a5b" stroke-width="1.5"/>
+      <text x="100" y="22" text-anchor="middle" font-weight="bold" fill="#1d5a33">機械の幾何誤差</text>
+      <text x="100" y="42" text-anchor="middle" fill="#333">真直度・直角度・バックラッシュ</text>
+      <text x="100" y="58" text-anchor="middle" fill="#333">主軸振れ・位置決め精度</text>
+    </g>
+    <g transform="translate(60,320)">
+      <rect x="0" y="0" width="200" height="70" rx="8" fill="#e6ecf5" stroke="#4a7ab8" stroke-width="1.5"/>
+      <text x="100" y="22" text-anchor="middle" font-weight="bold" fill="#1f3a5f">工具側</text>
+      <text x="100" y="42" text-anchor="middle" fill="#333">たわみ・振れ・摩耗による径変化</text>
+      <text x="100" y="58" text-anchor="middle" fill="#333">工具長／径補正値の誤り</text>
+    </g>
+    <g transform="translate(640,320)">
+      <rect x="0" y="0" width="200" height="70" rx="8" fill="#fbe3e3" stroke="#d64545" stroke-width="1.5"/>
+      <text x="100" y="22" text-anchor="middle" font-weight="bold" fill="#8a1f1f">ワーク・段取り側</text>
+      <text x="100" y="42" text-anchor="middle" fill="#333">クランプ変形・残留応力の解放</text>
+      <text x="100" y="58" text-anchor="middle" fill="#333">基準面の異物・原点出し誤差</text>
+    </g>
+    <g transform="translate(350,370)">
+      <rect x="0" y="0" width="200" height="70" rx="8" fill="#f3f3f3" stroke="#888" stroke-width="1.5"/>
+      <text x="100" y="22" text-anchor="middle" font-weight="bold" fill="#444">測定側</text>
+      <text x="100" y="42" text-anchor="middle" fill="#333">測定器の校正・温度（20℃基準）</text>
+      <text x="100" y="58" text-anchor="middle" fill="#333">測定力・測定位置のばらつき</text>
+    </g>
+  </g>
+  <g stroke="#888" stroke-width="1.5" fill="none">
+    <line x1="260" y1="120" x2="360" y2="200"/>
+    <line x1="640" y1="120" x2="540" y2="200"/>
+    <line x1="260" y1="340" x2="360" y2="260"/>
+    <line x1="640" y1="340" x2="540" y2="260"/>
+    <line x1="450" y1="280" x2="450" y2="370"/>
+  </g>
+  <text x="450" y="462" text-anchor="middle" fill="#7a3d10" font-size="12">鋼の線膨張：約 11.7 µm / m / ℃　→ 100mm のワークが 5℃上がると約 6 µm 伸びる</text>
+  <text x="450" y="480" text-anchor="middle" fill="#7a3d10" font-size="12">アルミはその約 2 倍（約 23 µm / m / ℃）</text>
+</svg>

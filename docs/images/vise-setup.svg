@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="420" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">マシンバイスの正しい使い方</text>
+  <g transform="translate(40,60)">
+    <text x="200" y="0" text-anchor="middle" font-weight="bold" fill="#3a9a5b" font-size="15">○ 良い例</text>
+    <!-- base -->
+    <rect x="0" y="230" width="400" height="30" fill="#c9d3de" stroke="#1f3a5f" stroke-width="2"/>
+    <!-- fixed jaw -->
+    <rect x="20" y="110" width="50" height="120" fill="#8fa8c4" stroke="#1f3a5f" stroke-width="2"/>
+    <text x="45" y="100" text-anchor="middle" font-size="11" fill="#1f3a5f">固定口金</text>
+    <!-- movable jaw -->
+    <rect x="270" y="110" width="50" height="120" fill="#b9c8d8" stroke="#1f3a5f" stroke-width="2"/>
+    <text x="295" y="100" text-anchor="middle" font-size="11" fill="#1f3a5f">可動口金</text>
+    <!-- parallels -->
+    <rect x="70" y="190" width="200" height="40" fill="#dbe4ee" stroke="#1f3a5f"/>
+    <text x="170" y="215" text-anchor="middle" font-size="11" fill="#1f3a5f">パラレル（平行台）</text>
+    <!-- workpiece -->
+    <rect x="70" y="120" width="200" height="70" fill="#e8833a" stroke="#1f3a5f" stroke-width="2"/>
+    <text x="170" y="160" text-anchor="middle" fill="#fff" font-weight="bold">ワーク</text>
+    <!-- hammer -->
+    <line x1="170" y1="60" x2="170" y2="110" stroke="#4a7ab8" stroke-width="3"/>
+    <polygon points="162,110 170,120 178,110" fill="#4a7ab8"/>
+    <text x="170" y="52" text-anchor="middle" font-size="12" fill="#4a7ab8">樹脂ハンマーで軽くたたき、パラレルが動かなくなるまで</text>
+    <text x="0" y="290" fill="#333" font-size="12">・くわえ代は 5mm 以上、加工部はできるだけ口金に近く（突き出し小）</text>
+    <text x="0" y="310" fill="#333" font-size="12">・固定口金側を基準面（X or Y）に使い、口金の平行はダイヤルで確認</text>
+    <text x="0" y="330" fill="#333" font-size="12">・締付力は一定に（トルクレンチ or ハンドル位置を決める）</text>
+  </g>
+  <g transform="translate(480,60)">
+    <text x="200" y="0" text-anchor="middle" font-weight="bold" fill="#d64545" font-size="15">× 悪い例</text>
+    <rect x="0" y="230" width="400" height="30" fill="#c9d3de" stroke="#1f3a5f" stroke-width="2"/>
+    <rect x="20" y="110" width="50" height="120" fill="#8fa8c4" stroke="#1f3a5f" stroke-width="2"/>
+    <rect x="270" y="110" width="50" height="120" fill="#b9c8d8" stroke="#1f3a5f" stroke-width="2"/>
+    <rect x="70" y="190" width="200" height="40" fill="#dbe4ee" stroke="#1f3a5f"/>
+    <!-- tilted workpiece with chip -->
+    <g transform="rotate(-4 170 190)">
+      <rect x="70" y="120" width="200" height="70" fill="#e8833a" stroke="#1f3a5f" stroke-width="2"/>
+    </g>
+    <circle cx="90" cy="186" r="5" fill="#555"/>
+    <text x="100" y="180" font-size="11" fill="#d64545">切りくずを噛んで浮いている</text>
+    <!-- long overhang -->
+    <rect x="0" y="80" width="30" height="20" fill="#e8833a" stroke="#d64545" stroke-width="2" stroke-dasharray="4 2"/>
+    <text x="0" y="72" font-size="11" fill="#d64545">くわえ代が浅すぎ</text>
+    <text x="0" y="290" fill="#333" font-size="12">・浮き → 平行度不良、締付で口金側に反り</text>
+    <text x="0" y="310" fill="#333" font-size="12">・くわえ代不足 → 加工中に飛ぶ（重大事故）</text>
+    <text x="0" y="330" fill="#333" font-size="12">・薄いワークをそのまま → 締付で樽形に変形</text>
+  </g>
+  <text x="450" y="405" text-anchor="middle" fill="#555" font-size="12">ワークが「浮いていないか」はパラレルを指で押して確認。動くなら浮いている。</text>
+</svg>

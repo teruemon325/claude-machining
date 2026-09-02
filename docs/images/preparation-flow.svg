@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="520" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">加工準備の流れ：図面受領から初品確認まで</text>
+  <g font-size="12">
+    <g transform="translate(30,60)">
+      <rect x="0" y="0" width="160" height="90" rx="8" fill="#e3f0e7" stroke="#3a9a5b" stroke-width="1.5"/>
+      <text x="80" y="22" text-anchor="middle" font-weight="bold" fill="#1d5a33">1. 図面を読む</text>
+      <text x="8" y="44" fill="#333">基準（データム）</text>
+      <text x="8" y="60" fill="#333">公差の厳しい箇所</text>
+      <text x="8" y="76" fill="#333">面粗さ・材質・熱処理</text>
+    </g>
+    <text x="200" y="112" fill="#888" font-size="18">▶</text>
+    <g transform="translate(225,60)">
+      <rect x="0" y="0" width="160" height="90" rx="8" fill="#e3f0e7" stroke="#3a9a5b" stroke-width="1.5"/>
+      <text x="80" y="22" text-anchor="middle" font-weight="bold" fill="#1d5a33">2. 工程設計</text>
+      <text x="8" y="44" fill="#333">何回の段取りで加工？</text>
+      <text x="8" y="60" fill="#333">基準面をどこで作る？</text>
+      <text x="8" y="76" fill="#333">荒→中→仕上げの順</text>
+    </g>
+    <text x="395" y="112" fill="#888" font-size="18">▶</text>
+    <g transform="translate(420,60)">
+      <rect x="0" y="0" width="160" height="90" rx="8" fill="#e3f0e7" stroke="#3a9a5b" stroke-width="1.5"/>
+      <text x="80" y="22" text-anchor="middle" font-weight="bold" fill="#1d5a33">3. 材料手配</text>
+      <text x="8" y="44" fill="#333">取り代：面あたり 2〜5mm</text>
+      <text x="8" y="60" fill="#333">くわえ代・捨て代</text>
+      <text x="8" y="76" fill="#333">ミルシート・ロット確認</text>
+    </g>
+    <text x="590" y="112" fill="#888" font-size="18">▶</text>
+    <g transform="translate(615,60)">
+      <rect x="0" y="0" width="160" height="90" rx="8" fill="#e3f0e7" stroke="#3a9a5b" stroke-width="1.5"/>
+      <text x="80" y="22" text-anchor="middle" font-weight="bold" fill="#1d5a33">4. 工具・治具選定</text>
+      <text x="8" y="44" fill="#333">工具リスト作成</text>
+      <text x="8" y="60" fill="#333">突き出し長・ホルダ</text>
+      <text x="8" y="76" fill="#333">クランプ方法・干渉</text>
+    </g>
+    <!-- row 2 -->
+    <g transform="translate(615,190)">
+      <rect x="0" y="0" width="160" height="90" rx="8" fill="#e6ecf5" stroke="#4a7ab8" stroke-width="1.5"/>
+      <text x="80" y="22" text-anchor="middle" font-weight="bold" fill="#1f3a5f">5. プログラム作成</text>
+      <text x="8" y="44" fill="#333">CAM／手打ち</text>
+      <text x="8" y="60" fill="#333">切削条件の設定</text>
+      <text x="8" y="76" fill="#333">シミュレーションで干渉確認</text>
+    </g>
+    <text x="590" y="242" fill="#888" font-size="18">◀</text>
+    <g transform="translate(420,190)">
+      <rect x="0" y="0" width="160" height="90" rx="8" fill="#e6ecf5" stroke="#4a7ab8" stroke-width="1.5"/>
+      <text x="80" y="22" text-anchor="middle" font-weight="bold" fill="#1f3a5f">6. 工具準備</text>
+      <text x="8" y="44" fill="#333">ホルダに組付け・振れ測定</text>
+      <text x="8" y="60" fill="#333">工具長測定（プリセッタ）</text>
+      <text x="8" y="76" fill="#333">マガジンに T 番号どおり</text>
+    </g>
+    <text x="395" y="242" fill="#888" font-size="18">◀</text>
+    <g transform="translate(225,190)">
+      <rect x="0" y="0" width="160" height="90" rx="8" fill="#e6ecf5" stroke="#4a7ab8" stroke-width="1.5"/>
+      <text x="80" y="22" text-anchor="middle" font-weight="bold" fill="#1f3a5f">7. 段取り</text>
+      <text x="8" y="44" fill="#333">治具・バイスの芯出し</text>
+      <text x="8" y="60" fill="#333">ワーク固定・浮き確認</text>
+      <text x="8" y="76" fill="#333">原点出し（G54）</text>
+    </g>
+    <text x="200" y="242" fill="#888" font-size="18">◀</text>
+    <g transform="translate(30,190)">
+      <rect x="0" y="0" width="160" height="90" rx="8" fill="#e6ecf5" stroke="#4a7ab8" stroke-width="1.5"/>
+      <text x="80" y="22" text-anchor="middle" font-weight="bold" fill="#1f3a5f">8. 空運転</text>
+      <text x="8" y="44" fill="#333">Z を +50 上げてドライラン</text>
+      <text x="8" y="60" fill="#333">シングルブロックで確認</text>
+      <text x="8" y="76" fill="#333">早送り・送り 25%</text>
+    </g>
+    <!-- row 3 -->
+    <g transform="translate(30,320)">
+      <rect x="0" y="0" width="160" height="90" rx="8" fill="#fdf1dc" stroke="#e8a83a" stroke-width="1.5"/>
+      <text x="80" y="22" text-anchor="middle" font-weight="bold" fill="#7a5010">9. 初品加工</text>
+      <text x="8" y="44" fill="#333">工具ごとに M01 で停止</text>
+      <text x="8" y="60" fill="#333">切りくず・音・負荷を確認</text>
+      <text x="8" y="76" fill="#333">仕上げ前に中間測定</text>
+    </g>
+    <text x="200" y="372" fill="#888" font-size="18">▶</text>
+    <g transform="translate(225,320)">
+      <rect x="0" y="0" width="160" height="90" rx="8" fill="#fdf1dc" stroke="#e8a83a" stroke-width="1.5"/>
+      <text x="80" y="22" text-anchor="middle" font-weight="bold" fill="#7a5010">10. 初品検査</text>
+      <text x="8" y="44" fill="#333">全寸法を測定・記録</text>
+      <text x="8" y="60" fill="#333">補正値（D/H・G54）修正</text>
+      <text x="8" y="76" fill="#333">面粗さ・バリ確認</text>
+    </g>
+    <text x="395" y="372" fill="#888" font-size="18">▶</text>
+    <g transform="translate(420,320)">
+      <rect x="0" y="0" width="160" height="90" rx="8" fill="#fdf1dc" stroke="#e8a83a" stroke-width="1.5"/>
+      <text x="80" y="22" text-anchor="middle" font-weight="bold" fill="#7a5010">11. 量産・記録</text>
+      <text x="8" y="44" fill="#333">段取り写真・条件表を保存</text>
+      <text x="8" y="60" fill="#333">工具寿命カウント開始</text>
+      <text x="8" y="76" fill="#333">抜き取り検査の周期決定</text>
+    </g>
+    <g transform="translate(615,320)">
+      <rect x="0" y="0" width="160" height="90" rx="8" fill="#fbe3e3" stroke="#d64545" stroke-width="1.5"/>
+      <text x="80" y="22" text-anchor="middle" font-weight="bold" fill="#8a1f1f">NG なら戻る</text>
+      <text x="8" y="44" fill="#333">寸法 NG → 補正・条件</text>
+      <text x="8" y="60" fill="#333">形状 NG → 段取り・剛性</text>
+      <text x="8" y="76" fill="#333">面 NG → 工具・条件・びびり</text>
+    </g>
+  </g>
+  <text x="450" y="450" text-anchor="middle" fill="#555" font-size="12">時間配分の目安：段取り・準備 6〜7 割、加工 3〜4 割。「準備で決まる」のがマシニング加工。</text>
+  <text x="450" y="472" text-anchor="middle" fill="#555" font-size="12">図面で分からないこと（公差の意図、基準の優先順位）は加工前に設計者へ確認する。推測で加工しない。</text>
+  <text x="450" y="494" text-anchor="middle" fill="#555" font-size="12">条件表・段取り写真・プログラムをセットで保管し、次回のリピートは「同じ手順」で再現できるようにする。</text>
+</svg>

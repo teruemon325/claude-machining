@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="440" viewBox="0 0 900 440" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="440" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">機械座標系とワーク座標系（G54）・原点出し</text>
+  <g transform="translate(60,70)">
+    <!-- table -->
+    <rect x="0" y="0" width="460" height="300" fill="#eef3f8" stroke="#1f3a5f" stroke-width="2"/>
+    <text x="10" y="18" fill="#1f3a5f" font-size="12">テーブル（上面図）</text>
+    <!-- machine origin -->
+    <circle cx="440" cy="20" r="6" fill="#d64545"/>
+    <text x="430" y="40" text-anchor="end" fill="#d64545" font-weight="bold" font-size="12">機械原点（原点復帰位置）</text>
+    <!-- workpiece -->
+    <rect x="120" y="120" width="200" height="130" fill="#f7d9c4" stroke="#1f3a5f" stroke-width="2"/>
+    <text x="220" y="190" text-anchor="middle" fill="#7a3d10" font-weight="bold">ワーク</text>
+    <!-- work origin -->
+    <circle cx="120" cy="250" r="6" fill="#3a9a5b"/>
+    <text x="112" y="275" fill="#3a9a5b" font-weight="bold" font-size="12">ワーク原点（G54）</text>
+    <g stroke="#3a9a5b" stroke-width="2" fill="#3a9a5b">
+      <line x1="120" y1="250" x2="200" y2="250"/><polygon points="200,245 212,250 200,255"/>
+      <line x1="120" y1="250" x2="120" y2="170"/><polygon points="115,170 120,158 125,170"/>
+    </g>
+    <text x="205" y="243" fill="#3a9a5b" font-size="12">+X</text>
+    <text x="127" y="165" fill="#3a9a5b" font-size="12">+Y</text>
+    <!-- offset vector -->
+    <line x1="440" y1="20" x2="126" y2="246" stroke="#4a7ab8" stroke-width="2" stroke-dasharray="6 3"/>
+    <text x="300" y="120" fill="#4a7ab8" font-weight="bold" font-size="12">ワークオフセット量</text>
+    <text x="300" y="136" fill="#4a7ab8" font-size="11">（G54 に登録する X, Y, Z）</text>
+  </g>
+  <g transform="translate(560,70)">
+    <rect x="0" y="0" width="300" height="300" rx="6" fill="#f7f9fc" stroke="#4a7ab8"/>
+    <text x="12" y="24" fill="#1f3a5f" font-weight="bold">原点出しの手順（XY）</text>
+    <text x="12" y="50" fill="#333" font-size="12">1. タッチセンサ／ピックテスタを主軸に装着</text>
+    <text x="12" y="70" fill="#333" font-size="12">2. 基準面 X に接触 → 機械座標を読む</text>
+    <text x="12" y="90" fill="#333" font-size="12">3. センサ半径分を補正して G54 X に入力</text>
+    <text x="12" y="110" fill="#333" font-size="12">4. Y も同様。穴基準なら 4 点で中心を求める</text>
+    <text x="12" y="130" fill="#333" font-size="12">5. Z：ワーク上面にツールセッタ／ブロックゲージ</text>
+    <text x="12" y="150" fill="#333" font-size="12">6. 入力後、G54 で MDI 移動して位置を目視確認</text>
+    <text x="12" y="184" fill="#1f3a5f" font-weight="bold">よくある失敗</text>
+    <text x="12" y="208" fill="#d64545" font-size="12">・符号ミス（+/−）で工具がワークに突っ込む</text>
+    <text x="12" y="228" fill="#d64545" font-size="12">・センサ径・スタイラス径の補正忘れ</text>
+    <text x="12" y="248" fill="#d64545" font-size="12">・G54 と G55 の取り違え、前品の値が残っている</text>
+    <text x="12" y="268" fill="#d64545" font-size="12">・工具長補正（H）を別のワークで測った値で使用</text>
+    <text x="12" y="288" fill="#d64545" font-size="12">・切りくずが基準面に付いたまま測定</text>
+  </g>
+  <text x="450" y="405" text-anchor="middle" fill="#555" font-size="12">ワーク原点は「図面の基準」に合わせる。基準が角なら角、穴なら穴中心。CAM の原点設定と一致させること。</text>
+  <text x="450" y="425" text-anchor="middle" fill="#555" font-size="12">Z 原点：ワーク上面 Z0 が一般的（仕上げ面が基準）。底面基準なら治具上面を Z0 にすると再現性が高い。</text>
+</svg>

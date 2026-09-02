@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="420" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">切りくずの形で加工状態を読む</text>
+  <g transform="translate(30,60)" font-size="12">
+    <!-- 1 good -->
+    <rect x="0" y="0" width="200" height="330" rx="8" fill="#e3f0e7" stroke="#3a9a5b" stroke-width="1.5"/>
+    <text x="100" y="24" text-anchor="middle" font-weight="bold" fill="#1d5a33">○ 理想：短くカールした「C」「6」形</text>
+    <g fill="none" stroke="#7a3d10" stroke-width="5" stroke-linecap="round">
+      <path d="M60 80 a 20 20 0 1 1 0 40"/><path d="M120 90 a 20 20 0 1 1 5 40"/><path d="M70 150 a 22 22 0 1 0 30 -10"/><path d="M130 160 a 20 20 0 1 1 0 40"/>
+    </g>
+    <text x="10" y="240" fill="#333">・適切な切りくず厚さ・温度</text>
+    <text x="10" y="260" fill="#333">・排出性が良く絡まない</text>
+    <text x="10" y="280" fill="#333">・色：鋼で薄い茶〜青紫は正常</text>
+    <text x="10" y="300" fill="#333">　（銀色＝低温、濃青＝高温注意）</text>
+  </g>
+  <g transform="translate(250,60)" font-size="12">
+    <rect x="0" y="0" width="200" height="330" rx="8" fill="#fde8d8" stroke="#e8833a" stroke-width="1.5"/>
+    <text x="100" y="24" text-anchor="middle" font-weight="bold" fill="#7a3d10">△ 長い連続切りくず（リボン）</text>
+    <path d="M30 70 q 30 40 60 0 t 60 0 t 60 0 q -30 40 -60 0 t -60 0 t -60 0 q 30 40 60 0 t 60 0 t 60 0" fill="none" stroke="#7a3d10" stroke-width="4"/>
+    <text x="10" y="240" fill="#333">・fz 小さすぎ／延性材(SUS,Al)</text>
+    <text x="10" y="260" fill="#333">・工具や治具に巻き付き傷</text>
+    <text x="10" y="280" fill="#3a9a5b">対策：fz↑、ブレーカ付き刃</text>
+    <text x="10" y="300" fill="#3a9a5b">　ペック、エア／クーラント</text>
+  </g>
+  <g transform="translate(470,60)" font-size="12">
+    <rect x="0" y="0" width="200" height="330" rx="8" fill="#fbe3e3" stroke="#d64545" stroke-width="1.5"/>
+    <text x="100" y="24" text-anchor="middle" font-weight="bold" fill="#8a1f1f">× 細かく砕けた粉状・青黒色</text>
+    <g fill="#333">
+      <circle cx="50" cy="90" r="4"/><circle cx="70" cy="110" r="3"/><circle cx="95" cy="85" r="4"/><circle cx="120" cy="105" r="3"/>
+      <circle cx="140" cy="90" r="4"/><circle cx="80" cy="140" r="3"/><circle cx="110" cy="150" r="4"/><circle cx="150" cy="135" r="3"/>
+    </g>
+    <text x="10" y="240" fill="#333">・Vc／切込み過大 → 過熱</text>
+    <text x="10" y="260" fill="#333">・工具摩耗末期、びびり兆候</text>
+    <text x="10" y="280" fill="#3a9a5b">対策：Vc↓、工具交換</text>
+    <text x="10" y="300" fill="#3a9a5b">　クーラント量・当て方見直し</text>
+  </g>
+  <g transform="translate(690,60)" font-size="12">
+    <rect x="0" y="0" width="190" height="330" rx="8" fill="#e6ecf5" stroke="#4a7ab8" stroke-width="1.5"/>
+    <text x="95" y="24" text-anchor="middle" font-weight="bold" fill="#1f3a5f">△ 溶着・むしれた切りくず</text>
+    <path d="M40 80 l 20 10 l -5 20 l 25 5 l -10 20 l 30 0 l 5 25 l 20 -10" fill="none" stroke="#7a3d10" stroke-width="5" stroke-linejoin="round"/>
+    <circle cx="60" cy="90" r="7" fill="#bbb"/><circle cx="85" cy="130" r="6" fill="#bbb"/>
+    <text x="10" y="240" fill="#333">・構成刃先（Al・低炭素鋼）</text>
+    <text x="10" y="260" fill="#333">・Vc 低い／切れ味不足</text>
+    <text x="10" y="280" fill="#3a9a5b">対策：Vc↑、すくい角↑</text>
+    <text x="10" y="300" fill="#3a9a5b">　DLC／ノンコート、油性</text>
+  </g>
+  <text x="450" y="410" text-anchor="middle" fill="#555" font-size="12">切りくずは「無料の加工状態センサ」。工具交換時に色・形・厚さを必ず見る習慣をつける。</text>
+</svg>

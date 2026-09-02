@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="480" viewBox="0 0 900 480" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="480" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">マシニングセンタ作業の主な危険源と対策</text>
+  <!-- machine silhouette center -->
+  <g transform="translate(330,150)">
+    <rect x="0" y="120" width="240" height="30" fill="#c9d3de" stroke="#1f3a5f" stroke-width="2"/>
+    <rect x="30" y="100" width="180" height="20" fill="#eef3f8" stroke="#1f3a5f"/>
+    <rect x="90" y="80" width="60" height="20" fill="#e8833a" stroke="#1f3a5f"/>
+    <rect x="200" y="0" width="40" height="120" fill="#c9d3de" stroke="#1f3a5f" stroke-width="2"/>
+    <rect x="130" y="10" width="70" height="50" fill="#dbe4ee" stroke="#1f3a5f"/>
+    <rect x="116" y="60" width="8" height="20" fill="#555"/>
+    <rect x="-20" y="-20" width="280" height="190" rx="6" fill="none" stroke="#3a9a5b" stroke-width="3" stroke-dasharray="8 4"/>
+    <text x="120" y="-28" text-anchor="middle" fill="#3a9a5b" font-weight="bold" font-size="12">安全カバー・インターロック</text>
+  </g>
+  <g font-size="12">
+    <g transform="translate(30,60)">
+      <rect x="0" y="0" width="270" height="100" rx="8" fill="#fbe3e3" stroke="#d64545" stroke-width="1.5"/>
+      <text x="10" y="22" fill="#8a1f1f" font-weight="bold">① 回転体への巻き込み</text>
+      <text x="10" y="42" fill="#333">回転中の工具に手袋・袖・髪が巻き込まれる</text>
+      <text x="10" y="60" fill="#333">→ 回転中はドアを開けない、手袋禁止</text>
+      <text x="10" y="78" fill="#333">　（切りくず処理は停止後に耐切創手袋）</text>
+    </g>
+    <g transform="translate(30,170)">
+      <rect x="0" y="0" width="270" height="100" rx="8" fill="#fbe3e3" stroke="#d64545" stroke-width="1.5"/>
+      <text x="10" y="22" fill="#8a1f1f" font-weight="bold">② 飛来（ワーク・工具・切りくず）</text>
+      <text x="10" y="42" fill="#333">クランプ不足でワークが飛ぶ、折損片の飛散</text>
+      <text x="10" y="60" fill="#333">→ ドアを閉めて運転、保護メガネ常時着用</text>
+      <text x="10" y="78" fill="#333">　初品は送りオーバーライド 25〜50%</text>
+    </g>
+    <g transform="translate(30,280)">
+      <rect x="0" y="0" width="270" height="100" rx="8" fill="#fbe3e3" stroke="#d64545" stroke-width="1.5"/>
+      <text x="10" y="22" fill="#8a1f1f" font-weight="bold">③ 衝突（クラッシュ）</text>
+      <text x="10" y="42" fill="#333">原点・補正ミス、早送りの突っ込み、治具干渉</text>
+      <text x="10" y="60" fill="#333">→ 空運転・シングルブロック・Z+50 で確認</text>
+      <text x="10" y="78" fill="#333">　干渉チェック付き CAM・シミュレーション</text>
+    </g>
+    <g transform="translate(600,60)">
+      <rect x="0" y="0" width="270" height="100" rx="8" fill="#fdf1dc" stroke="#e8a83a" stroke-width="1.5"/>
+      <text x="10" y="22" fill="#7a5010" font-weight="bold">④ 切創・やけど</text>
+      <text x="10" y="42" fill="#333">鋭い切りくず、加工直後の高温ワーク・工具</text>
+      <text x="10" y="60" fill="#333">→ 切りくずは手で触らずブラシ・フック</text>
+      <text x="10" y="78" fill="#333">　バリ取りは固定して、素手厳禁</text>
+    </g>
+    <g transform="translate(600,170)">
+      <rect x="0" y="0" width="270" height="100" rx="8" fill="#fdf1dc" stroke="#e8a83a" stroke-width="1.5"/>
+      <text x="10" y="22" fill="#7a5010" font-weight="bold">⑤ 火災・健康被害</text>
+      <text x="10" y="42" fill="#333">Mg・Ti・Al 微粉の発火、ミスト吸入、皮膚炎</text>
+      <text x="10" y="60" fill="#333">→ 可燃金属は D 火災用消火剤、ミストコレクタ</text>
+      <text x="10" y="78" fill="#333">　クーラント濃度管理、保護クリーム</text>
+    </g>
+    <g transform="translate(600,280)">
+      <rect x="0" y="0" width="270" height="100" rx="8" fill="#fdf1dc" stroke="#e8a83a" stroke-width="1.5"/>
+      <text x="10" y="22" fill="#7a5010" font-weight="bold">⑥ 重量物・挟まれ</text>
+      <text x="10" y="42" fill="#333">治具・ワーク・バイスの落下、ATC・パレット</text>
+      <text x="10" y="60" fill="#333">→ 20kg 超はクレーン／リフタ、吊り具点検</text>
+      <text x="10" y="78" fill="#333">　ATC 動作範囲に立ち入らない、安全靴</text>
+    </g>
+    <g transform="translate(330,380)">
+      <rect x="0" y="0" width="240" height="90" rx="8" fill="#e3f0e7" stroke="#3a9a5b" stroke-width="1.5"/>
+      <text x="120" y="22" text-anchor="middle" fill="#1d5a33" font-weight="bold">運転前の指差呼称</text>
+      <text x="10" y="44" fill="#333">「工具 ヨシ」「クランプ ヨシ」</text>
+      <text x="10" y="62" fill="#333">「原点 ヨシ」「ドア ヨシ」</text>
+      <text x="10" y="80" fill="#333">「オーバーライド 25% ヨシ」</text>
+    </g>
+  </g>
+</svg>

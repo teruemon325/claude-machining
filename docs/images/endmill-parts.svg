@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="460" viewBox="0 0 900 460" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="460" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">エンドミル各部の名称と役割</text>
+  <!-- shank -->
+  <rect x="100" y="150" width="260" height="70" fill="#c9d3de" stroke="#1f3a5f" stroke-width="2"/>
+  <!-- neck -->
+  <rect x="360" y="158" width="60" height="54" fill="#dbe4ee" stroke="#1f3a5f" stroke-width="2"/>
+  <!-- flute body -->
+  <rect x="420" y="150" width="260" height="70" fill="#8fa8c4" stroke="#1f3a5f" stroke-width="2"/>
+  <g stroke="#1f3a5f" stroke-width="1.5" fill="none">
+    <path d="M430 150 q 60 35 120 70"/><path d="M490 150 q 60 35 120 70"/><path d="M550 150 q 60 35 120 70"/>
+    <path d="M420 175 q 40 25 80 45"/><path d="M610 150 q 40 25 70 45"/>
+  </g>
+  <rect x="680" y="150" width="8" height="70" fill="#4a7ab8" stroke="#1f3a5f"/>
+  <!-- labels -->
+  <g fill="#1f3a5f">
+    <text x="230" y="140" text-anchor="middle" font-weight="bold">シャンク（把持部）</text>
+    <text x="390" y="240" text-anchor="middle" font-size="12">首（ネック）</text>
+    <text x="550" y="140" text-anchor="middle" font-weight="bold">刃部（フルート）</text>
+    <text x="700" y="140" font-weight="bold" font-size="12">刃先</text>
+  </g>
+  <!-- dims -->
+  <g stroke="#3a9a5b" stroke-width="2" fill="#3a9a5b">
+    <line x1="420" y1="250" x2="680" y2="250"/><line x1="420" y1="242" x2="420" y2="258"/><line x1="680" y1="242" x2="680" y2="258"/>
+    <line x1="100" y1="280" x2="688" y2="280"/><line x1="100" y1="272" x2="100" y2="288"/><line x1="688" y1="272" x2="688" y2="288"/>
+    <line x1="720" y1="150" x2="720" y2="220"/><line x1="712" y1="150" x2="728" y2="150"/><line x1="712" y1="220" x2="728" y2="220"/>
+    <line x1="80" y1="150" x2="80" y2="220"/><line x1="72" y1="150" x2="88" y2="150"/><line x1="72" y1="220" x2="88" y2="220"/>
+  </g>
+  <text x="550" y="268" text-anchor="middle" fill="#3a9a5b" font-size="12">刃長（ap の上限）</text>
+  <text x="394" y="300" text-anchor="middle" fill="#3a9a5b" font-size="12">全長</text>
+  <text x="734" y="190" fill="#3a9a5b" font-size="12">外径 D</text>
+  <text x="80" y="240" text-anchor="middle" fill="#3a9a5b" font-size="12">シャンク径</text>
+  <!-- helix angle -->
+  <line x1="500" y1="150" x2="500" y2="95" stroke="#d64545" stroke-dasharray="3 3"/>
+  <line x1="500" y1="150" x2="545" y2="100" stroke="#d64545" stroke-width="1.5"/>
+  <path d="M500 118 a 32 32 0 0 1 20 8" fill="none" stroke="#d64545"/>
+  <text x="520" y="90" fill="#d64545" font-size="12">ねじれ角（30°〜45° が一般的）</text>
+  <!-- end view -->
+  <g transform="translate(120,340)">
+    <circle cx="60" cy="60" r="55" fill="#8fa8c4" stroke="#1f3a5f" stroke-width="2"/>
+    <circle cx="60" cy="60" r="30" fill="#4a7ab8" stroke="#1f3a5f" stroke-width="1.5"/>
+    <g fill="#eef3f8" stroke="#1f3a5f">
+      <path d="M60 60 L60 5 A55 55 0 0 1 108 33 Z" opacity="0.9"/>
+      <path d="M60 60 L108 87 A55 55 0 0 1 60 115 Z" opacity="0.9"/>
+      <path d="M60 60 L12 87 A55 55 0 0 1 12 33 Z" opacity="0.9"/>
+    </g>
+    <text x="60" y="64" text-anchor="middle" fill="#fff" font-size="11">心厚</text>
+    <text x="130" y="30" fill="#1f3a5f" font-size="12">端面図（4 枚刃の例）</text>
+    <text x="130" y="52" fill="#333" font-size="12">・心厚が太い→剛性高い、切りくず溝は小さい</text>
+    <text x="130" y="72" fill="#333" font-size="12">・刃数が多い→送り↑、切りくず詰まりやすい</text>
+    <text x="130" y="92" fill="#333" font-size="12">　荒：2〜3枚、仕上げ：4枚以上、アルミ：2〜3枚</text>
+    <text x="130" y="112" fill="#333" font-size="12">・不等分割・不等リード→びびり抑制</text>
+  </g>
+  <!-- tips right -->
+  <g transform="translate(560,340)">
+    <rect x="0" y="0" width="320" height="110" rx="6" fill="#f7f9fc" stroke="#4a7ab8"/>
+    <text x="10" y="22" fill="#1f3a5f" font-weight="bold">先端形状の使い分け</text>
+    <text x="10" y="44" fill="#333" font-size="12">スクエア：側面・平面・段差・溝</text>
+    <text x="10" y="64" fill="#333" font-size="12">ラジアス：荒〜中仕上げ（欠け防止・高送り）</text>
+    <text x="10" y="84" fill="#333" font-size="12">ボール：3D 曲面・金型仕上げ</text>
+    <text x="10" y="104" fill="#333" font-size="12">テーパ：抜き勾配・リブ加工</text>
+  </g>
+</svg>

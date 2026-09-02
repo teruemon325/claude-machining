@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="440" viewBox="0 0 900 440" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="440" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">図面の基準（データム）と加工基準を一致させる</text>
+  <g transform="translate(60,70)">
+    <!-- part drawing -->
+    <rect x="40" y="60" width="300" height="180" fill="#fff" stroke="#1f3a5f" stroke-width="2"/>
+    <circle cx="120" cy="150" r="22" fill="none" stroke="#1f3a5f" stroke-width="1.5"/>
+    <circle cx="260" cy="150" r="22" fill="none" stroke="#1f3a5f" stroke-width="1.5"/>
+    <line x1="120" y1="120" x2="120" y2="180" stroke="#1f3a5f" stroke-dasharray="6 2 2 2"/>
+    <line x1="90" y1="150" x2="150" y2="180" stroke="none"/>
+    <line x1="90" y1="150" x2="150" y2="150" stroke="#1f3a5f" stroke-dasharray="6 2 2 2"/>
+    <line x1="260" y1="120" x2="260" y2="180" stroke="#1f3a5f" stroke-dasharray="6 2 2 2"/>
+    <line x1="230" y1="150" x2="290" y2="150" stroke="#1f3a5f" stroke-dasharray="6 2 2 2"/>
+    <!-- datum A bottom -->
+    <polygon points="190,240 184,254 196,254" fill="#3a9a5b"/>
+    <rect x="182" y="254" width="16" height="16" fill="#fff" stroke="#3a9a5b" stroke-width="1.5"/>
+    <text x="190" y="267" text-anchor="middle" fill="#3a9a5b" font-weight="bold" font-size="12">A</text>
+    <!-- datum B left -->
+    <polygon points="40,150 26,144 26,156" fill="#3a9a5b"/>
+    <rect x="10" y="142" width="16" height="16" fill="#fff" stroke="#3a9a5b" stroke-width="1.5"/>
+    <text x="18" y="155" text-anchor="middle" fill="#3a9a5b" font-weight="bold" font-size="12">B</text>
+    <!-- dims -->
+    <line x1="40" y1="30" x2="120" y2="30" stroke="#333"/><line x1="40" y1="24" x2="40" y2="36" stroke="#333"/><line x1="120" y1="24" x2="120" y2="36" stroke="#333"/>
+    <text x="80" y="22" text-anchor="middle" fill="#333" font-size="12">40 ±0.02</text>
+    <line x1="120" y1="30" x2="260" y2="30" stroke="#333"/><line x1="260" y1="24" x2="260" y2="36" stroke="#333"/>
+    <text x="190" y="22" text-anchor="middle" fill="#333" font-size="12">140 ±0.02</text>
+    <line x1="360" y1="150" x2="360" y2="240" stroke="#333"/><line x1="354" y1="150" x2="366" y2="150" stroke="#333"/><line x1="354" y1="240" x2="366" y2="240" stroke="#333"/>
+    <text x="372" y="200" fill="#333" font-size="12">60 ±0.02</text>
+    <!-- GD&T frame -->
+    <g transform="translate(150,100)">
+      <rect x="0" y="0" width="30" height="20" fill="#fff" stroke="#333"/><text x="15" y="15" text-anchor="middle" font-size="12">⌖</text>
+      <rect x="30" y="0" width="50" height="20" fill="#fff" stroke="#333"/><text x="55" y="15" text-anchor="middle" font-size="11">φ0.05</text>
+      <rect x="80" y="0" width="20" height="20" fill="#fff" stroke="#333"/><text x="90" y="15" text-anchor="middle" font-size="11">A</text>
+      <rect x="100" y="0" width="20" height="20" fill="#fff" stroke="#333"/><text x="110" y="15" text-anchor="middle" font-size="11">B</text>
+      <line x1="0" y1="10" x2="-20" y2="30" stroke="#333"/>
+    </g>
+    <text x="110" y="300" fill="#333" font-size="12">2 穴の位置度は A（底面）・B（左面）基準</text>
+    <text x="110" y="320" fill="#3a9a5b" font-size="12">→ 段取りで底面を 3 点、左面を 2 点で位置決めし、B 面を G54 の X0 にする</text>
+  </g>
+  <g transform="translate(520,70)">
+    <rect x="0" y="0" width="350" height="300" rx="6" fill="#f7f9fc" stroke="#4a7ab8"/>
+    <text x="12" y="24" fill="#1f3a5f" font-weight="bold">精度を出すための工程の組み方</text>
+    <text x="12" y="52" fill="#333" font-size="12">1. 最初の段取りで「基準面（データム）」を作る</text>
+    <text x="12" y="70" fill="#333" font-size="12">　 → 直角・平面の出た面を先に仕上げる</text>
+    <text x="12" y="96" fill="#333" font-size="12">2. 公差の厳しい要素は同一段取りで加工</text>
+    <text x="12" y="114" fill="#333" font-size="12">　 → 段取り替えごとに 10〜30µm の誤差が乗る</text>
+    <text x="12" y="140" fill="#333" font-size="12">3. 荒 → 応力解放（緩め直し・放置）→ 仕上げ</text>
+    <text x="12" y="158" fill="#333" font-size="12">　 → 荒で歪んだ後に仕上げると精度が安定</text>
+    <text x="12" y="184" fill="#333" font-size="12">4. 仕上げ工具は仕上げ専用にし、荒とは分ける</text>
+    <text x="12" y="210" fill="#333" font-size="12">5. 熱を持たせない：仕上げ前に温度を落ち着かせる</text>
+    <text x="12" y="236" fill="#333" font-size="12">6. 測定基準＝加工基準＝図面基準 に揃える</text>
+    <text x="12" y="266" fill="#1f3a5f" font-weight="bold" font-size="12">公差の目安（一般的なマシニング）</text>
+    <text x="12" y="286" fill="#333" font-size="12">位置 ±0.02、穴径 H7、平面度 0.01/100 は普通機で達成可</text>
+  </g>
+  <text x="450" y="415" text-anchor="middle" fill="#555" font-size="12">図面に指示のない公差は「普通公差（JIS B 0405 中級 m）」。長さ 30〜120 で ±0.3、120〜400 で ±0.5。</text>
+</svg>

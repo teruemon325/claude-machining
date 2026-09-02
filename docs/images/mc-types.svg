@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="420" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">マシニングセンタの種類と得意分野</text>
+  <!-- Vertical -->
+  <g transform="translate(30,50)">
+    <rect x="0" y="0" width="260" height="340" rx="8" fill="#f7f9fc" stroke="#1f3a5f" stroke-width="1.5"/>
+    <text x="130" y="26" text-anchor="middle" font-weight="bold" font-size="15" fill="#1f3a5f">立形（VMC）</text>
+    <rect x="60" y="200" width="150" height="20" fill="#c9d3de" stroke="#1f3a5f"/>
+    <rect x="180" y="60" width="40" height="150" fill="#c9d3de" stroke="#1f3a5f"/>
+    <rect x="120" y="80" width="60" height="50" fill="#dbe4ee" stroke="#1f3a5f"/>
+    <rect x="146" y="130" width="8" height="40" fill="#555"/>
+    <rect x="110" y="175" width="70" height="25" fill="#e8833a" stroke="#1f3a5f"/>
+    <path d="M150 128 l-6 -10 h12 z" fill="#d64545"/>
+    <text x="130" y="250" text-anchor="middle" fill="#333">主軸が垂直・上から加工</text>
+    <text x="20" y="278" fill="#3a9a5b">◎ 段取り・確認がしやすい</text>
+    <text x="20" y="298" fill="#3a9a5b">◎ 低価格・汎用性が高い</text>
+    <text x="20" y="318" fill="#d64545">△ 切りくずがワーク上に残る</text>
+    <text x="20" y="335" fill="#d64545">△ 多面加工は治具工夫が必要</text>
+  </g>
+  <!-- Horizontal -->
+  <g transform="translate(320,50)">
+    <rect x="0" y="0" width="260" height="340" rx="8" fill="#f7f9fc" stroke="#1f3a5f" stroke-width="1.5"/>
+    <text x="130" y="26" text-anchor="middle" font-weight="bold" font-size="15" fill="#1f3a5f">横形（HMC）</text>
+    <rect x="40" y="60" width="50" height="160" fill="#c9d3de" stroke="#1f3a5f"/>
+    <rect x="90" y="110" width="45" height="40" fill="#dbe4ee" stroke="#1f3a5f"/>
+    <rect x="135" y="126" width="40" height="8" fill="#555"/>
+    <rect x="185" y="90" width="30" height="110" fill="#e8833a" stroke="#1f3a5f"/>
+    <rect x="175" y="200" width="60" height="20" fill="#c9d3de" stroke="#1f3a5f"/>
+    <text x="205" y="86" text-anchor="middle" font-size="11" fill="#333">パレット</text>
+    <path d="M205 225 a 30 8 0 0 0 0 0" fill="none"/>
+    <text x="205" y="240" text-anchor="middle" font-size="11" fill="#333">B 軸回転</text>
+    <text x="130" y="262" text-anchor="middle" fill="#333">主軸が水平・横から加工</text>
+    <text x="20" y="285" fill="#3a9a5b">◎ 切りくずが自然に落ちる</text>
+    <text x="20" y="305" fill="#3a9a5b">◎ 4 面加工・パレット交換で量産</text>
+    <text x="20" y="325" fill="#d64545">△ 高価・設置面積が大きい</text>
+  </g>
+  <!-- 5-axis -->
+  <g transform="translate(610,50)">
+    <rect x="0" y="0" width="260" height="340" rx="8" fill="#f7f9fc" stroke="#1f3a5f" stroke-width="1.5"/>
+    <text x="130" y="26" text-anchor="middle" font-weight="bold" font-size="15" fill="#1f3a5f">5 軸（同時 / 割出し）</text>
+    <rect x="180" y="60" width="40" height="150" fill="#c9d3de" stroke="#1f3a5f"/>
+    <rect x="120" y="80" width="60" height="50" fill="#dbe4ee" stroke="#1f3a5f"/>
+    <g transform="rotate(25 150 130)"><rect x="146" y="130" width="8" height="40" fill="#555"/></g>
+    <g transform="rotate(-20 130 200)">
+      <rect x="60" y="195" width="140" height="18" fill="#c9d3de" stroke="#1f3a5f"/>
+      <rect x="100" y="172" width="60" height="23" fill="#e8833a" stroke="#1f3a5f"/>
+    </g>
+    <path d="M40 230 a 90 25 0 0 1 180 0" fill="none" stroke="#4a7ab8" stroke-width="2" stroke-dasharray="4 3"/>
+    <text x="130" y="248" text-anchor="middle" font-size="11" fill="#4a7ab8">A/B 傾斜＋C 回転（トラニオン）</text>
+    <text x="130" y="268" text-anchor="middle" fill="#333">工具またはテーブルが傾く</text>
+    <text x="20" y="290" fill="#3a9a5b">◎ 1 回の段取りで多面・複雑形状</text>
+    <text x="20" y="310" fill="#3a9a5b">◎ 短い工具で剛性・面品位向上</text>
+    <text x="20" y="330" fill="#d64545">△ CAM・干渉管理・機械が高価</text>
+  </g>
+  <text x="450" y="410" text-anchor="middle" fill="#555" font-size="12">選定の目安：単品・試作→立形、量産・箱物→横形、インペラ・医療・金型の複雑形状→5 軸</text>
+</svg>

@@ -1,0 +1,53 @@
+site_name: マシニングセンタ加工ノウハウ集
+site_description: 製造業の切削加工（マシニングセンタ）の現場ノウハウ集
+docs_dir: docs
+theme:
+  name: material
+  language: ja
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - content.tabs.link
+  palette:
+    - scheme: default
+      primary: blue grey
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: ダークモードへ
+    - scheme: slate
+      primary: blue grey
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: ライトモードへ
+markdown_extensions:
+  - tables
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+nav:
+  - ホーム: index.md
+  - 00 加工準備の進め方: 00-preparation.md
+  - 01 マシニングセンタの基礎と選び方: 01-machine.md
+  - 02 材料と被削性: 02-materials.md
+  - 03 工具の選び方: 03-tools.md
+  - 04 切削条件: 04-cutting-conditions.md
+  - 05 段取り・治具・クランプ: 05-setup-fixture.md
+  - 06 加工精度・寸法: 06-accuracy.md
+  - 07 びびり・振動: 07-chatter.md
+  - 08 切りくず・切削油: 08-chips-coolant.md
+  - 09 工具摩耗・寿命: 09-tool-wear.md
+  - 10 面粗さ・仕上げ: 10-surface-finish.md
+  - 11 プログラム（CAM・G コード）: 11-programming.md
+  - 12 機械の保守・精度管理: 12-maintenance.md
+  - 13 安全: 13-safety.md
+  - 付録:
+      - A 計算式集: appendix/a-formulas.md
+      - B トラブルシューティング早見表: appendix/b-troubleshooting.md
+      - C チェックリスト: appendix/c-checklists.md
+      - D 用語集: appendix/d-glossary.md

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="520" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">NC プログラムの基本構造（Fanuc 系）</text>
+  <rect x="40" y="50" width="420" height="450" rx="6" fill="#1f2b3a"/>
+  <g font-family="'DejaVu Sans Mono', 'Courier New', monospace" font-size="13" fill="#d8e3ef">
+    <text x="55" y="78">O0001 (SAMPLE PLATE)</text>
+    <text x="55" y="100" fill="#7fd1a1">G17 G21 G40 G49 G54 G80 G90</text>
+    <text x="55" y="122">G91 G28 Z0</text>
+    <text x="55" y="150" fill="#f5c26b">T01 M06 (D10 ENDMILL)</text>
+    <text x="55" y="172">S4800 M03</text>
+    <text x="55" y="194">G90 G00 X-15. Y-15.</text>
+    <text x="55" y="216" fill="#f5c26b">G43 Z50. H01 M08</text>
+    <text x="55" y="238">Z2.</text>
+    <text x="55" y="260">G01 Z-5. F300</text>
+    <text x="55" y="282" fill="#f5c26b">G41 D01 X0. F960</text>
+    <text x="55" y="304">Y100.</text>
+    <text x="55" y="326">X100.</text>
+    <text x="55" y="348">Y0.</text>
+    <text x="55" y="370">X-5.</text>
+    <text x="55" y="392" fill="#f5c26b">G40 G00 Z50. M09</text>
+    <text x="55" y="414">M05</text>
+    <text x="55" y="436">G91 G28 Z0</text>
+    <text x="55" y="458">G28 X0 Y0</text>
+    <text x="55" y="480" fill="#7fd1a1">M30</text>
+  </g>
+  <g font-size="12">
+    <g transform="translate(480,60)">
+      <rect x="0" y="0" width="390" height="60" rx="6" fill="#e3f0e7" stroke="#3a9a5b"/>
+      <text x="10" y="20" fill="#1d5a33" font-weight="bold">① 初期設定（セーフティライン）</text>
+      <text x="10" y="38" fill="#333">平面 XY、mm、補正キャンセル、座標系、サイクル解除、</text>
+      <text x="10" y="54" fill="#333">アブソリュート。前の状態を引きずらないために毎回書く</text>
+    </g>
+    <g transform="translate(480,130)">
+      <rect x="0" y="0" width="390" height="60" rx="6" fill="#fdf1dc" stroke="#e8a83a"/>
+      <text x="10" y="20" fill="#7a5010" font-weight="bold">② 工具交換・主軸起動</text>
+      <text x="10" y="38" fill="#333">T→M06 で交換、S 回転数と M03 正転。コメントで工具を明記。</text>
+      <text x="10" y="54" fill="#333">工具ごとに①〜⑥のブロックを繰り返すのが基本形</text>
+    </g>
+    <g transform="translate(480,200)">
+      <rect x="0" y="0" width="390" height="60" rx="6" fill="#fdf1dc" stroke="#e8a83a"/>
+      <text x="10" y="20" fill="#7a5010" font-weight="bold">③ アプローチ・工具長補正</text>
+      <text x="10" y="38" fill="#333">XY を先に位置決め → G43 で Z 安全高さへ → クーラント ON。</text>
+      <text x="10" y="54" fill="#333">Z の一発目は必ず G43 付き。安全高さは治具・クランプより上</text>
+    </g>
+    <g transform="translate(480,270)">
+      <rect x="0" y="0" width="390" height="60" rx="6" fill="#e6ecf5" stroke="#4a7ab8"/>
+      <text x="10" y="20" fill="#1f3a5f" font-weight="bold">④ 切削</text>
+      <text x="10" y="38" fill="#333">G01 で Z 切込み → G41 で径補正立ち上げ → 輪郭 → G40 解除。</text>
+      <text x="10" y="54" fill="#333">F は切削送り。G00（早送り）は切削に絶対使わない</text>
+    </g>
+    <g transform="translate(480,340)">
+      <rect x="0" y="0" width="390" height="60" rx="6" fill="#e6ecf5" stroke="#4a7ab8"/>
+      <text x="10" y="20" fill="#1f3a5f" font-weight="bold">⑤ 退避</text>
+      <text x="10" y="38" fill="#333">Z を上げてから XY 移動。クーラント OFF、主軸停止。</text>
+      <text x="10" y="54" fill="#333">G91 G28 Z0 で Z を先に原点復帰（XY 同時は衝突の元）</text>
+    </g>
+    <g transform="translate(480,410)">
+      <rect x="0" y="0" width="390" height="60" rx="6" fill="#e3f0e7" stroke="#3a9a5b"/>
+      <text x="10" y="20" fill="#1d5a33" font-weight="bold">⑥ プログラム終了</text>
+      <text x="10" y="38" fill="#333">M30 で終了＆先頭復帰。M01（オプショナルストップ）を</text>
+      <text x="10" y="54" fill="#333">工具ごとに入れておくと初品確認がしやすい</text>
+    </g>
+  </g>
+</svg>

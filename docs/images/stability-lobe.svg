@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="460" viewBox="0 0 900 460" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="460" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">びびりの安定限界線図（スタビリティローブ）の考え方</text>
+  <g transform="translate(80,60)">
+    <!-- axes -->
+    <line x1="0" y1="320" x2="520" y2="320" stroke="#333" stroke-width="2"/>
+    <line x1="0" y1="320" x2="0" y2="20" stroke="#333" stroke-width="2"/>
+    <text x="260" y="352" text-anchor="middle" fill="#333">主軸回転数 n [min⁻¹]</text>
+    <text x="-10" y="30" text-anchor="end" fill="#333" transform="rotate(-90 -10 30) translate(-130 0)">切込み深さ ap [mm]</text>
+    <!-- unstable region above the curve -->
+    <path d="M0 200 L60 200 Q80 120 100 160 L110 90 Q135 20 160 100 L165 60 Q205 -20 245 80 L250 40 Q320 -60 390 60 L400 20 Q470 -60 520 60 L520 0 L0 0 Z" fill="#fbe3e3" opacity="0.9"/>
+    <path d="M0 200 L60 200 Q80 120 100 160 L110 90 Q135 20 160 100 L165 60 Q205 -20 245 80 L250 40 Q320 -60 390 60 L400 20 Q470 -60 520 60 L520 320 L0 320 Z" fill="#e3f0e7" opacity="0.9"/>
+    <path d="M0 200 L60 200 Q80 120 100 160 L110 90 Q135 20 160 100 L165 60 Q205 -20 245 80 L250 40 Q320 -60 390 60 L400 20 Q470 -60 520 60" fill="none" stroke="#d64545" stroke-width="2.5"/>
+    <text x="300" y="180" text-anchor="middle" fill="#1d5a33" font-weight="bold" font-size="15">安定（びびらない）</text>
+    <text x="300" y="30" text-anchor="middle" fill="#8a1f1f" font-weight="bold" font-size="15">不安定（びびる）</text>
+    <!-- min stable line -->
+    <line x1="0" y1="200" x2="520" y2="200" stroke="#4a7ab8" stroke-dasharray="6 3"/>
+    <text x="8" y="215" fill="#4a7ab8" font-size="12">どの回転数でも安定な限界 ap（低回転域の目安）</text>
+    <!-- sweet spot -->
+    <circle cx="315" cy="110" r="8" fill="#3a9a5b"/>
+    <text x="330" y="115" fill="#1d5a33" font-size="12">安定ポケット：ここを狙う</text>
+    <!-- example points -->
+    <circle cx="245" cy="110" r="6" fill="#d64545"/>
+    <text x="180" y="130" fill="#8a1f1f" font-size="12">びびる</text>
+    <line x1="245" y1="110" x2="315" y2="110" stroke="#e8833a" stroke-width="2" stroke-dasharray="3 2"/>
+    <text x="255" y="100" fill="#e8833a" font-size="11">回転数を変える</text>
+  </g>
+  <g transform="translate(640,70)">
+    <rect x="0" y="0" width="240" height="300" rx="6" fill="#f7f9fc" stroke="#4a7ab8"/>
+    <text x="12" y="24" fill="#1f3a5f" font-weight="bold">現場での使い方</text>
+    <text x="12" y="48" fill="#333" font-size="12">1. びびり音の周波数 f [Hz] を</text>
+    <text x="12" y="64" fill="#333" font-size="12">　 スマホアプリ等で測る</text>
+    <text x="12" y="88" fill="#333" font-size="12">2. 最適回転数の候補：</text>
+    <text x="12" y="106" fill="#1f3a5f" font-size="12">　 n = 60 × f ÷ (z × k)</text>
+    <text x="12" y="122" fill="#333" font-size="11">　 z：刃数、k = 1, 2, 3…</text>
+    <text x="12" y="146" fill="#333" font-size="12">3. k=1 の値（最も高い n）が</text>
+    <text x="12" y="162" fill="#333" font-size="12">　 最も安定領域が広い</text>
+    <text x="12" y="186" fill="#333" font-size="12">4. 主軸の上限を超えるなら</text>
+    <text x="12" y="202" fill="#333" font-size="12">　 k=2, 3 を試す</text>
+    <text x="12" y="230" fill="#333" font-size="12">例）f=1,200Hz, z=4</text>
+    <text x="12" y="248" fill="#333" font-size="12">　 → n = 18,000 (k=1)</text>
+    <text x="12" y="264" fill="#333" font-size="12">　 → n = 9,000 (k=2)</text>
+    <text x="12" y="280" fill="#333" font-size="12">　 → n = 6,000 (k=3)</text>
+  </g>
+  <text x="450" y="440" text-anchor="middle" fill="#555" font-size="12">ローブの形は「工具＋ホルダ＋主軸＋ワーク」の固有振動数で決まる。突き出し長を変えるとローブも変わる。</text>
+</svg>

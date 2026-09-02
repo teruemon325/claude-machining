@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="470" viewBox="0 0 900 470" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="470" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">ツールホルダの種類と使い分け（振れ精度・把持力・用途）</text>
+  <g font-size="12">
+    <!-- collet -->
+    <g transform="translate(30,60)">
+      <rect x="0" y="0" width="200" height="300" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="100" y="24" text-anchor="middle" font-weight="bold" fill="#1f3a5f">コレットチャック（ER）</text>
+      <polygon points="70,40 130,40 130,70 70,70" fill="#8fa8c4" stroke="#1f3a5f"/>
+      <polygon points="60,70 140,70 130,140 70,140" fill="#b9c8d8" stroke="#1f3a5f"/>
+      <polygon points="80,140 120,140 115,170 85,170" fill="#dbe4ee" stroke="#1f3a5f"/>
+      <rect x="95" y="170" width="10" height="40" fill="#555"/>
+      <text x="10" y="236" fill="#333">振れ：10〜20µm（普及品）</text>
+      <text x="10" y="254" fill="#333">把持力：△　汎用・安価</text>
+      <text x="10" y="272" fill="#333">用途：小径・ドリル・軽切削</text>
+      <text x="10" y="290" fill="#d64545">注意：締め過ぎ・汚れで振れ大</text>
+    </g>
+    <!-- milling chuck -->
+    <g transform="translate(250,60)">
+      <rect x="0" y="0" width="200" height="300" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="100" y="24" text-anchor="middle" font-weight="bold" fill="#1f3a5f">ミーリングチャック</text>
+      <polygon points="70,40 130,40 130,70 70,70" fill="#8fa8c4" stroke="#1f3a5f"/>
+      <rect x="55" y="70" width="90" height="100" fill="#b9c8d8" stroke="#1f3a5f"/>
+      <rect x="92" y="170" width="16" height="40" fill="#555"/>
+      <text x="10" y="236" fill="#333">振れ：5〜10µm</text>
+      <text x="10" y="254" fill="#333">把持力：◎　重切削向き</text>
+      <text x="10" y="272" fill="#333">用途：荒加工・φ16 以上</text>
+      <text x="10" y="290" fill="#d64545">注意：外径が太く干渉しやすい</text>
+    </g>
+    <!-- shrink fit -->
+    <g transform="translate(470,60)">
+      <rect x="0" y="0" width="200" height="300" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="100" y="24" text-anchor="middle" font-weight="bold" fill="#1f3a5f">焼きばめホルダ</text>
+      <polygon points="70,40 130,40 130,70 70,70" fill="#8fa8c4" stroke="#1f3a5f"/>
+      <polygon points="75,70 125,70 110,170 90,170" fill="#b9c8d8" stroke="#1f3a5f"/>
+      <rect x="95" y="170" width="10" height="40" fill="#555"/>
+      <text x="10" y="236" fill="#333">振れ：3µm 以下</text>
+      <text x="10" y="254" fill="#333">把持力：○　細身で高剛性</text>
+      <text x="10" y="272" fill="#333">用途：高速・仕上げ・金型・5 軸</text>
+      <text x="10" y="290" fill="#d64545">注意：専用加熱装置が必要</text>
+    </g>
+    <!-- hydraulic -->
+    <g transform="translate(690,60)">
+      <rect x="0" y="0" width="190" height="300" rx="8" fill="#f7f9fc" stroke="#4a7ab8"/>
+      <text x="95" y="24" text-anchor="middle" font-weight="bold" fill="#1f3a5f">ハイドロチャック</text>
+      <polygon points="65,40 125,40 125,70 65,70" fill="#8fa8c4" stroke="#1f3a5f"/>
+      <rect x="60" y="70" width="70" height="100" fill="#b9c8d8" stroke="#1f3a5f"/>
+      <circle cx="120" cy="120" r="5" fill="#4a7ab8"/>
+      <rect x="90" y="170" width="10" height="40" fill="#555"/>
+      <text x="10" y="236" fill="#333">振れ：3µm 以下</text>
+      <text x="10" y="254" fill="#333">把持力：○　振動減衰性◎</text>
+      <text x="10" y="272" fill="#333">用途：リーマ・仕上げ・微細</text>
+      <text x="10" y="290" fill="#d64545">注意：重切削・高温は不向き</text>
+    </g>
+  </g>
+  <g transform="translate(30,375)" font-size="12">
+    <rect x="0" y="0" width="850" height="85" rx="6" fill="#e6ecf5" stroke="#4a7ab8"/>
+    <text x="12" y="22" fill="#1f3a5f" font-weight="bold">主軸インターフェース（テーパ）の選び方</text>
+    <text x="12" y="42" fill="#333">BT（7/24 テーパ）：日本の標準。BT30（小型・高速）、BT40（汎用）、BT50（重切削）。テーパ面のみ接触。</text>
+    <text x="12" y="60" fill="#333">2 面拘束 BBT／HSK：テーパと端面の両方で拘束 → 高速回転時の主軸伸び・Z 方向のばらつきが小さい。HSK-A63 は 5 軸・高速機の定番。</text>
+    <text x="12" y="78" fill="#333">振れ 10µm の差 ＝ 小径エンドミルでは寿命が半分以下になる。ホルダは「消耗品」と考え、定期的に振れを測る。</text>
+  </g>
+</svg>

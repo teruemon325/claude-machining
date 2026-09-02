@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="440" viewBox="0 0 900 440" font-family="IPAGothic, 'Noto Sans JP', 'Hiragino Sans', Meiryo, sans-serif" font-size="13">
+  <rect width="900" height="440" fill="#fff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1f3a5f">ダウンカット（順削り）とアップカット（逆削り）　※上から見た図</text>
+  <g transform="translate(40,60)">
+    <text x="190" y="0" text-anchor="middle" font-weight="bold" font-size="15" fill="#3a9a5b">ダウンカット（推奨）</text>
+    <!-- workpiece: uncut left (top at 150), cut right (top at 190) -->
+    <path d="M0 150 L190 150 L190 190 L380 190 L380 260 L0 260 Z" fill="#eef3f8" stroke="#1f3a5f" stroke-width="2"/>
+    <rect x="0" y="150" width="190" height="40" fill="#f7d9c4"/>
+    <text x="95" y="175" text-anchor="middle" font-size="11" fill="#7a3d10">これから削る部分（ae）</text>
+    <text x="290" y="215" text-anchor="middle" font-size="11" fill="#1f3a5f">削り終わった面</text>
+    <circle cx="190" cy="120" r="70" fill="#8fa8c4" fill-opacity="0.85" stroke="#1f3a5f" stroke-width="2"/>
+    <circle cx="190" cy="120" r="3" fill="#1f3a5f"/>
+    <path d="M150 70 a 55 55 0 0 1 80 0" fill="none" stroke="#d64545" stroke-width="2.5"/>
+    <polygon points="230,70 220,60 218,76" fill="#d64545"/>
+    <text x="190" y="52" text-anchor="middle" fill="#d64545" font-size="12">回転（時計回り）</text>
+    <!-- engaged arc bottom-left -->
+    <path d="M190 190 A70 70 0 0 1 128 158" fill="none" stroke="#e8833a" stroke-width="6"/>
+    <text x="0" y="140" fill="#7a3d10" font-size="11">刃の出口：薄い</text>
+    <text x="200" y="205" fill="#7a3d10" font-size="11">刃の入口：厚い</text>
+    <!-- feed to the left -->
+    <line x1="300" y1="120" x2="270" y2="120" stroke="#e8833a" stroke-width="3"/>
+    <polygon points="270,114 258,120 270,126" fill="#e8833a"/>
+    <text x="330" y="124" fill="#e8833a" font-size="12">送り方向</text>
+    <text x="0" y="290" fill="#333" font-size="12">・切りくずが厚→薄：熱が切りくずに逃げ、面がきれい</text>
+    <text x="0" y="310" fill="#333" font-size="12">・工具寿命が長い、バリが少ない、切りくずが後方に飛ぶ</text>
+    <text x="0" y="330" fill="#333" font-size="12">・ワークを押さえつける方向の力 → クランプは安定</text>
+    <text x="0" y="350" fill="#d64545" font-size="12">・バックラッシュの大きい古い機械では引き込みに注意</text>
+  </g>
+  <g transform="translate(480,60)">
+    <text x="190" y="0" text-anchor="middle" font-weight="bold" font-size="15" fill="#e8833a">アップカット</text>
+    <!-- workpiece: cut left (top 190), uncut right (top 150) -->
+    <path d="M0 190 L190 190 L190 150 L380 150 L380 260 L0 260 Z" fill="#eef3f8" stroke="#1f3a5f" stroke-width="2"/>
+    <rect x="190" y="150" width="190" height="40" fill="#f7d9c4"/>
+    <text x="285" y="175" text-anchor="middle" font-size="11" fill="#7a3d10">これから削る部分（ae）</text>
+    <text x="90" y="215" text-anchor="middle" font-size="11" fill="#1f3a5f">削り終わった面</text>
+    <circle cx="190" cy="120" r="70" fill="#8fa8c4" fill-opacity="0.85" stroke="#1f3a5f" stroke-width="2"/>
+    <circle cx="190" cy="120" r="3" fill="#1f3a5f"/>
+    <path d="M150 70 a 55 55 0 0 1 80 0" fill="none" stroke="#d64545" stroke-width="2.5"/>
+    <polygon points="230,70 220,60 218,76" fill="#d64545"/>
+    <text x="190" y="52" text-anchor="middle" fill="#d64545" font-size="12">回転（時計回り）</text>
+    <path d="M252 158 A70 70 0 0 1 190 190" fill="none" stroke="#e8833a" stroke-width="6"/>
+    <text x="290" y="140" fill="#7a3d10" font-size="11">刃の出口：厚い</text>
+    <text x="90" y="205" fill="#7a3d10" font-size="11">刃の入口：ゼロから擦る</text>
+    <!-- feed to the right -->
+    <line x1="80" y1="120" x2="110" y2="120" stroke="#e8833a" stroke-width="3"/>
+    <polygon points="110,114 122,120 110,126" fill="#e8833a"/>
+    <text x="0" y="124" fill="#e8833a" font-size="12">送り方向</text>
+    <text x="0" y="290" fill="#333" font-size="12">・切りくずが薄→厚：刃先が擦ってから食い込む → 発熱・摩耗</text>
+    <text x="0" y="310" fill="#333" font-size="12">・ワークを持ち上げる方向の力 → 薄物・弱いクランプは危険</text>
+    <text x="0" y="330" fill="#333" font-size="12">・面は「毛羽立ち」やすく、加工硬化しやすい</text>
+    <text x="0" y="350" fill="#3a9a5b" font-size="12">・黒皮・硬化層の除去、古い機械での仕上げに有利な場合あり</text>
+  </g>
+  <text x="450" y="425" text-anchor="middle" fill="#555" font-size="12">覚え方：接触点での刃の進む向きと送り方向が同じ＝ダウンカット。CAM では「Climb（順削り）」を既定にする。</text>
+</svg>
