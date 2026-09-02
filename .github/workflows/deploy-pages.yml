@@ -4,7 +4,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, claude/machining-center-knowhow-ne5t1n]
   workflow_dispatch:
 
 permissions:
