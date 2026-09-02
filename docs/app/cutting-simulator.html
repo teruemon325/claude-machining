@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>切削シミュレータ</title>
+<meta name="description" content="切削条件（Vc・fz・ap・ae）を入力すると、回転数・送り・除去量・所要動力・びびりリスクを計算し、加工の様子をアニメーションで表示します。">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#f2f4f7; --surface:#ffffff; --ink:#1b232c; --muted:#5c6874; --rule:#d2d9e1;
+  --steel:#2e5b88; --steel-soft:#e4edf6; --chip:#cf6d2a; --chip-soft:#fbeadb;
+  --good:#2f8a5b; --good-soft:#e2f2e9; --warn:#b8791a; --warn-soft:#fbf0d9; --crit:#c8433a; --crit-soft:#fbe3e1;
+  --stage:#eef1f5; --work:#dfe6ee; --work-edge:#1f3a5f; --uncut:#f3d6bd; --tool:#8fa8c4; --tool-edge:#1b2b3f;
+  --input-bg:#ffffff;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#12181f; --surface:#1a2129; --ink:#e1e7ed; --muted:#98a5b2; --rule:#2c3640;
+  --steel:#7fb0e2; --steel-soft:#1f3042; --chip:#e8904e; --chip-soft:#3a2a1c;
+  --good:#5cc08a; --good-soft:#193225; --warn:#e2a744; --warn-soft:#3a2d13; --crit:#ef6b60; --crit-soft:#3d1c1a;
+  --stage:#0f1419; --work:#2a3542; --work-edge:#9db4cc; --uncut:#6b4a2f; --tool:#6a86a6; --tool-edge:#d6e2ef;
+  --input-bg:#12181f;
+}}
+:root[data-theme="dark"]{
+  --paper:#12181f; --surface:#1a2129; --ink:#e1e7ed; --muted:#98a5b2; --rule:#2c3640;
+  --steel:#7fb0e2; --steel-soft:#1f3042; --chip:#e8904e; --chip-soft:#3a2a1c;
+  --good:#5cc08a; --good-soft:#193225; --warn:#e2a744; --warn-soft:#3a2d13; --crit:#ef6b60; --crit-soft:#3d1c1a;
+  --stage:#0f1419; --work:#2a3542; --work-edge:#9db4cc; --uncut:#6b4a2f; --tool:#6a86a6; --tool-edge:#d6e2ef;
+  --input-bg:#12181f;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;font-size:14px;line-height:1.6;font-feature-settings:"palt"}
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+header{padding:18px 24px 14px;border-bottom:1px solid var(--rule);display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 24px}
+header h1{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;font-size:22px;margin:0;letter-spacing:.01em}
+header .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;color:var(--chip)}
+header p{margin:0;color:var(--muted);font-size:13px;flex-basis:100%}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-left:auto}
+.presets button{font:inherit;font-size:12px;padding:5px 10px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:4px;cursor:pointer}
+.presets button:hover,.presets button:focus-visible{border-color:var(--steel);color:var(--steel);outline:none}
+.app{display:grid;grid-template-columns:300px minmax(0,1fr) 300px;gap:18px;padding:18px 24px 40px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px}
+.panel h2{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:13px;letter-spacing:.06em;color:var(--muted);margin:0;padding:12px 14px 8px;border-bottom:1px solid var(--rule)}
+.grp{padding:10px 14px 12px;border-bottom:1px solid var(--rule)}
+.grp:last-child{border-bottom:0}
+.grp h3{font-family:"Zen Kaku Gothic New",sans-serif;font-size:13px;font-weight:700;margin:0 0 6px;color:var(--steel)}
+.row{display:grid;grid-template-columns:1fr 92px;align-items:center;gap:8px;margin:6px 0}
+.row label{font-size:12.5px;color:var(--ink)}
+.row label small{display:block;color:var(--muted);font-size:11px;line-height:1.3}
+.row input[type=number],.row select{font:inherit;font-size:13px;padding:5px 7px;border:1px solid var(--rule);border-radius:4px;background:var(--input-bg);color:var(--ink);width:100%}
+.row select{grid-column:1/-1}
+.row input:focus-visible,.row select:focus-visible,.seg button:focus-visible,.speed button:focus-visible{outline:2px solid var(--chip);outline-offset:1px}
+input[type=range]{width:100%;accent-color:var(--steel);margin:2px 0 0}
+.range-row{margin:4px 0 8px}
+.range-row .lab{display:flex;justify-content:space-between;font-size:12.5px}
+.range-row .lab span:last-child{font-family:"IBM Plex Mono",monospace}
+.range-row .rec{font-size:11px;color:var(--muted)}
+.seg{display:flex;border:1px solid var(--rule);border-radius:4px;overflow:hidden;margin-top:6px}
+.seg button{flex:1;font:inherit;font-size:12.5px;padding:6px;border:0;background:var(--surface);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--steel);color:#fff}
+.stage{display:flex;flex-direction:column;gap:12px}
+.canvas-wrap{background:var(--stage);border:1px solid var(--rule);border-radius:6px;position:relative;overflow:hidden}
+.canvas-wrap canvas{display:block;width:100%}
+.canvas-wrap .tag{position:absolute;top:8px;left:10px;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;color:var(--muted)}
+.hud{position:absolute;right:10px;top:8px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink)}
+.badge.good{background:var(--good-soft);border-color:var(--good);color:var(--ink)}
+.badge.warn{background:var(--warn-soft);border-color:var(--warn)}
+.badge.crit{background:var(--crit-soft);border-color:var(--crit)}
+.badge i{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block}
+.badge.good i{background:var(--good)} .badge.warn i{background:var(--warn)} .badge.crit i{background:var(--crit)}
+.controls{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:0 2px}
+.speed{display:flex;border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.speed button{font:inherit;font-size:12px;padding:5px 10px;border:0;background:var(--surface);color:var(--ink);cursor:pointer}
+.speed button[aria-pressed=true]{background:var(--steel);color:#fff}
+.controls .lbl{font-size:12px;color:var(--muted)}
+.btn{font:inherit;font-size:13px;padding:6px 14px;border:1px solid var(--steel);background:var(--steel);color:#fff;border-radius:4px;cursor:pointer}
+.btn.ghost{background:var(--surface);color:var(--steel)}
+.btn:focus-visible{outline:2px solid var(--chip);outline-offset:2px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mini{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:8px 10px 6px}
+.mini h4{margin:0 0 4px;font-size:12px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+.mini canvas{width:100%;display:block}
+.kv{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:8px 14px;font-size:12.5px}
+.kv dt{color:var(--muted);margin:0}
+.kv dd{margin:0;text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:13px}
+.kv dd small{color:var(--muted);font-size:11px;margin-left:3px;font-family:"Noto Sans JP",sans-serif}
+.kv .hero{grid-column:1/-1;display:flex;align-items:baseline;gap:8px;padding-top:2px}
+.kv .hero .v{font-family:"IBM Plex Mono",monospace;font-size:26px;font-weight:600;line-height:1.1}
+.kv .hero .u{color:var(--muted);font-size:12px}
+.meter{padding:6px 14px 10px}
+.meter .bar{height:10px;border-radius:5px;background:var(--rule);position:relative;overflow:hidden;margin-top:6px}
+.meter .fill{height:100%;background:var(--steel);border-radius:5px;transition:width .3s}
+.meter .fill.warn{background:var(--warn)} .meter .fill.crit{background:var(--crit)}
+.meter .tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink);opacity:.5;left:80%}
+.meter .cap{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:3px}
+.warnings{list-style:none;margin:0;padding:8px 14px 10px;display:flex;flex-direction:column;gap:6px}
+.warnings li{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;padding:7px 10px;border-radius:4px;border-left:3px solid var(--muted);background:var(--stage)}
+.warnings li.good{border-color:var(--good);background:var(--good-soft)}
+.warnings li.warn{border-color:var(--warn);background:var(--warn-soft)}
+.warnings li.crit{border-color:var(--crit);background:var(--crit-soft)}
+.warnings li b{font-weight:700;white-space:nowrap}
+.foot{padding:10px 24px 30px;color:var(--muted);font-size:12px;max-width:90ch}
+@media (max-width:1100px){.app{grid-template-columns:280px minmax(0,1fr)} .readout{grid-column:1/-1}}
+@media (max-width:760px){.app{grid-template-columns:1fr;padding:12px} header{padding:14px 12px} .duo{grid-template-columns:1fr}}
+@media (prefers-reduced-motion: reduce){.meter .fill{transition:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="eyebrow">CUTTING SIMULATOR</div>
+    <h1>切削シミュレータ</h1>
+  </div>
+  <div class="presets" role="group" aria-label="プリセット">
+    <button type="button" data-preset="al">アルミ 荒加工</button>
+    <button type="button" data-preset="s45c">S45C 側面荒</button>
+    <button type="button" data-preset="finish">S45C 壁仕上げ</button>
+    <button type="button" data-preset="sus">SUS304 トロコイド</button>
+    <button type="button" data-preset="chatter">びびりの例</button>
+    <button type="button" data-preset="rub">擦りの例</button>
+  </div>
+  <p>切削条件を入力すると、回転数・送り・除去量・所要動力・切りくず厚さ・びびりリスクを計算し、エンドミル側面加工の様子を上面図で再生します。数値は簡易モデルによる目安です。</p>
+</header>
+
+<div class="app">
+  <aside class="panel" aria-label="入力">
+    <h2>入力</h2>
+    <div class="grp">
+      <h3>材料・工具</h3>
+      <div class="row"><select id="material" aria-label="被削材"></select></div>
+      <div class="row"><label for="toolMat">工具材質</label><select id="toolMat" style="grid-column:auto"><option value="carbide">超硬</option><option value="hss">ハイス</option></select></div>
+      <div class="row"><label for="D">工具径 D<small>mm</small></label><input type="number" id="D" min="1" max="50" step="0.5" value="10"></div>
+      <div class="row"><label for="z">刃数 z</label><input type="number" id="z" min="1" max="12" step="1" value="4"></div>
+      <div class="row"><label for="L">突き出し長 L<small>mm（ホルダ端面から刃先）</small></label><input type="number" id="L" min="5" max="200" step="1" value="30"></div>
+      <div class="row"><label for="R">コーナ R<small>mm（底面粗さの計算用）</small></label><input type="number" id="R" min="0" max="5" step="0.1" value="0.5"></div>
+    </div>
+    <div class="grp">
+      <h3>切削条件</h3>
+      <div class="range-row"><div class="lab"><span>切削速度 Vc [m/min]</span><span id="VcV"></span></div><input type="range" id="Vc" min="10" max="800" step="5" value="150"><div class="rec" id="VcRec"></div></div>
+      <div class="range-row"><div class="lab"><span>1 刃送り fz [mm/刃]</span><span id="fzV"></span></div><input type="range" id="fz" min="0.005" max="0.5" step="0.005" value="0.06"></div>
+      <div class="range-row"><div class="lab"><span>軸方向切込み ap [mm]</span><span id="apV"></span></div><input type="range" id="ap" min="0.1" max="40" step="0.1" value="8"></div>
+      <div class="range-row"><div class="lab"><span>径方向切込み ae [mm]</span><span id="aeV"></span></div><input type="range" id="ae" min="0.05" max="20" step="0.05" value="3"><div class="rec" id="aeRec"></div></div>
+      <div class="seg" role="group" aria-label="切削方向"><button type="button" id="climb" aria-pressed="true">ダウンカット</button><button type="button" id="conv" aria-pressed="false">アップカット</button></div>
+    </div>
+    <div class="grp">
+      <h3>機械</h3>
+      <div class="row"><label for="nmax">主軸最高回転数<small>min⁻¹</small></label><input type="number" id="nmax" min="1000" max="60000" step="500" value="12000"></div>
+      <div class="row"><label for="Pm">主軸出力<small>kW（連続定格）</small></label><input type="number" id="Pm" min="0.5" max="100" step="0.5" value="11"></div>
+    </div>
+  </aside>
+
+  <section class="stage" aria-label="アニメーション">
+    <div class="canvas-wrap">
+      <canvas id="top" height="480" aria-label="上面図アニメーション"></canvas>
+      <div class="tag">上面図 ／ ワーク 120 × 70 mm</div>
+      <div class="hud"><span class="badge" id="bChatter"><i></i>安定</span><span class="badge" id="bChip"><i></i>切りくず</span></div>
+    </div>
+    <div class="controls">
+      <button type="button" class="btn" id="play">一時停止</button>
+      <button type="button" class="btn ghost" id="reset">最初から</button>
+      <span class="lbl">再生速度</span>
+      <div class="speed" role="group" aria-label="再生速度"><button type="button" data-speed="0.25">0.25×</button><button type="button" data-speed="1" aria-pressed="true">1×</button><button type="button" data-speed="4">4×</button><button type="button" data-speed="16">16×</button></div>
+      <span class="lbl num" id="clock">t = 0.0 s</span>
+      <span class="lbl num" id="pass">パス 1 / 6</span>
+    </div>
+    <div class="duo">
+      <div class="mini"><h4>側面図（突き出し・切込み・たわみを誇張表示）</h4><canvas id="side" height="170"></canvas></div>
+      <div class="mini"><h4>切りくず厚さの変化（刃の進入〜退出）</h4><canvas id="chip" height="170"></canvas></div>
+    </div>
+  </section>
+
+  <aside class="panel readout" aria-label="計算結果">
+    <h2>計算結果</h2>
+    <dl class="kv">
+      <div class="hero"><span class="v" id="rN">—</span><span class="u">min⁻¹ 主軸回転数</span></div>
+      <dt>実切削速度</dt><dd id="rVc"></dd>
+      <dt>送り速度 Vf</dt><dd id="rVf"></dd>
+      <dt>1 回転送り f</dt><dd id="rF"></dd>
+      <dt>除去量 Q</dt><dd id="rQ"></dd>
+      <dt>切りくず厚さ 最大／平均</dt><dd id="rH"></dd>
+      <dt>薄化補正係数</dt><dd id="rThin"></dd>
+      <dt>所要動力 Pc</dt><dd id="rP"></dd>
+      <dt>主軸トルク</dt><dd id="rT"></dd>
+      <dt>切削力（概算）</dt><dd id="rFc"></dd>
+      <dt>工具たわみ（概算）</dt><dd id="rDef"></dd>
+      <dt>安定限界 ap（簡易）</dt><dd id="rApl"></dd>
+      <dt>壁面の理論 Rz（振れゼロ）</dt><dd id="rRz"></dd>
+      <dt>底面の理論 Rz</dt><dd id="rRzf"></dd>
+      <dt>寿命指数（推奨中央 = 100）</dt><dd id="rLife"></dd>
+      <dt>1 パス（120 mm）の時間</dt><dd id="rTime"></dd>
+    </dl>
+    <div class="meter"><div style="display:flex;justify-content:space-between;font-size:12.5px"><span>主軸負荷</span><span class="num" id="loadV"></span></div><div class="bar"><div class="fill" id="loadFill" style="width:0%"></div><div class="tick" title="80%"></div></div><div class="cap"><span>0</span><span>80% 目安</span><span>100%</span></div></div>
+    <h2>判定</h2>
+    <ul class="warnings" id="warnings"></ul>
+  </aside>
+</div>
+<p class="foot">計算式：n = 1000·Vc/(π·D)、Vf = fz·z·n、Q = ap·ae·Vf/1000、hmax = fz·√(1−(1−2ae/D)²)、Pc = Q·Kc/(60·10³·η)、δ = F·L³/(3·E·I)。安定限界と切りくずの見た目は経験則に基づく簡易モデルで、実機の値を保証するものではありません。工具メーカーの推奨条件を起点に調整してください。</p>
+
+<script>
+(function(){
+'use strict';
+const MAT = {
+  al:   {name:'アルミ合金 A5052 / A7075', vc:[200,600], kc:800,  mc:0.25, ductile:true,  bue:true,  tint:'#c9ced4', dust:false},
+  brass:{name:'黄銅 C3604',              vc:[150,400], kc:1000, mc:0.22, ductile:false, bue:false, tint:'#d7b04a', dust:false},
+  s45c: {name:'炭素鋼 S45C（生材）',      vc:[120,220], kc:2000, mc:0.25, ductile:true,  bue:true,  tint:null,      dust:false},
+  scm:  {name:'合金鋼 SCM440（調質）',    vc:[80,180],  kc:2400, mc:0.25, ductile:true,  bue:false, tint:null,      dust:false},
+  fc:   {name:'鋳鉄 FC250',              vc:[100,250], kc:1200, mc:0.28, ductile:false, bue:false, tint:'#4a4f57', dust:true},
+  sus:  {name:'ステンレス SUS304',        vc:[60,150],  kc:2600, mc:0.22, ductile:true,  bue:true,  tint:null,      dust:false, wh:true},
+  pre:  {name:'プリハードン鋼 40 HRC',    vc:[60,150],  kc:2800, mc:0.24, ductile:false, bue:false, tint:null,      dust:false},
+  hard: {name:'焼入れ鋼 55 HRC',          vc:[40,120],  kc:3500, mc:0.22, ductile:false, bue:false, tint:null,      dust:true},
+  ti:   {name:'チタン合金 Ti-6Al-4V',     vc:[40,80],   kc:2200, mc:0.23, ductile:true,  bue:false, tint:null,      dust:false, wh:true},
+  inco: {name:'インコネル 718',           vc:[20,50],   kc:3500, mc:0.25, ductile:true,  bue:false, tint:null,      dust:false, wh:true},
+};
+const PRESETS = {
+  al:     {material:'al',  toolMat:'carbide', D:12, z:3, L:36, R:0.5, Vc:400, fz:0.10, ap:12, ae:4,   climb:true, nmax:12000, Pm:11},
+  s45c:   {material:'s45c',toolMat:'carbide', D:10, z:4, L:30, R:0.5, Vc:150, fz:0.06, ap:8,  ae:3,   climb:true, nmax:12000, Pm:11},
+  finish: {material:'s45c',toolMat:'carbide', D:10, z:6, L:30, R:0.2, Vc:180, fz:0.06, ap:15, ae:0.2, climb:true, nmax:12000, Pm:11},
+  sus:    {material:'sus', toolMat:'carbide', D:10, z:5, L:32, R:0.5, Vc:120, fz:0.08, ap:20, ae:1,   climb:true, nmax:12000, Pm:11},
+  chatter:{material:'s45c',toolMat:'carbide', D:10, z:4, L:60, R:0.5, Vc:150, fz:0.06, ap:10, ae:5,   climb:true, nmax:12000, Pm:11},
+  rub:    {material:'sus', toolMat:'carbide', D:10, z:4, L:30, R:0.5, Vc:120, fz:0.01, ap:8,  ae:0.5, climb:false,nmax:12000, Pm:11},
+};
+const $ = id => document.getElementById(id);
+const ids = ['material','toolMat','D','z','L','R','Vc','fz','ap','ae','nmax','Pm'];
+const el = {}; ids.forEach(i => el[i] = $(i));
+Object.entries(MAT).forEach(([k,m]) => { const o=document.createElement('option'); o.value=k; o.textContent=m.name; el.material.appendChild(o); });
+
+let state = {climb:true, speed:1, playing:true};
+function readInputs(){
+  const s = {};
+  s.mat = MAT[el.material.value]; s.matKey = el.material.value;
+  s.hss = el.toolMat.value === 'hss';
+  s.D = +el.D.value; s.z = Math.max(1, Math.round(+el.z.value)); s.L = +el.L.value; s.R = +el.R.value;
+  s.Vc = +el.Vc.value; s.fz = +el.fz.value; s.ap = +el.ap.value; s.ae = Math.min(+el.ae.value, s.D);
+  s.nmax = +el.nmax.value; s.Pm = +el.Pm.value; s.climb = state.climb;
+  return s;
+}
+function calc(s){
+  const r = {};
+  const vcRange = s.mat.vc.map(v => s.hss ? v*0.25 : v);
+  r.vcRange = vcRange;
+  const nReq = 1000*s.Vc/(Math.PI*s.D);
+  r.capped = nReq > s.nmax;
+  r.n = Math.min(nReq, s.nmax);
+  r.VcAct = Math.PI*s.D*r.n/1000;
+  r.Vf = s.fz*s.z*r.n;
+  r.f = s.fz*s.z;
+  r.Q = s.ap*s.ae*r.Vf/1000;
+  const aeD = s.ae/s.D;
+  r.thin = aeD < 0.5 ? 1/Math.sqrt(1-Math.pow(1-2*aeD,2)) : 1;
+  r.hmax = s.fz/r.thin;
+  const phi = Math.acos(1-2*Math.min(aeD,1));  // engagement angle (rad) for ae<=D
+  r.phi = phi;
+  r.hm = phi>0 ? s.fz*(2*aeD)/phi : 0;           // avg = fz*(1-cos φ)/φ
+  const kc = s.mat.kc*Math.pow(Math.max(r.hm,0.005)/0.1, -s.mat.mc);
+  r.kc = kc;
+  r.Pc = r.Q*kc/(60*1000*0.8);
+  r.T = r.n>0 ? r.Pc*9550/r.n : 0;
+  r.load = s.Pm>0 ? r.Pc/s.Pm : 0;
+  // cutting force: tangential ≈ kc * (ap * hm) * (teeth in cut)
+  const teethIn = Math.max(phi/(2*Math.PI)*s.z, 0.35);
+  r.Fc = kc*s.ap*r.hm*teethIn;
+  const E = s.hss ? 210000 : 600000;
+  const I = Math.PI*Math.pow(s.D*0.8,4)/64;
+  r.defl = r.Fc*Math.pow(s.L,3)/(3*E*I);
+  const LD = s.L/s.D;
+  r.apLim = 1.5*s.D*Math.pow(3/Math.max(LD,1.5),3)*Math.sqrt(0.3/Math.max(aeD,0.05))*Math.sqrt(2000/s.mat.kc);
+  r.apLim = Math.min(Math.max(r.apLim,0.15), 5*s.D);
+  r.risk = s.ap/r.apLim;
+  r.RzWall = s.fz*s.fz/(4*s.D)*1000;
+  r.RzFloor = s.R>0 ? r.f*r.f/(8*s.R)*1000 : null;
+  const vcMid = (vcRange[0]+vcRange[1])/2;
+  const nT = s.hss ? 0.12 : 0.25;
+  r.life = 100*Math.pow(vcMid/Math.max(r.VcAct,1), 1/nT);
+  r.heat = r.VcAct/vcRange[1];
+  r.tPass = r.Vf>0 ? 120/r.Vf*60 : Infinity;
+  // chip form
+  if (r.hmax < 0.02) r.chipForm = 'ribbon';
+  else if (s.mat.dust || r.heat > 1.35) r.chipForm = 'dust';
+  else if (s.mat.ductile && r.hm < 0.02) r.chipForm = 'ribbon';
+  else r.chipForm = 'curl';
+  r.chipColor = s.mat.tint || (r.heat < 0.5 ? '#c4c9cf' : r.heat < 1.0 ? '#b8862e' : r.heat < 1.35 ? '#5b62b8' : '#2b2f52');
+  // warnings
+  const w = [];
+  if (r.capped) w.push(['warn','回転数が上限','必要回転数 '+fmt(nReq,0)+' が主軸上限を超えたため、実切削速度は '+fmt(r.VcAct,0)+' m/min に低下しています。']);
+  if (r.VcAct < vcRange[0]*0.8) w.push([s.mat.bue?'warn':'good','切削速度が低い','推奨範囲（'+vcRange[0]+'〜'+vcRange[1]+'）を下回っています。'+(s.mat.bue?'構成刃先（溶着）が出やすい材料です。Vc を上げてください。':'寿命は伸びますが能率は落ちます。')]);
+  else if (r.VcAct > vcRange[1]*1.15) w.push(['crit','切削速度が過大','推奨上限 '+vcRange[1]+' m/min を大きく超えています。刃先が過熱し、寿命が急激に短くなります（テイラー則）。']);
+  else if (r.VcAct > vcRange[1]) w.push(['warn','切削速度が高め','推奨上限付近です。切りくずの色が青紫なら 10〜20% 下げてください。']);
+  if (r.hmax < 0.02) w.push([r.hmax < 0.01 ? 'crit' : 'warn','擦り気味（切りくずが薄い）','最大切りくず厚さ '+fmt(r.hmax*1000,0)+' µm。刃が擦って摩耗・加工硬化・びびりの原因になります。fz を '+fmt(r.thin,2)+' 倍以上に補正してください。']);
+  else if (aeD < 0.3 && r.thin > 1.15) w.push(['warn','切りくず薄化','ae/D = '+fmt(aeD*100,0)+'%。実切りくず厚さは fz の '+fmt(1/r.thin,2)+' 倍です。fz を '+fmt(r.thin,2)+' 倍にすると狙いどおりの厚さになります。']);
+  if (s.fz > 0.02*s.D) w.push(['warn','1 刃送りが大きい','fz が工具径の 2% を超えています。高送り専用工具でなければ刃先欠損に注意。']);
+  if (r.risk > 1) w.push(['crit','びびりの危険','ap が簡易安定限界（'+fmt(r.apLim,1)+' mm）を超えています。突き出しを短く、ap か ae を減らす、回転数を変える（安定ポケット）、不等分割工具を検討。']);
+  else if (r.risk > 0.7) w.push(['warn','びびり注意','安定限界の '+fmt(r.risk*100,0)+'%。突き出し L/D = '+fmt(LD,1)+'。音が出たら回転数を ±10〜15% 変えてください。']);
+  if (r.load > 1) w.push(['crit','主軸出力不足','所要動力 '+fmt(r.Pc,1)+' kW が主軸出力を超えています。ap・ae・fz を下げてください。']);
+  else if (r.load > 0.8) w.push(['warn','主軸負荷が高い','定格の '+fmt(r.load*100,0)+'%。連続運転では 80% 以下が目安です。']);
+  if (r.defl > 0.02) w.push([r.defl>0.05?'crit':'warn','工具たわみ','概算たわみ '+fmt(r.defl*1000,0)+' µm。壁がテーパになり寸法がプラス側に出ます。突き出し短縮・ゼロカット・多刃で ae 小。']);
+  if (s.mat.wh && r.hm < 0.04) w.push(['warn','加工硬化','この材料は薄い切りくずで擦ると硬化層を作ります。fz を落とさず、確実に切込んでください。']);
+  if (!s.climb) w.push(['warn','アップカット','切りくずが薄→厚になり発熱・毛羽立ちが増えます。黒皮除去や旧型機以外はダウンカットが基本です。']);
+  if (LD > 4) w.push(['warn','突き出しが長い','L/D = '+fmt(LD,1)+'。たわみは L の 3 乗で増えます。必要最小＋2〜3 mm に。']);
+  if (w.length === 0) w.push(['good','条件は妥当','推奨範囲内で、擦り・びびり・負荷の問題は見当たりません。初品では切りくずの色と音を確認してください。']);
+  r.warnings = w;
+  return r;
+}
+function fmt(v,d){ return isFinite(v) ? v.toLocaleString('ja-JP',{minimumFractionDigits:d,maximumFractionDigits:d}) : '—'; }
+
+// ---------- readouts ----------
+let S, Rr;
+function refresh(){
+  S = readInputs(); Rr = calc(S);
+  $('VcV').textContent = S.Vc+' m/min'; $('fzV').textContent = S.fz.toFixed(3)+' mm/刃';
+  $('apV').textContent = S.ap.toFixed(1)+' mm'; $('aeV').textContent = S.ae.toFixed(2)+' mm';
+  $('VcRec').textContent = '推奨範囲（'+(S.hss?'ハイス':'超硬')+'）: '+Rr.vcRange[0]+'〜'+Rr.vcRange[1]+' m/min';
+  $('aeRec').textContent = 'ae/D = '+fmt(S.ae/S.D*100,0)+'%　／　ap/D = '+fmt(S.ap/S.D,2);
+  $('rN').textContent = fmt(Rr.n,0);
+  $('rVc').innerHTML = fmt(Rr.VcAct,0)+'<small>m/min</small>'+(Rr.capped?' <small>（上限で制限）</small>':'');
+  $('rVf').innerHTML = fmt(Rr.Vf,0)+'<small>mm/min</small>';
+  $('rF').innerHTML = fmt(Rr.f,3)+'<small>mm/rev</small>';
+  $('rQ').innerHTML = fmt(Rr.Q,1)+'<small>cm³/min</small>';
+  $('rH').innerHTML = fmt(Rr.hmax*1000,0)+' / '+fmt(Rr.hm*1000,0)+'<small>µm</small>';
+  $('rThin').innerHTML = '×'+fmt(Rr.thin,2);
+  $('rP').innerHTML = fmt(Rr.Pc,2)+'<small>kW</small>';
+  $('rT').innerHTML = fmt(Rr.T,1)+'<small>N·m</small>';
+  $('rFc').innerHTML = fmt(Rr.Fc,0)+'<small>N</small>';
+  $('rDef').innerHTML = fmt(Rr.defl*1000,0)+'<small>µm</small>';
+  $('rApl').innerHTML = fmt(Rr.apLim,1)+'<small>mm</small>';
+  $('rRz').innerHTML = fmt(Rr.RzWall,2)+'<small>µm</small>';
+  $('rRzf').innerHTML = Rr.RzFloor===null ? '—' : fmt(Rr.RzFloor,2)+'<small>µm</small>';
+  $('rLife').innerHTML = fmt(Math.min(Rr.life,9999),0);
+  $('rTime').innerHTML = fmt(Rr.tPass,1)+'<small>s</small>';
+  const lp = Math.min(Rr.load*100,100);
+  const lf = $('loadFill'); lf.style.width = lp+'%'; lf.className = 'fill'+(Rr.load>1?' crit':Rr.load>0.8?' warn':'');
+  $('loadV').textContent = fmt(Rr.load*100,0)+'% （'+fmt(Rr.Pc,1)+' / '+S.Pm+' kW）';
+  const ul = $('warnings'); ul.innerHTML = '';
+  Rr.warnings.forEach(([lv,t,m]) => { const li=document.createElement('li'); li.className=lv; li.innerHTML='<b>'+({good:'✓',warn:'△',crit:'✕'})[lv]+' '+t+'</b><span>'+m+'</span>'; ul.appendChild(li); });
+  const bc = $('bChatter'); bc.className = 'badge '+(Rr.risk>1?'crit':Rr.risk>0.7?'warn':'good'); bc.innerHTML = '<i></i>'+(Rr.risk>1?'びびり発生':Rr.risk>0.7?'びびり注意':'安定');
+  const chipLabel = {curl:'切りくず：短いカール（良）', ribbon:'切りくず：長いリボン（擦り・薄い）', dust:'切りくず：粉状'}[Rr.chipForm];
+  const bch = $('bChip'); bch.className = 'badge '+(Rr.chipForm==='curl'?'good':Rr.heat>1.35||Rr.hmax<0.01?'crit':'warn'); bch.innerHTML='<i style="background:'+Rr.chipColor+'"></i>'+chipLabel+(Rr.heat>1.0&&!S.mat.tint?'・青紫（高温）':'');
+  drawChipGraph();
+  sim.onConditionsChanged();
+  save();
+}
+function save(){ try{ const o={}; ids.forEach(i=>o[i]=el[i].value); o.climb=state.climb; localStorage.setItem('cutsim',JSON.stringify(o)); }catch(e){} }
+function load(){ try{ const o=JSON.parse(localStorage.getItem('cutsim')||'null'); if(!o) return false; ids.forEach(i=>{ if(o[i]!==undefined) el[i].value=o[i]; }); if(o.climb!==undefined) setClimb(!!o.climb); return true; }catch(e){ return false; } }
+function applyPreset(p){ el.material.value=p.material; el.toolMat.value=p.toolMat; ['D','z','L','R','Vc','fz','ap','ae','nmax','Pm'].forEach(k=>el[k].value=p[k]); setClimb(p.climb); refresh(); sim.reset(); }
+function setClimb(c){ state.climb=c; $('climb').setAttribute('aria-pressed',c); $('conv').setAttribute('aria-pressed',!c); }
+
+// ---------- canvases ----------
+function fitCanvas(c){ const dpr=window.devicePixelRatio||1; const w=c.clientWidth||600; const h=+c.getAttribute('height'); c.width=Math.round(w*dpr); c.height=Math.round(h*dpr); const g=c.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0); return {g,w,h}; }
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+// chip thickness graph
+function drawChipGraph(){
+  const c=$('chip'); const {g,w,h}=fitCanvas(c);
+  g.clearRect(0,0,w,h);
+  const ml=44, mr=12, mt=16, mb=28; const pw=w-ml-mr, ph=h-mt-mb;
+  const ink=css('--ink'), muted=css('--muted'), rule=css('--rule'), steel=css('--steel'), chip=css('--chip');
+  const phi=Rr.phi, fz=S.fz;
+  const ymax = Math.max(fz*1.15, 0.01);
+  g.strokeStyle=rule; g.lineWidth=1;
+  [0,0.5,1].forEach(t=>{ const y=mt+ph-t*ph; g.beginPath(); g.moveTo(ml,y); g.lineTo(ml+pw,y); g.stroke(); });
+  g.fillStyle=muted; g.font='10px "IBM Plex Mono",monospace'; g.textAlign='right';
+  [0,0.5,1].forEach(t=>{ g.fillText((t*ymax*1000).toFixed(0)+'µm', ml-4, mt+ph-t*ph+3); });
+  // curve h = fz sin(theta), theta 0..phi (entry at theta=phi for climb: thick->thin)
+  const N=60; g.beginPath();
+  for(let i=0;i<=N;i++){ const t=i/N; const th = S.climb ? phi*(1-t) : phi*t; const hv=fz*Math.sin(th); const x=ml+t*pw, y=mt+ph-(hv/ymax)*ph; i?g.lineTo(x,y):g.moveTo(x,y); }
+  g.strokeStyle=steel; g.lineWidth=2; g.stroke();
+  g.lineTo(ml+pw, mt+ph); g.lineTo(ml, mt+ph); g.closePath(); g.fillStyle=steel; g.globalAlpha=0.12; g.fill(); g.globalAlpha=1;
+  // fz reference
+  const yfz=mt+ph-(fz/ymax)*ph; g.setLineDash([4,3]); g.strokeStyle=chip; g.lineWidth=1; g.beginPath(); g.moveTo(ml,yfz); g.lineTo(ml+pw,yfz); g.stroke(); g.setLineDash([]);
+  g.fillStyle=chip; g.textAlign='left'; g.fillText('設定 fz', ml+4, yfz-4);
+  // rubbing threshold
+  const yr=mt+ph-(0.02/ymax)*ph; if(yr>mt && yr<mt+ph){ g.strokeStyle=muted; g.setLineDash([2,3]); g.beginPath(); g.moveTo(ml,yr); g.lineTo(ml+pw,yr); g.stroke(); g.setLineDash([]); g.fillStyle=muted; g.textAlign='right'; g.fillText('擦り目安 20µm', ml+pw-2, yr-3); }
+  g.fillStyle=ink; g.textAlign='left'; g.font='11px "Noto Sans JP",sans-serif';
+  g.fillText(S.climb?'進入（厚い）':'進入（ゼロ）', ml, h-8); g.textAlign='right'; g.fillText(S.climb?'退出（ゼロ）':'退出（厚い）', ml+pw, h-8);
+  g.textAlign='center'; g.fillStyle=muted; g.fillText('接触角 '+(phi*180/Math.PI).toFixed(0)+'°', ml+pw/2, h-8);
+}
+
+// ---------- simulation ----------
+const sim = (function(){
+  const WX=120, WY=70; // mm
+  const NPASS=6;
+  let t=0, pass=0, x=0, rot=0, mode='cut', edge=[], chips=[], lastTs=null, scallops=[];
+  let lastFeedPx=0;
+  function reset(){ t=0; pass=0; rot=0; mode='cut'; chips=[]; scallops=[]; edge=new Array(NPASS+1).fill(0); setupPass(); }
+  function setupPass(){ x = S.climb ? WX+S.D : -S.D; }
+  function onConditionsChanged(){ /* keep position; ae change affects future passes only */ }
+  function step(dt){
+    const dts = dt*state.speed;
+    t += dts;
+    const dir = S.climb ? -1 : 1;
+    rot += (Rr.n/60)*dts*2*Math.PI*0.02 + dts*3; // visual rotation (scaled down)
+    if(mode==='cut'){
+      const v = Rr.Vf/60; // mm/s
+      x += dir*v*dts;
+      // scallop marks per revolution
+      const f=Rr.f; lastFeedPx += v*dts;
+      while(lastFeedPx >= f && f>0.15){ lastFeedPx -= f; scallops.push({pass, x:x - dir*lastFeedPx}); if(scallops.length>4000) scallops.shift(); }
+      const done = S.climb ? x < -S.D : x > WX+S.D;
+      if(done){ mode='rapid'; pass++; if(pass>=NPASS){ pass=0; } if(pass===0){ scallops=[]; } }
+      emitChips(dts);
+    } else {
+      const target = S.climb ? WX+S.D : -S.D; const vr = 10000/60;
+      const d = target - x; const mv = Math.sign(d)*Math.min(Math.abs(d), vr*dts);
+      x += mv; if(Math.abs(target-x)<0.01){ x=target; mode='cut'; lastFeedPx=0; }
+    }
+    updateChips(dts);
+  }
+  function edgeY(p){ return p*S.ae; } // depth removed before pass p
+  function emitChips(dts){
+    const rate = Math.min(6 + Rr.Q*4, 120); // particles/s
+    let n = rate*dts*Math.min(state.speed,4)/Math.max(state.speed,1); n = Math.floor(n) + (Math.random()<n%1?1:0);
+    for(let i=0;i<n;i++) chips.push(makeChip());
+    if(chips.length>400) chips.splice(0, chips.length-400);
+  }
+  function makeChip(){
+    const dir = S.climb ? -1 : 1;
+    const r=S.D/2;
+    const a0 = Rr.phi*Math.random();                 // angle from the bottom point along the engaged arc
+    const cy = edgeY(pass+1) - r;                     // tool centre (mm, y down)
+    const px = x + dir*r*Math.sin(a0);                // engaged arc lies on the feed side of the tool
+    const py = cy + r*Math.cos(a0);
+    const size = Math.max(1.5, Math.min(7, 1.5 + Rr.hmax*60 + S.ap*0.08));
+    const sp = 25 + Rr.VcAct*0.08 + Math.random()*30;
+    const a = Math.PI*0.3 + (Math.random()-0.5)*0.9;  // thrown up and to the right (clockwise spindle)
+    return {x:px, y:py, vx:Math.cos(a)*sp, vy:-Math.abs(Math.sin(a))*sp, life:0.7+Math.random()*0.7, age:0, size, rot:Math.random()*6.28, spin:(Math.random()-0.5)*10, form:Rr.chipForm, color:Rr.chipColor};
+  }
+  function updateChips(dts){
+    for(const c of chips){ c.age+=dts; c.x+=c.vx*dts; c.y+=c.vy*dts; c.vy+=60*dts; c.vx*=0.985; c.rot+=c.spin*dts; }
+    chips = chips.filter(c=>c.age<c.life);
+  }
+  function draw(){
+    const c=$('top'); const {g,w,h}=fitCanvas(c);
+    g.clearRect(0,0,w,h);
+    const sc = Math.min((w-80)/(WX+2*S.D+10), (h-90)/(WY+S.D+30));
+    const ox = (w - WX*sc)/2, oy = 70 + S.D*sc*0.6; // top edge of workpiece at oy
+    const P = (mx,my)=>[ox+mx*sc, oy+my*sc];
+    const work=css('--work'), wEdge=css('--work-edge'), uncut=css('--uncut'), tool=css('--tool'), tEdge=css('--tool-edge'), ink=css('--ink'), muted=css('--muted'), crit=css('--crit');
+    // workpiece: rows already removed by previous passes: top at edgeY(pass); current pass strip
+    const yTop = edgeY(pass); const yCut = edgeY(pass+1);
+    const dir = S.climb ? -1 : 1;
+    // remaining block below current cut for whole width, plus uncut strip ahead of tool
+    g.fillStyle=work; g.strokeStyle=wEdge; g.lineWidth=1.5;
+    g.beginPath(); const [bx,by]=P(0,yCut); g.rect(bx,by,WX*sc,(WY-yCut)*sc); g.fill(); g.stroke();
+    // uncut strip: region of current pass not yet reached by tool
+    const front = x + dir*(S.D/2); // leading edge of tool
+    let ux0, ux1;
+    if(S.climb){ ux0=0; ux1=Math.min(WX, Math.max(0, front)); } else { ux0=Math.max(0, Math.min(WX, front)); ux1=WX; }
+    if(mode==='rapid'){ if(S.climb){ux0=0;ux1=0;} else {ux0=WX;ux1=WX;} }
+    if(ux1>ux0){ g.fillStyle=uncut; const [sx,sy]=P(ux0,yTop); g.fillRect(sx,sy,(ux1-ux0)*sc,S.ae*sc); g.strokeStyle=wEdge; g.strokeRect(sx,sy,(ux1-ux0)*sc,S.ae*sc); }
+    // machined wall (this pass) — chatter waviness
+    const chatter = Rr.risk>1 ? Math.min((Rr.risk-1)*2+0.5, 2.5) : 0;
+    const [mx0,my0]=P(0,yCut);
+    if(chatter>0){ g.strokeStyle=crit; g.lineWidth=1.5; g.beginPath(); const cx0 = S.climb? Math.max(front,0): 0, cx1 = S.climb? WX : Math.min(front,WX); for(let mm=cx0; mm<=cx1; mm+=0.5){ const [px,py]=P(mm,yCut); const off=Math.sin(mm*2.1)*chatter*sc*0.35; mm===cx0?g.moveTo(px,py+off):g.lineTo(px,py+off);} g.stroke(); }
+    // scallops (feed marks) on machined wall
+    g.strokeStyle=wEdge; g.globalAlpha=0.35; g.lineWidth=1;
+    for(const s of scallops){ if(s.pass!==pass && s.pass!==pass-1) continue; if(s.x<0||s.x>WX) continue; const yy=edgeY(s.pass+1); const [px,py]=P(s.x,yy); g.beginPath(); g.moveTo(px,py); g.lineTo(px,py+Math.min(3,S.ae*sc*0.4)); g.stroke(); }
+    g.globalAlpha=1;
+    // previous pass marks
+    // chips
+    for(const ch of chips){ const [px,py]=P(ch.x,ch.y); const a=1-ch.age/ch.life; g.globalAlpha=Math.max(0,Math.min(1,a*1.3)); g.strokeStyle=ch.color; g.fillStyle=ch.color; g.lineWidth=Math.max(1,ch.size*0.35);
+      g.save(); g.translate(px,py); g.rotate(ch.rot);
+      if(ch.form==='curl'){ g.beginPath(); g.arc(0,0,ch.size,0.3,4.6); g.stroke(); }
+      else if(ch.form==='ribbon'){ g.beginPath(); const L=ch.size*4; for(let i=0;i<=8;i++){ const xx=-L/2+L*i/8, yy=Math.sin(i*1.3+ch.rot)*ch.size*0.5; i?g.lineTo(xx,yy):g.moveTo(xx,yy);} g.stroke(); }
+      else { g.beginPath(); g.arc(0,0,ch.size*0.35,0,6.29); g.fill(); }
+      g.restore(); }
+    g.globalAlpha=1;
+    // tool
+    const r=S.D/2*sc; const [tx,ty]=P(x, yTop + S.ae - S.D/2 + 0); // tool center: bottom of tool at yCut → center y = yCut - D/2
+    const tcy = oy + (yCut - S.D/2)*sc;
+    const jit = chatter? (Math.random()-0.5)*chatter*sc*0.3 : 0;
+    g.save(); g.translate(tx, tcy+jit); g.rotate(rot);
+    g.fillStyle=tool; g.strokeStyle=tEdge; g.lineWidth=1.5; g.beginPath(); g.arc(0,0,r,0,6.29); g.fill(); g.stroke();
+    // flutes
+    for(let i=0;i<S.z;i++){ const a=i*2*Math.PI/S.z; g.beginPath(); g.moveTo(0,0); g.quadraticCurveTo(Math.cos(a+0.6)*r*0.55, Math.sin(a+0.6)*r*0.55, Math.cos(a)*r, Math.sin(a)*r); g.strokeStyle=tEdge; g.lineWidth=1; g.stroke(); g.fillStyle=tEdge; g.beginPath(); g.arc(Math.cos(a)*r*0.93, Math.sin(a)*r*0.93, Math.max(1.5,r*0.06),0,6.29); g.fill(); }
+    g.restore();
+    // rotation arrow (clockwise) + feed arrow
+    g.strokeStyle=ink; g.fillStyle=ink; g.lineWidth=1.5;
+    g.beginPath(); g.arc(tx, tcy, r+9, -Math.PI*0.8, -Math.PI*0.2); g.stroke();
+    const ax=tx+(r+9)*Math.cos(-Math.PI*0.2), ay=tcy+(r+9)*Math.sin(-Math.PI*0.2); g.beginPath(); g.moveTo(ax,ay); g.lineTo(ax-7,ay-4); g.lineTo(ax-2,ay+5); g.closePath(); g.fill();
+    const fx=tx+dir*(r+14), fy=tcy; g.beginPath(); g.moveTo(tx+dir*(r+4),fy); g.lineTo(fx+dir*16,fy); g.stroke(); g.beginPath(); g.moveTo(fx+dir*22,fy); g.lineTo(fx+dir*12,fy-5); g.lineTo(fx+dir*12,fy+5); g.closePath(); g.fill();
+    g.font='11px "IBM Plex Mono",monospace'; g.fillStyle=muted; g.textAlign='center';
+    g.fillText(mode==='cut'?('Vf '+fmt(Rr.Vf,0)+' mm/min'):'早送り', tx, tcy-r-16);
+    // dimension labels
+    g.textAlign='left'; g.fillStyle=muted; g.font='11px "Noto Sans JP",sans-serif';
+    const [lx,ly]=P(WX+2, yTop); g.fillText('ae '+S.ae.toFixed(2), lx, ly+S.ae*sc/2+4);
+    g.strokeStyle=muted; g.beginPath(); g.moveTo(lx-2,ly); g.lineTo(lx-2,ly+S.ae*sc); g.stroke();
+    const [dx0,dy0]=P(0,WY+2); g.fillText('φ'+S.D+'  z='+S.z+'  n='+fmt(Rr.n,0)+'  fz='+S.fz.toFixed(3)+'  ap='+S.ap.toFixed(1)+'  '+(S.climb?'ダウンカット':'アップカット'), dx0, dy0+14);
+    $('clock').textContent='t = '+t.toFixed(1)+' s';
+    $('pass').textContent='パス '+(pass+1)+' / '+NPASS+(mode==='rapid'?'（戻り）':'');
+    drawSide(chatter);
+  }
+  function drawSide(chatter){
+    const c=$('side'); const {g,w,h}=fitCanvas(c); g.clearRect(0,0,w,h);
+    const work=css('--work'), wEdge=css('--work-edge'), tool=css('--tool'), tEdge=css('--tool-edge'), muted=css('--muted'), ink=css('--ink'), steel=css('--steel'), uncut=css('--uncut');
+    const sc = Math.min((h-40)/(S.L+S.ap+25), (w-120)/70);
+    const cx = w*0.42, floorY = h-16; // workpiece floor
+    // workpiece: block with a step: material top at floorY - ap*sc on the right of tool (uncut), machined on left
+    const topY = floorY - S.ap*sc - 10*sc*0.3; // leave 3mm below cut
+    g.fillStyle=work; g.strokeStyle=wEdge; g.lineWidth=1.5;
+    g.beginPath(); g.rect(cx-60, floorY-10, 130, 10); g.fill(); g.stroke(); // base
+    g.beginPath(); g.rect(cx+S.D/2*sc, floorY-10-S.ap*sc, 70-S.D/2*sc, S.ap*sc); g.fillStyle=uncut; g.fill(); g.stroke();
+    g.beginPath(); g.rect(cx-60, floorY-10-S.ap*sc, 60-S.D/2*sc, S.ap*sc); g.fillStyle=work; g.fill(); g.stroke();
+    // holder
+    const holderY = floorY-10-S.ap*sc-(S.L-S.ap)*sc; const hh=18;
+    g.fillStyle=steel; g.beginPath(); g.rect(cx-S.D*sc, holderY-hh, S.D*2*sc, hh); g.fill();
+    // tool with exaggerated deflection
+    const defl = Math.min(Rr.defl*40, 14) * sc*0.5 + (chatter? (Math.random()-0.5)*chatter*2:0);
+    g.fillStyle=tool; g.strokeStyle=tEdge; g.lineWidth=1.2;
+    g.beginPath(); g.moveTo(cx-S.D/2*sc, holderY); g.lineTo(cx+S.D/2*sc, holderY);
+    g.quadraticCurveTo(cx+S.D/2*sc, floorY-10-S.ap*sc*0.5, cx+S.D/2*sc-defl, floorY-10);
+    g.lineTo(cx-S.D/2*sc-defl, floorY-10); g.quadraticCurveTo(cx-S.D/2*sc, floorY-10-S.ap*sc*0.5, cx-S.D/2*sc, holderY); g.closePath(); g.fill(); g.stroke();
+    // flute band
+    g.strokeStyle=tEdge; g.globalAlpha=0.35; for(let i=0;i<4;i++){ const yy=floorY-10-S.ap*sc*(0.2+i*0.25); g.beginPath(); g.moveTo(cx-S.D/2*sc-defl*(1-i*0.25),yy); g.lineTo(cx+S.D/2*sc-defl*(1-i*0.25),yy-4); g.stroke(); } g.globalAlpha=1;
+    // dims
+    g.strokeStyle=muted; g.fillStyle=muted; g.font='11px "IBM Plex Mono",monospace'; g.textAlign='left'; g.lineWidth=1;
+    const dxL = cx+S.D/2*sc+22; g.beginPath(); g.moveTo(dxL, holderY); g.lineTo(dxL, floorY-10); g.stroke(); g.fillText('L '+S.L+' mm', dxL+4, (holderY+floorY-10)/2+4);
+    const dxA = cx+S.D/2*sc+8; g.beginPath(); g.moveTo(dxA, floorY-10-S.ap*sc); g.lineTo(dxA, floorY-10); g.stroke(); g.fillText('ap', dxA-14, floorY-10-S.ap*sc-3);
+    g.fillStyle=ink; g.textAlign='left'; g.font='11px "Noto Sans JP",sans-serif'; g.fillText('L/D = '+fmt(S.L/S.D,1), 8, 14);
+    g.fillStyle=muted; g.fillText('δ ≈ '+fmt(Rr.defl*1000,0)+' µm（誇張表示）', 8, 30);
+  }
+  function frame(ts){
+    if(lastTs===null) lastTs=ts; let dt=(ts-lastTs)/1000; lastTs=ts; if(dt>0.1) dt=0.1;
+    if(state.playing && !reduced) step(dt);
+    else if(state.playing && reduced) step(dt);
+    draw(); requestAnimationFrame(frame);
+  }
+  const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return {reset, step, draw, onConditionsChanged, start(){ reset(); requestAnimationFrame(frame); }};
+})();
+
+// ---------- wiring ----------
+ids.forEach(i => el[i].addEventListener('input', refresh));
+el.material.addEventListener('change', ()=>{ const m=MAT[el.material.value]; const hss=el.toolMat.value==='hss'; const mid=(m.vc[0]+m.vc[1])/2*(hss?0.25:1); el.Vc.value=Math.round(mid/5)*5; refresh(); });
+$('climb').addEventListener('click', ()=>{ setClimb(true); refresh(); sim.reset(); });
+$('conv').addEventListener('click', ()=>{ setClimb(false); refresh(); sim.reset(); });
+$('play').addEventListener('click', e=>{ state.playing=!state.playing; e.target.textContent = state.playing?'一時停止':'再生'; });
+$('reset').addEventListener('click', ()=>sim.reset());
+document.querySelectorAll('.speed button').forEach(b=>b.addEventListener('click', ()=>{ state.speed=+b.dataset.speed; document.querySelectorAll('.speed button').forEach(x=>x.setAttribute('aria-pressed', x===b)); }));
+document.querySelectorAll('.presets button').forEach(b=>b.addEventListener('click', ()=>applyPreset(PRESETS[b.dataset.preset])));
+window.addEventListener('resize', ()=>{ drawChipGraph(); });
+if(!load()) applyPreset(PRESETS.s45c); else refresh();
+sim.start();
+})();
+</script>
+
+</body>
+</html>

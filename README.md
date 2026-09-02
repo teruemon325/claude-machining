@@ -24,6 +24,9 @@ docs/
 ├── 11-programming.md           プログラム（G コード・CAM）
 ├── 12-maintenance.md           機械の保守・精度管理
 ├── 13-safety.md                安全
+├── app/
+│   ├── cutting-simulator.html  切削シミュレータ（ブラウザで開くだけで動く単体アプリ）
+│   └── cutting-simulator.core.html  上記の本体（ドキュメント埋め込み・Artifact 公開用）
 ├── appendix/
 │   ├── a-formulas.md           計算式集
 │   ├── b-troubleshooting.md    トラブルシューティング早見表
@@ -31,6 +34,10 @@ docs/
 │   └── d-glossary.md           用語集
 └── images/                     図版（SVG、27 点）
 ```
+
+## 切削シミュレータ
+
+`docs/app/cutting-simulator.html` をブラウザで開くと、切削条件（Vc・fz・ap・ae）を入力して、回転数・送り・除去量・所要動力・切りくず厚さ・びびりリスクの計算と、加工の様子のアニメーションを確認できます。MkDocs でサイト化した場合は `app/cutting-simulator.html` として配信されます。
 
 ## 図版について
 

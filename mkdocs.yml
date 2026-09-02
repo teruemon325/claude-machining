@@ -46,6 +46,7 @@ nav:
   - 11 プログラム（CAM・G コード）: 11-programming.md
   - 12 機械の保守・精度管理: 12-maintenance.md
   - 13 安全: 13-safety.md
+  - 切削シミュレータ: app/cutting-simulator.html
   - 付録:
       - A 計算式集: appendix/a-formulas.md
       - B トラブルシューティング早見表: appendix/b-troubleshooting.md
