@@ -4,6 +4,7 @@ docs_dir: docs
 theme:
   name: material
   language: ja
+  custom_dir: overrides
   features:
     - navigation.sections
     - navigation.top
@@ -22,6 +23,8 @@ theme:
       toggle:
         icon: material/brightness-4
         name: ライトモードへ
+extra_css:
+  - stylesheets/extra.css
 markdown_extensions:
   - tables
   - admonition

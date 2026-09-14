@@ -131,10 +131,12 @@ nav.study .brand{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;le
 nav.study a{color:#d8e3ef;text-decoration:none;padding:4px 10px;border-radius:4px}
 nav.study a:hover{background:rgba(255,255,255,.12);color:#fff}
 nav.study a[aria-current=page]{background:var(--steel);color:#fff}
+.disclaimer{background:var(--warn-soft);color:var(--warn);border-bottom:1px solid var(--rule);padding:7px 16px;font-size:11.5px;line-height:1.6}
 nav.study{position:sticky;top:0;z-index:50}
 </style>
 </head>
 <body>
+<div class="disclaimer" role="note"><strong>試験公開中：</strong>本サイトはAIとの対話で作成した参考資料です。内容の正確性は保証されません。実際の加工条件・安全に関わる判断は、必ずメーカー資料等で確認のうえ自己責任でご利用ください。</div>
 <nav class="study" aria-label="マシニング加工スタディ"><span class="brand">⚙ マシニング加工スタディ</span><a data-k="docs" href="../docs/">ドキュメント</a><a data-k="app" href="../">ノウハウ集</a><a data-k="sim" href="../simulator/" aria-current="page">切削シミュレータ</a><a data-k="gcode" href="../gcode/">Gコードトレーナー</a></nav>
 <script>(function(){var art={"docs": "https://claude.ai/code/artifact/4eca61a5-b08c-48b2-8fc6-6c70e30845f4", "app": "https://claude.ai/code/artifact/84c8f745-0ca9-443d-8627-bd75989e7a34", "sim": "https://claude.ai/code/artifact/b2ac7c68-2233-47a7-898f-c3473f5eba8d", "gcode": "https://claude.ai/code/artifact/78629cf0-087b-425a-af70-8074431ebdab"};var useRel=location.protocol==="file:"||/\/(simulator|gcode)\//.test(location.pathname);if(!useRel){document.querySelectorAll("nav.study a[data-k]").forEach(function(a){a.href=art[a.getAttribute("data-k")];});}})();</script>
 

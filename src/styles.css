@@ -27,6 +27,7 @@
   --c10: #7a5a2a; --c10-bg: #f5ecdd;
   --c11: #4a5a7a; --c11-bg: #e8ecf5;
   --c12: #6a4a7a; --c12-bg: #f0e8f5;
+  --warn: #8a5a10; --warn-soft: #fbf0d9; --warn-border: #eecb8c;
 }
 
 * { box-sizing: border-box; }
@@ -116,6 +117,10 @@ input, select, textarea { font: inherit; color: inherit; }
 .menu-list a { border-top: 1px solid var(--border); border-radius: 0; }
 .menu-list a + a { border-top: none; }
 .menu-list button.danger { color: var(--danger); }
+
+/* ---------- disclaimer (免責) ---------- */
+.disclaimer { background: var(--warn-soft); color: var(--warn); border-bottom: 1px solid var(--warn-border); padding: 7px 16px; font-size: 12px; line-height: 1.6; }
+.disclaimer strong { font-weight: 700; }
 
 /* ---------- study nav (共通ナビ) ---------- */
 nav.study { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; padding: 6px 16px; background: #1b232c; color: #fff; font-size: 12.5px; }

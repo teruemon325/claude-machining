@@ -1,0 +1,12 @@
+/* 試験公開の免責バナー（overrides/main.html の announce ブロック） */
+.md-banner {
+  background-color: #fbf0d9;
+  color: #8a5a10;
+}
+.md-banner a {
+  color: inherit;
+}
+[data-md-color-scheme="slate"] .md-banner {
+  background-color: #3a2d13;
+  color: #e2a744;
+}
